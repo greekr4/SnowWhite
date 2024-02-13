@@ -6,3 +6,8 @@ ul,
 li {
   list-style: none;
 }
+
+a {
+  color: inherit; /* 상위 엘리먼트의 색상 상속 */
+  text-decoration: none;
+}

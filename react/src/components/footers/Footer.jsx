@@ -1,4 +1,4 @@
-import * as S from "../styles/styles";
+import * as S from "../../styles/styles";
 import { BsInstagram } from "react-icons/bs";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 

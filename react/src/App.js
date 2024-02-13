@@ -1,27 +1,45 @@
 import "./App.css";
 import styled from "styled-components";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+
 import MainPage from "./pages/MainPage";
 import Test from "./components/test";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-
-const Aa = styled.div`
-  font-size: 100px;
-`;
+import Header from "./components/headers/Header";
+import Footer from "./components/footers/Footer";
+import Header2 from "./components/headers/Header2";
+import ModalPortal from "./components/popups/Potals";
+import { useState } from "react";
 
 function App() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupIndex, setPopupIndex] = useState(0);
+
+  const openPopup = (index) => {
+    setIsPopupOpen(true);
+    setPopupIndex(index);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
   return (
     <>
       <BrowserRouter>
-        <Header></Header>
+        <ModalPortal
+          isOpen={isPopupOpen}
+          openPopup={openPopup}
+          closePopup={closePopup}
+          popupIndex={popupIndex}
+        ></ModalPortal>
+        {/* <Header></Header> */}
+        <Header2 openPopup={openPopup}></Header2>
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
         </Routes>
         <Footer></Footer>
-        <Test></Test>
       </BrowserRouter>
     </>
   );

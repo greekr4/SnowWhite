@@ -391,3 +391,345 @@ export const BoardItemPostDate = styled.div`
   margin-right: 1rem;
   color: #777;
 `;
+
+///////////////////////// 헤더2
+
+export const Hd2_wrap = styled.div`
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+  background-color: hsla(0, 0%, 100%, 0.99);
+  box-shadow: 1px 4px 15px hsla(0, 0%, 82.4%, 0.42);
+  /* font-family: "Gothic A1", sans-serif; */
+`;
+
+export const Hd2_noti = styled.div`
+  position: fixed;
+  background-color: rgb(80, 55, 149);
+  width: 100%;
+  text-align: center;
+  transition: all 0.1s ease;
+  &.show {
+    height: 28px;
+  }
+  &.hide {
+    height: 0px;
+  }
+`;
+
+export const Hd2_noti_span = styled.span`
+  color: #fff;
+  font-size: 18px;
+  font-weight: 550;
+`;
+
+export const Hd2_nav = styled.div`
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
+  &.show {
+    margin-top: 28px;
+  }
+  &.hide {
+    margin-top: 0px;
+  }
+`;
+
+export const Hd2_nav_container = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 1rem;
+`;
+
+export const Hd2_nav_logo_box = styled.div`
+  width: 15%;
+  text-align: center;
+`;
+
+export const Hd2_nav_logo_img = styled.img``;
+
+export const Hd2_nav_menu_box = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 85%;
+`;
+
+export const Hd2_nav_menu_ul = styled.ul`
+  display: flex;
+`;
+
+export const Hd2_nav_menu_li = styled.li`
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+`;
+
+export const Hd2_nav_menu_a = styled.a`
+  cursor: pointer;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  font-size: 18px;
+  font-weight: 600;
+  &:hover {
+    border-bottom: 4px solid #000;
+  }
+`;
+
+export const Hd2_nav_menu_img = styled.img`
+  display: block;
+  width: 20px;
+  height: 25px;
+  transition: 0.3s ease;
+  &:hover {
+    opacity: 0.3;
+  }
+`;
+
+export const Hd2_sub_menu_content = styled.div`
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  width: 100%;
+  left: 0;
+  margin: 0;
+  margin-top: 22px;
+  box-shadow: 3px 3px 15px rgba(35, 31, 32, 0.14);
+  z-index: 1;
+  padding: 30px 0;
+
+  &.show {
+    display: block;
+  }
+  &.hide {
+    display: none;
+  }
+`;
+
+export const Hd2_sub_menu_container = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 960px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+`;
+
+export const Hd2_sub_menu_container_prod = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  max-width: 960px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+`;
+
+export const Hd2_sub_menu_prod_cate_box = styled.div`
+  margin-left: 1%;
+  margin-right: 1%;
+  width: 23%;
+  box-sizing: border-box;
+  padding-bottom: 2rem;
+`;
+
+export const Hd2_sub_menu_prod_cate_main = styled.div`
+  font-size: 1.7rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  padding-left: 2rem;
+  color: cornflowerblue;
+  font-weight: 550;
+`;
+export const Hd2_sub_menu_prod_cate_sub = styled.div`
+  padding-bottom: 0.3rem;
+  padding-left: 2rem;
+  font-weight: 550;
+`;
+
+export const Hd2_sub_menu_about_box = styled.div`
+  margin-left: 1rem;
+  margin-right: 1rem;
+  width: 20%;
+  cursor: pointer;
+`;
+export const Hd2_sub_menu_about_title = styled.span`
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 600;
+`;
+
+export const Hd2_sub_menu_about_imgbox = styled.div`
+  background: #f4f5f6;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 0.5rem;
+`;
+
+export const Hd2_sub_menu_about_img = styled.img`
+  width: 100%;
+  height: 100px;
+  transition: all 0.3s ease-in, all 0.3s ease-out;
+  &:hover {
+    transform: scale(0.9);
+  }
+`;
+
+///////////////////////// 팝업
+
+export const Pop_overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 500vh;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  &.hide {
+    display: none;
+  }
+`;
+
+export const Pop_Container = styled.div`
+  position: fixed;
+
+  left: calc(
+    50% -
+      ${(props) => (props.widthValue ? props.widthValue / 2 + "px" : "250px")}
+  );
+  top: calc(
+    50% -
+      ${(props) => (props.heightValue ? props.heightValue / 2 + "px" : "250px")}
+  );
+  width: ${(props) => (props.widthValue ? props.widthValue + "px" : "200px")};
+  min-height: ${(props) =>
+    props.heightValue ? props.heightValue + "px" : "200px"};
+  background-color: #fff;
+`;
+
+export const Pop_Title = styled.div`
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 600;
+  font-family: "Gothic A1", sans-serif;
+  padding: 10px;
+`;
+
+export const Pop_Login_form = styled.div`
+  padding: 40px;
+`;
+
+export const Pop_Label = styled.div`
+  float: left;
+`;
+export const Pop_Input = styled.input`
+  width: 100%;
+  height: 50px;
+  padding: 0;
+  line-height: 50px;
+  font-size: 14px;
+  color: #191919;
+  border: 0;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+
+  &:focus {
+    border-bottom: 1px solid #191919;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &::placeholder {
+    font-size: 1rem;
+    color: #acacac;
+  }
+`;
+
+export const Pop_Remeber = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+export const Pop_Check = styled.div`
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  outline: 0;
+  line-height: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
+
+export const Pop_Check_input = styled.input`
+  cursor: pointer;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  top: 2px;
+  margin-right: 0.5rem;
+`;
+
+export const Pop_Remeber_label = styled.label`
+  cursor: pointer;
+  color: #999;
+`;
+
+export const Pop_Button_Wrap = styled.div`
+  margin-top: 2rem;
+`;
+
+export const Pop_Login_Info = styled.div`
+  margin-top: 1rem;
+  text-align: center;
+`;
+
+export const Pop_Label_Btn = styled.div`
+  cursor: pointer;
+  display: inline-block;
+  color: #999;
+  &::after {
+    content: "|";
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    color: #dcdcdc;
+  }
+
+  &:last-child::after {
+    content: none;
+  }
+`;
+
+export const Global_Button = styled.div`
+  cursor: pointer;
+  line-height: 48px;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  background-color: #757575;
+  border: 1px solid #757575;
+`;
+
+export const Pop_Close_btn = styled.div`
+  cursor: pointer;
+  float: right;
+  padding: 10px;
+  transition: 0.3s ease;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+export const Pop_Close_span = styled.span`
+  text-shadow: 0 1px 0 #fff;
+  font-size: 2rem;
+`;

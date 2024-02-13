@@ -1,4 +1,4 @@
-import * as S from "../styles/styles";
+import * as S from "../../styles/styles";
 import { FiMenu } from "react-icons/fi";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 
