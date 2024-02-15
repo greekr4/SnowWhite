@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import tw from "tailwind-styled-components";
 
 export const Hd_top = styled.div`
   max-height: 1000000px;
@@ -218,6 +219,20 @@ export const SliderBox = styled.div`
   height: ${(props) => (props.height ? props.height : "700px")};
 `;
 
+export const Product_Detail_SliderBox = styled.div`
+  width: calc(1200px * 0.6);
+  height: ${(props) => (props.height ? props.height : "700px")};
+`;
+
+export const Product_Detail_SliderImgBox = styled.div`
+  height: 750px;
+`;
+
+export const Product_Detail_SliderImg = styled.img`
+  width: 100%;
+  height: 700px;
+`;
+
 export const SliderImgBox = styled.div`
   width: 100%;
   height: 600px;
@@ -226,6 +241,10 @@ export const SliderImgBox = styled.div`
 export const SliderImg = styled.img`
   width: 100%;
   height: 600px;
+`;
+
+export const PageWrap = styled.div`
+  padding-top: 100px;
 `;
 
 export const MainSection = styled.section`
@@ -410,7 +429,7 @@ export const Hd2_noti = styled.div`
   text-align: center;
   transition: all 0.1s ease;
   &.show {
-    height: 28px;
+    height: 30px;
   }
   &.hide {
     height: 0px;
@@ -421,6 +440,7 @@ export const Hd2_noti_span = styled.span`
   color: #fff;
   font-size: 18px;
   font-weight: 550;
+  line-height: 30px;
 `;
 
 export const Hd2_nav = styled.div`
@@ -428,8 +448,9 @@ export const Hd2_nav = styled.div`
   margin-left: auto;
   margin-right: auto;
   transition: all 0.3s ease;
+  height: 70px;
   &.show {
-    margin-top: 28px;
+    margin-top: 30px;
   }
   &.hide {
     margin-top: 0px;
@@ -441,6 +462,7 @@ export const Hd2_nav_container = styled.div`
   justify-content: space-around;
   align-items: center;
   padding: 0.5rem 1rem;
+  height: 70px;
 `;
 
 export const Hd2_nav_logo_box = styled.div`
@@ -619,7 +641,7 @@ export const Pop_Title = styled.div`
   padding: 10px;
 `;
 
-export const Pop_Login_form = styled.div`
+export const Pop_form = styled.div`
   padding: 40px;
 `;
 
@@ -659,8 +681,8 @@ export const Pop_Remeber = styled.div`
 
 export const Pop_Check = styled.div`
   cursor: pointer;
+  display: block;
   position: relative;
-  display: inline-block;
   outline: 0;
   line-height: 16px;
   min-height: 16px;
@@ -732,4 +754,141 @@ export const Pop_Close_btn = styled.div`
 export const Pop_Close_span = styled.span`
   text-shadow: 0 1px 0 #fff;
   font-size: 2rem;
+`;
+
+export const Pop_Info_Wrap = styled.div`
+  color: #999;
+  margin-top: 1rem;
+`;
+
+export const Pop_Info_Title = styled.div`
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+`;
+
+export const Pop_Info_Desc = styled.div`
+  font-size: 0.85rem;
+  &::before {
+    content: "·";
+    margin-right: 0.5rem;
+  }
+`;
+
+export const Pop_Policy_Wrap = styled.div`
+  margin-top: 1rem;
+`;
+
+export const Pop_Policy_Content = styled.div`
+  overflow: auto;
+  height: 300px;
+  background-color: #eee;
+  padding: 1rem;
+`;
+
+////////////////////////////////////////////////////
+
+export const Product_Title_Wrap = styled.div``;
+export const Product_Title = styled.div`
+  text-align: center;
+  font-size: 2rem;
+  padding-bottom: 3rem;
+`;
+
+export const Product_Main_Section = styled.section`
+  display: block;
+  max-width: 1200px;
+  margin: 5rem auto;
+`;
+export const Product_ItemList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const Product_Item_Wrap = styled.div`
+  flex-basis: 30%;
+  margin: 1.5%;
+  margin-bottom: 5rem;
+  @media (max-width: 1200px) {
+    flex-basis: 45%;
+    margin: 2.5%;
+  }
+`;
+
+export const Product_Item_Image = styled.div`
+  width: 100%;
+  height: 360px;
+  background-color: black;
+`;
+
+export const Product_Item_Title = styled.div`
+  padding: 1.5rem 0 0.5rem 0;
+  font-family: YoonGothicPro740;
+  font-size: 18px;
+  color: rgb(25, 25, 25);
+`;
+
+export const Product_Item_Desc = styled.div`
+  font-size: 14px;
+  color: #888;
+`;
+
+export const Product_Detail_Section = styled.section`
+  max-width: 1200px;
+  margin: 5rem auto;
+`;
+export const Product_Detail_Box = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+`;
+export const Product_Detail_Img_Wrap = styled.div`
+  flex-basis: 60%;
+`;
+export const Product_Detail_Option_Wrap = styled.div`
+  flex-basis: 35%;
+`;
+
+export const Product_Detail_Option_Prod_Title = styled.div``;
+export const Product_Detail_Option_Box = styled.div``;
+export const Product_Detail_Option_Title = styled.div`
+  font-size: 22px;
+  font-weight: 600;
+`;
+
+export const Product_Detail_Option_ItemBox = styled.div`
+  margin-top: 1rem;
+`;
+export const Product_Detail_Option_ItemText = styled.div`
+  color: #333;
+  font-size: 0.8rem;
+`;
+export const Product_Detail_Option_ButtonBox = styled.div`
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 420px;
+`;
+export const Product_Detail_Option_Button = styled.button`
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background: none;
+  color: #333;
+  width: 100px;
+  height: 40px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+
+  &.selected {
+    border: 1px solid #111;
+  }
+`;
+
+export const Product_Detail_Option_Button_Span = styled.span`
+  font-size: 12px;
+  display: inline-block;
+  /* max-width: 100px;
+  word-wrap: break-word; */
 `;

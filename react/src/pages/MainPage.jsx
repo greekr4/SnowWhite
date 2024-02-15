@@ -23,7 +23,7 @@ const MainPage = () => {
     slidesToScroll: 1,
   };
   return (
-    <>
+    <S.PageWrap>
       <S.MainSection>
         <S.SliderBox height={"600px"}>
           <Slider {...SliderSetting}>
@@ -231,7 +231,7 @@ const MainPage = () => {
           </S.BoardItemBox>
         </S.MainInner>
       </S.MainSection>
-    </>
+    </S.PageWrap>
   );
 };
 

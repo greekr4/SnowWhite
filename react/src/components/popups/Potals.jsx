@@ -1,26 +1,82 @@
 import ReactDOM from "react-dom";
 import PopLogin from "./PopLogin";
 import PopJoin from "./PopJoin";
+import PopFindPw from "./PopFindPw";
+import PopPolicySnow from "./PopPolicySnow";
+import PopPolicyPriv from "./PopPolicyPriv";
 
-const ModalPortal = ({ isOpen, openPopup, closePopup, popupIndex }) => {
+/////포탈1
+const ModalPortal = ({
+  isOpen,
+  openPopup,
+  closePopup,
+  popupIndex,
+  openPopup2,
+  closePopup2,
+}) => {
   const el = document.getElementById("modal");
+  const el2 = document.getElementById("modal2");
 
-  console.log(popupIndex);
   if (!isOpen) return null;
 
-  if (popupIndex === 0) {
-    // 인덱스 0 : 로그인 팝업
-    return ReactDOM.createPortal(
-      <PopLogin openPopup={openPopup} closePopup={closePopup} />,
-      el
-    );
-  } else if (popupIndex === 1) {
-    // 인덱스 1 : 회원가입 팝업
-    return ReactDOM.createPortal(
-      <PopJoin openPopup={openPopup} closePopup={closePopup} />,
-      el
-    );
+  // 인덱스
+  // 0 : 로그인
+  // 1 : 회원가입
+  // 2 : 비밀번호 찾기
+  // 3 : 이용약관
+
+  switch (popupIndex) {
+    case 0:
+      return ReactDOM.createPortal(
+        <PopLogin openPopup={openPopup} closePopup={closePopup} />,
+        el
+      );
+    case 1:
+      return ReactDOM.createPortal(
+        <PopJoin
+          openPopup={openPopup}
+          closePopup={closePopup}
+          openPopup2={openPopup2}
+          closePopup2={closePopup2}
+        />,
+        el
+      );
+    case 2:
+      return ReactDOM.createPortal(
+        <PopFindPw openPopup={openPopup} closePopup={closePopup} />,
+        el
+      );
+
+    default:
+      return null;
   }
 };
 
-export default ModalPortal;
+/////포탈2
+const ModalPortal2 = ({ isOpen2, openPopup2, closePopup2, popupIndex2 }) => {
+  const el2 = document.getElementById("modal2");
+
+  if (!isOpen2) return null;
+
+  // 인덱스
+  // 0 : 로그인
+  // 1 : 회원가입
+
+  switch (popupIndex2) {
+    case 0:
+      return ReactDOM.createPortal(
+        <PopPolicySnow openPopup2={openPopup2} closePopup2={closePopup2} />,
+        el2
+      );
+    case 1:
+      return ReactDOM.createPortal(
+        <PopPolicyPriv openPopup2={openPopup2} closePopup2={closePopup2} />,
+        el2
+      );
+
+    default:
+      return null;
+  }
+};
+
+export default { ModalPortal, ModalPortal2 };
