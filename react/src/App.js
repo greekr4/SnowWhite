@@ -16,6 +16,8 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import Header3 from "./components/headers/Header3";
 
 import GlobalStyle from "./styles/global_style";
+import Footer2 from "./components/footers/Footer2";
+import MainPage2 from "./pages/MainPage2";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -63,11 +65,12 @@ function App() {
         {/* <Header2 openPopup={openPopup}></Header2> */}
         <Header3 />
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/" element={<MainPage2 />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/detail" element={<ProductDetailPage />} />
         </Routes>
-        <Footer />
+        {/* <Footer /> */}
+        <Footer2 />
       </BrowserRouter>
     </>
   );
