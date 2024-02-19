@@ -1,4 +1,4 @@
-import * as S from "../../styles/styles";
+import * as S from "../../styles/new_styles";
 import { useSpring, animated } from "react-spring";
 
 const PopPolicySnow = ({ openPopup, closePopup2 }) => {

@@ -1,5 +1,5 @@
 import Slider from "react-slick";
-import * as S from "../styles/styles";
+import * as S from "../styles/new_styles";
 import snow0 from "../assets/snow0.png";
 import OptionItem from "../components/options/OptionItem";
 
@@ -23,42 +23,117 @@ const TestOptions = [
   },
 ];
 
+const imageContext = require.context(
+  "../assets/products/detail",
+  false,
+  /\.(jpg)$/
+);
+const imagePaths = imageContext.keys().map(imageContext);
+
 const ProductDetailPage = () => {
   return (
-    <S.PageWrap>
-      <S.Product_Detail_Section>
-        <S.Product_Detail_Box>
-          <S.Product_Detail_Img_Wrap>
-            <S.Product_Detail_SliderBox>
-              <Slider {...SliderSetting} height="300px">
-                <S.Product_Detail_SliderImgBox>
-                  <S.Product_Detail_SliderImg
-                    src={snow0}
-                  ></S.Product_Detail_SliderImg>
-                </S.Product_Detail_SliderImgBox>
-                <S.Product_Detail_SliderImgBox>
-                  <S.Product_Detail_SliderImg
-                    src={snow0}
-                  ></S.Product_Detail_SliderImg>
-                </S.Product_Detail_SliderImgBox>
-                <S.Product_Detail_SliderImgBox>
-                  <S.Product_Detail_SliderImg
-                    src={snow0}
-                  ></S.Product_Detail_SliderImg>
-                </S.Product_Detail_SliderImgBox>
-              </Slider>
-            </S.Product_Detail_SliderBox>
-          </S.Product_Detail_Img_Wrap>
-          <S.Product_Detail_Option_Wrap>
-            <S.Product_Detail_Option_Title>명함</S.Product_Detail_Option_Title>
+    //         {TestOptions.map((options, index) => (
+    //           <OptionItem Options={options} />
+    //         ))}
 
-            {TestOptions.map((options, index) => (
-              <OptionItem Options={options} />
-            ))}
-          </S.Product_Detail_Option_Wrap>
-        </S.Product_Detail_Box>
-      </S.Product_Detail_Section>
-    </S.PageWrap>
+    <S.MainLayout>
+      <S.MainSection>
+        <S.ProdDetailWrapper>
+          <S.ProdDetailBox>
+            <S.ProdDetailLeft>
+              <S.ProdDetailSliderBox>
+                <S.ProdDetailMainSlider>
+                  <S.ProdDetailMainSliderView img={imagePaths[0]} />
+                  <S.ProdDetailSliderPrev />
+                  <S.ProdDetailSliderNext />
+                </S.ProdDetailMainSlider>
+                <S.ProdDetailSubSlider>
+                  <S.ProdDetailSubSliderView img={imagePaths[1]} />
+                  <S.ProdDetailSubSliderView img={imagePaths[2]} />
+                  <S.ProdDetailSubSliderView
+                    img={imagePaths[0]}
+                    className="selected"
+                  />
+                  <S.ProdDetailSubSliderView img={imagePaths[1]} />
+                  <S.ProdDetailSubSliderView img={imagePaths[2]} />
+                </S.ProdDetailSubSlider>
+              </S.ProdDetailSliderBox>
+            </S.ProdDetailLeft>
+            <S.ProdDetailRight>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+              <div>dd</div>
+            </S.ProdDetailRight>
+          </S.ProdDetailBox>
+        </S.ProdDetailWrapper>
+      </S.MainSection>
+    </S.MainLayout>
   );
 };
 

@@ -3,11 +3,13 @@ import icon_print from "../../assets/icons/printer2.png";
 import { useSpring, animated } from "react-spring";
 import { useState } from "react";
 
-const GnbSubMenu = ({ isVisible }) => {
+const GnbSubMenu = ({ isVisible, submenus }) => {
+  console.log(submenus.length);
+  const isheight = `${submenus.length * 30 + 35}px`;
+
   const slideAnimation = useSpring({
     opacity: isVisible ? 1 : 0,
-    height: isVisible ? "200px" : "0px",
-    // transform: isVisible ? "translateY(0)" : "translateY(-100%)",
+    height: isVisible ? isheight : "0px",
   });
 
   const fadeInAnimation = useSpring({
@@ -23,21 +25,13 @@ const GnbSubMenu = ({ isVisible }) => {
       ></S.HeaderSubMenuIcon>
       <S.HeaderSubMenuBox style={slideAnimation}>
         <S.HeaderSubMenuCols>
-          <S.HeaderSubMenuItem>
-            <S.HeaderSubMenuText>일반 명함</S.HeaderSubMenuText>
-          </S.HeaderSubMenuItem>
-          <S.HeaderSubMenuItem>
-            <S.HeaderSubMenuText>고급 명함</S.HeaderSubMenuText>
-          </S.HeaderSubMenuItem>
-          <S.HeaderSubMenuItem>
-            <S.HeaderSubMenuText>골판지 박스</S.HeaderSubMenuText>
-          </S.HeaderSubMenuItem>
-          <S.HeaderSubMenuItem>
-            <S.HeaderSubMenuText>4</S.HeaderSubMenuText>
-          </S.HeaderSubMenuItem>
-          <S.HeaderSubMenuItem>
-            <S.HeaderSubMenuText>5</S.HeaderSubMenuText>
-          </S.HeaderSubMenuItem>
+          {submenus.map((item) => (
+            <>
+              <S.HeaderSubMenuItem>
+                <S.HeaderSubMenuText>{item}</S.HeaderSubMenuText>
+              </S.HeaderSubMenuItem>
+            </>
+          ))}
         </S.HeaderSubMenuCols>
       </S.HeaderSubMenuBox>
     </S.HeaderSubMenuWrapper>

@@ -63,7 +63,7 @@ function App() {
         ></Potals.ModalPortal2>
         {/* <Header></Header> */}
         {/* <Header2 openPopup={openPopup}></Header2> */}
-        <Header3 />
+        <Header3 openPopup={openPopup} />
         <Routes>
           <Route path="/" element={<MainPage2 />} />
           <Route path="/products" element={<ProductsPage />} />

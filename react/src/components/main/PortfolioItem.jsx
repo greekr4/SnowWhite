@@ -1,10 +1,12 @@
 import * as S from "../../styles/new_styles";
 import React from "react";
 
-const PortfolioItem = () => {
+const PortfolioItem = ({ item }) => {
+  console.log(item);
+  console.log("dd");
   return (
     <S.PortfolioItemBox>
-      <S.PortfolioItemImgBox>이미지영역</S.PortfolioItemImgBox>
+      <S.PortfolioItemImgBox img={item.pfImg} />
     </S.PortfolioItemBox>
   );
 };
