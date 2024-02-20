@@ -4,7 +4,6 @@ import { useSpring, animated } from "react-spring";
 import { useState } from "react";
 
 const GnbSubMenu = ({ isVisible, submenus }) => {
-  console.log(submenus.length);
   const isheight = `${submenus.length * 30 + 35}px`;
 
   const slideAnimation = useSpring({

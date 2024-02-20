@@ -27,7 +27,7 @@ export const HeaderBannerBox = styled.div`
 export const HeaderGnbWrapper = styled.div`
   width: 100%;
   border-bottom: 1px solid #eee;
-
+  z-index: 999;
   &.fix {
     position: fixed;
     background: white;
@@ -46,7 +46,7 @@ export const HeaderGnbRows = styled.div`
 export const HeaderLogoBox = styled.div`
   display: block;
   width: 100px;
-  height: 100px;
+  height: 80px;
   background-image: url(${(props) => (props.img ? props.img : "")});
   background-position: center;
   background-size: contain;
@@ -61,7 +61,7 @@ export const HeaderMenuList = styled.ul`
 `;
 
 export const HeaderMenuItem = styled.li`
-  width: 80px;
+  width: 70px;
   text-align: center;
 `;
 
@@ -69,7 +69,8 @@ export const HeaderMenuText = styled.a`
   cursor: pointer;
   font-family: "Gothic A1", sans-serif;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  color: #333;
   &:hover {
     color: #7070ff;
   }
@@ -132,8 +133,8 @@ export const HeaderSubMenuText = styled.span`
 export const HeaderSubMenuIcon = styled(animated.div)`
   display: block;
   position: absolute;
-  left: 24px;
-  top: 5px;
+  left: 18px;
+  top: 0px;
   width: 32px;
   height: 32px;
   background: url(${(props) => props.icon}) no-repeat center center;
@@ -788,6 +789,11 @@ export const Arrow = styled.span`
   background-repeat: no-repeat;
 `;
 
+/**
+ * 상품 상세 페이지
+ *
+ */
+
 export const ReviewDetailBox = styled(animated.div)`
   width: 100%;
   padding: 1rem;
@@ -806,11 +812,10 @@ export const ProdDetailWrapper = styled.div`
 `;
 export const ProdDetailLeft = styled.div`
   flex-basis: 70%;
-  background-color: aliceblue;
 `;
 export const ProdDetailRight = styled.div`
   flex-basis: 30%;
-  background-color: aqua;
+  padding-left: 2rem;
 `;
 
 export const ProdDetailBox = styled.div`
@@ -818,8 +823,9 @@ export const ProdDetailBox = styled.div`
 `;
 
 export const ProdDetailSliderBox = styled.div`
-  /* position: relative;
-  top: 100px; */
+  position: relative;
+  top: ${(props) => props.topValue + "px"};
+  transition: 0.1s ease;
 `;
 export const ProdDetailMainSlider = styled.div``;
 export const ProdDetailSubSlider = styled.div`
@@ -827,7 +833,7 @@ export const ProdDetailSubSlider = styled.div`
   margin: 1rem;
 `;
 
-export const ProdDetailMainSliderView = styled.div`
+export const ProdDetailMainSliderView = styled(animated.div)`
   width: 100%;
   height: 580px;
   background: url(${(props) => props.img}) center/cover no-repeat;
@@ -836,19 +842,36 @@ export const ProdDetailMainSliderView = styled.div`
 export const ProdDetailSubSliderView = styled.div`
   width: 70px;
   height: 70px;
-  margin: 0.5rem;
+  margin: 0.35rem;
   background: url(${(props) => props.img}) center/cover no-repeat;
   border: 1.5px solid #ccc;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #333;
+  }
+
   &.selected {
     border: 1.5px solid #333;
   }
 `;
 
 export const ProdDetailSliderPrev = styled.div`
+  position: relative;
+  top: 271px;
+  left: 10px;
   width: 38px;
   height: 38px;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0);
   border-radius: 100%;
+  background-color: rgba(206, 206, 206, 0.7);
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(206, 206, 206, 0.9);
+    &::before {
+      border-top: 2px solid #eee;
+      border-right: 2px solid #eee;
+    }
+  }
   &::before {
     position: relative;
     display: block;
@@ -857,16 +880,28 @@ export const ProdDetailSliderPrev = styled.div`
     left: 15px;
     width: 9px;
     height: 9px;
-    border-top: 2px solid #777;
-    border-right: 2px solid #777;
+    border-top: 2px solid #747474;
+    border-right: 2px solid #747474;
     transform: scale(1.2) rotate(-135deg);
   }
 `;
 export const ProdDetailSliderNext = styled.div`
+  position: relative;
+  top: 233px;
+  left: 750px;
   width: 38px;
   height: 38px;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0);
   border-radius: 100%;
+  background-color: rgba(206, 206, 206, 0.7);
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(206, 206, 206, 0.9);
+    &::before {
+      border-top: 2px solid #eee;
+      border-right: 2px solid #eee;
+    }
+  }
   &::before {
     position: relative;
     display: block;
@@ -875,8 +910,193 @@ export const ProdDetailSliderNext = styled.div`
     left: 12px;
     width: 9px;
     height: 9px;
-    border-top: 2px solid #777;
-    border-right: 2px solid #777;
+    border-top: 2px solid #747474;
+    border-right: 2px solid #747474;
     transform: scale(1.2) rotate(45deg);
+  }
+`;
+
+export const ProdDetailTitle = styled.h1`
+  font-size: 1.25rem;
+  padding-bottom: 1rem;
+`;
+
+export const ProdDetailDesc = styled.p`
+  font-size: 0.7rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  &::before {
+    content: "";
+    display: block;
+    position: relative;
+    top: 8px;
+    left: -10px;
+    border: 2px solid #469cff;
+    width: 3px;
+    height: 3px;
+    box-sizing: border-box;
+  }
+  color: #777;
+`;
+
+export const Product_Detail_Option_ItemWrapper = styled.div`
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+`;
+
+export const Product_Detail_Option_ItemBox = styled.div`
+  margin-top: 1rem;
+  margin-right: 2rem;
+`;
+export const Product_Detail_Option_ItemText = styled.div`
+  color: #333;
+  font-size: 0.8rem;
+`;
+export const Product_Detail_Option_ButtonBox = styled.div`
+  display: inline-block;
+  margin-top: 0.5rem;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+`;
+export const Product_Detail_Option_Button = styled.div`
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-spacing: 0;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  background: none;
+  color: #333;
+  width: 92px;
+  height: 35px;
+  line-height: 30px;
+  text-align: center;
+
+  &:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid #000; /* 테두리 스타일 및 두께 설정 */
+    box-sizing: border-box;
+  }
+
+  &.selected {
+    background-color: #d0e6ff;
+    color: #333;
+  }
+`;
+
+export const Product_Detail_Option_Button_Span = styled.span`
+  font-size: 12px;
+`;
+
+export const ProdDetailPayBox = styled.div`
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1.75rem;
+  border-top: 1px solid #ddd;
+`;
+
+export const ProdDetailPriceText = styled.div`
+  float: left;
+  font-size: 0.8rem;
+  color: #333;
+`;
+export const ProdDetailPriceValue = styled.div`
+  float: right;
+  font-size: 0.9rem;
+  color: #ff2222;
+`;
+
+export const ProdDetailPayButton = styled.div`
+  cursor: pointer;
+  line-height: 48px;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  background-color: #469cff;
+  border: 1px solid #469cff;
+  width: 200px;
+  margin: 0 auto;
+`;
+
+export const ProdDetailContentWrapper = styled.div``;
+
+/**
+ * 글로벌 카드 (3 x N)
+ *
+ */
+
+export const CardList = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+export const CardItem = styled.div`
+  flex-basis: 20%;
+  margin: 0.5rem;
+  text-align: center;
+`;
+export const CardImg = styled.div`
+  width: 100%;
+  height: 200px;
+  background-color: #d4d4ff;
+`;
+export const CardTitle = styled.div`
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 520;
+`;
+export const CardCont = styled.div`
+  font-size: 0.8rem;
+  color: #777;
+`;
+
+/**
+ * 상품 상세 탭바
+ *
+ */
+
+export const TabBarWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+`;
+export const TabBarlist = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 600px;
+  margin: 0 auto;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+`;
+export const TabBarItem = styled.li`
+  width: 200px;
+  padding: 0.6rem;
+  font-size: 0.8rem;
+  text-align: center;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  &.selected {
+    color: #469cff;
+    border-bottom: 3px solid #469cff;
+  }
+`;
+export const TabBarItemText = styled.span``;
+export const TabBarContent = styled.div`
+  margin-top: 1rem;
+  transition: 0.3s;
+  & > h1 {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 1rem;
+    margin-top: 2rem;
   }
 `;

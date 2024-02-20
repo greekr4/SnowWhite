@@ -1,10 +1,7 @@
-import * as S from "../../styles/styles";
+import * as S from "../../styles/new_styles";
 
 const OptionItem = ({ Options }) => {
-  console.log(Options);
-
   if (!Options) {
-    console.error("Options or Options.OptionName is undefined");
     return null;
   }
   return (

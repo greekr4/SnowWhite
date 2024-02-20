@@ -18,6 +18,8 @@ import Header3 from "./components/headers/Header3";
 import GlobalStyle from "./styles/global_style";
 import Footer2 from "./components/footers/Footer2";
 import MainPage2 from "./pages/MainPage2";
+import CartPage from "./pages/CartPage";
+import ScrollToTop from "./hooks/ScrollToTop";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -46,6 +48,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
         <GlobalStyle />
         <Potals.ModalPortal
           isOpen={isPopupOpen}
@@ -68,6 +71,7 @@ function App() {
           <Route path="/" element={<MainPage2 />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/detail" element={<ProductDetailPage />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
         {/* <Footer /> */}
         <Footer2 />

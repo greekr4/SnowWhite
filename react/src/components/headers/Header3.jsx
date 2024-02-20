@@ -116,6 +116,7 @@ const Header3 = ({ openPopup }) => {
             >
               <S.HeaderMenuText>로그인</S.HeaderMenuText>
             </S.HeaderMenuItem>
+
             <S.HeaderMenuItem>
               <S.HeaderMenuText
                 onClick={() => {
@@ -124,6 +125,11 @@ const Header3 = ({ openPopup }) => {
               >
                 회원가입
               </S.HeaderMenuText>
+            </S.HeaderMenuItem>
+            <S.HeaderMenuItem>
+              <Link to={"/cart"}>
+                <S.HeaderMenuText>장바구니</S.HeaderMenuText>
+              </Link>
             </S.HeaderMenuItem>
           </S.HeaderMenuList>
         </S.HeaderGnbRows>
