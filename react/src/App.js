@@ -20,6 +20,8 @@ import Footer2 from "./components/footers/Footer2";
 import MainPage2 from "./pages/MainPage2";
 import CartPage from "./pages/CartPage";
 import ScrollToTop from "./hooks/ScrollToTop";
+import NoticePage from "./pages/NoticePage";
+import MyPage from "./pages/MyPage";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -72,6 +74,8 @@ function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/detail" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/notice" element={<NoticePage />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
         {/* <Footer /> */}
         <Footer2 />

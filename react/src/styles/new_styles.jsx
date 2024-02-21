@@ -5,6 +5,25 @@ import star from "../assets/icons/star.png";
 import star_empty from "../assets/icons/star_empty.png";
 
 /**
+ * 공통
+ */
+export const Btn = styled.button`
+  padding: 0 12px;
+  line-height: ${(props) => (props.btnHight ? props.btnHight : "32px")};
+  font-size: ${(props) => (props.fontSize ? props.fontSize : "11px")};
+  color: ${(props) => (props.fontColor ? props.fontColor : "#333")};
+  text-align: center;
+  background-color: ${(props) => (props.btnBgc ? props.btnBgc : "#fff")};
+  border: 1px solid ${(props) => (props.borderC ? props.borderC : "#ccc")};
+  &:hover {
+    background-color: ${(props) =>
+      props.btnBgcHover ? props.btnBgcHover : "#fff"};
+    border: 1px solid
+      ${(props) => (props.borderCHover ? props.borderCHover : "#999")};
+  }
+`;
+
+/**
  * 헤더
  * Header
  */
@@ -825,7 +844,7 @@ export const ProdDetailBox = styled.div`
 export const ProdDetailSliderBox = styled.div`
   position: relative;
   top: ${(props) => props.topValue + "px"};
-  transition: 0.1s ease;
+  transition: 0.1s ease-in;
 `;
 export const ProdDetailMainSlider = styled.div``;
 export const ProdDetailSubSlider = styled.div`
@@ -1098,5 +1117,410 @@ export const TabBarContent = styled.div`
     font-weight: 500;
     padding: 1rem;
     margin-top: 2rem;
+  }
+`;
+
+/**
+ * 장바구니
+ * Cart
+ */
+
+export const CartTopWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+  border-bottom: 1px solid #eee;
+`;
+export const CartTopTitleBox = styled.div`
+  padding: 2rem;
+  text-align: center;
+
+  & > h1 {
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+  & > p {
+    font-size: 0.75rem;
+  }
+`;
+export const CartTopAddtionBox = styled.div`
+  & > p {
+    font-size: 0.75rem;
+    padding-bottom: 1rem;
+  }
+`;
+
+export const CartMidWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+  border-bottom: 1px solid #eee;
+`;
+export const CartMidBtnBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+  & > div > button {
+    margin-right: 0.5rem;
+  }
+`;
+
+export const CartMidText = styled.p`
+  display: inline;
+  font-size: 0.8rem;
+  color: ${(props) => (props.color ? props.color : "#333")};
+  &::after {
+    content: " / ";
+  }
+  &:nth-child(2)::after {
+    content: "";
+    margin-right: 1rem;
+  }
+`;
+export const CartMidProdBox = styled.div`
+  & table {
+    margin-bottom: 2rem;
+  }
+
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #f5f5f5;
+    font-size: 0.9rem;
+  }
+
+  & th:nth-child(1) {
+    width: 230px;
+  }
+  & th:nth-child(2) {
+    width: 320px;
+    text-align: left;
+    padding-left: 1rem;
+  }
+  & th:nth-child(3) {
+    width: 200px;
+  }
+  & th:nth-child(4) {
+    width: 130px;
+  }
+  & th:nth-child(5) {
+    width: 130px;
+  }
+  & th:nth-child(6) {
+    width: 130px;
+  }
+
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+  }
+  & td:nth-child(1) {
+  }
+
+  & td:nth-child(2) {
+    text-align: left;
+  }
+  & td:nth-child(3) {
+    font-size: 0.85rem;
+  }
+  & td:nth-child(4) {
+    font-size: 1rem;
+    font-weight: 520;
+    color: red;
+    &::after {
+      content: "원";
+    }
+  }
+  & td:nth-child(5) {
+    font-size: 0.85rem;
+  }
+  & td:nth-child(6) {
+    font-size: 0.85rem;
+    & button {
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  & tbody > tr {
+    border-bottom: 1px solid #eee;
+  }
+`;
+
+export const CartMidThumbnail = styled.div`
+  display: block;
+  width: 150px;
+  height: 80px;
+  margin: 0 auto;
+  background-color: aliceblue;
+`;
+
+export const CartMidProdInfoBox = styled.div`
+  & h1 {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
+  }
+  & p {
+    font-size: 0.75rem;
+    padding-bottom: 0.5rem;
+    //주문일
+    &:last-child::before {
+      display: inline-block;
+      content: "주문일";
+      border: 1px solid #777;
+      border-radius: 15%;
+      height: 24px;
+      line-height: 24px;
+      width: 48px;
+      text-align: center;
+      margin-right: 1rem;
+    }
+  }
+`;
+
+export const CartMidPriceBox = styled.div`
+  & table {
+    width: 100%;
+  }
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #f5f5f5;
+    width: 23.5%;
+    font-size: 0.9rem;
+    &:nth-child(2n) {
+      width: 2%;
+    }
+  }
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+
+    &:nth-child(odd)::after {
+      content: "원";
+    }
+  }
+
+  /* & td:nth-child(2)::before {
+    position: relative;
+    text-align: center;
+    content: "-";
+    left: 420px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    height: 20px;
+    line-height: 15px;
+    width: 20px;
+    color: #333;
+    font-size: 1rem;
+  }
+
+  & td:nth-child(3)::before {
+    position: relative;
+    text-align: center;
+    content: "+";
+    left: 705px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    height: 20px;
+    line-height: 17px;
+    padding-left: 1px;
+    width: 20px;
+    color: #333;
+    font-size: 1rem;
+  }
+
+  & td:nth-child(4)::before {
+    position: relative;
+    text-align: center;
+    content: "=";
+    left: 990px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    height: 20px;
+    line-height: 17px;
+    width: 20px;
+    color: #333;
+    font-size: 1rem;
+  } */
+
+  & td:nth-child(7) {
+    font-weight: 520;
+    color: red;
+  }
+
+  & td:nth-child(2n) > span {
+    display: block;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 550;
+    width: 25px;
+    height: 25px;
+    line-height: 21px;
+  }
+`;
+
+export const CartBotWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const CartBotNotiBox = styled.div`
+  padding-top: 4rem;
+  padding-bottom: 6rem;
+
+  & h1 {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
+  }
+  & p {
+    font-size: 0.75rem;
+    color: #777;
+    padding-bottom: 0.25rem;
+    &::before {
+      content: "-";
+      margin-right: 0.25rem;
+    }
+  }
+`;
+
+/**
+ * 마이페이지
+ * MyPage
+ */
+
+export const MyPageTopWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const MyPageTopBox = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const MyPageTopLeft = styled.div`
+  flex-basis: 45%;
+  padding: 4rem;
+`;
+export const MyPageTopRight = styled.div`
+  flex-basis: 45%;
+  padding: 4rem;
+`;
+
+export const MyPageUserInfoBox = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1.5rem;
+`;
+export const MyPageUserInfoIcon = styled.div`
+  display: block;
+  width: 120px;
+  height: 100px;
+  background-color: aliceblue;
+  margin-right: 2rem;
+`;
+export const MyPageUserInfoTextBox = styled.div`
+  width: 70%;
+  & h1 {
+    padding-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 520;
+  }
+  & h2 {
+    padding-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    &::after {
+      content: "님";
+      font-weight: 500;
+      font-size: 1rem;
+      margin-left: 0.25rem;
+    }
+  }
+
+  & h3 {
+    font-size: 0.8rem;
+    padding-bottom: 0.25rem;
+    color: #777;
+  }
+  & h4 {
+    font-size: 0.9rem;
+    color: #333;
+  }
+`;
+export const MyPageUserBtnBox = styled.div`
+  display: flex;
+
+  & > Button {
+    width: 33%;
+    margin-right: 0.25rem;
+  }
+`;
+
+export const MyPageCardBox = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+export const MyPageCardItem = styled.div`
+  border: 1px solid #999;
+  width: 45%;
+  height: 100%;
+  & h1 {
+    font-size: 1.2rem;
+    font-weight: 550;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  & h2,
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 550;
+    color: #ffb120;
+    padding-left: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  & h2::after {
+    content: "P";
+    margin-left: 0.5rem;
+  }
+
+  & h4::after {
+    content: "개";
+    margin-left: 0.5rem;
+  }
+
+  & h3,
+  h5 {
+    font-size: 0.9rem;
+    font-weight: 550;
+    padding-left: 1.5rem;
+    &::before {
+      content: "소멸예정";
+      color: #999;
+      margin-right: 0.25rem;
+    }
+  }
+  
+  & h3::after {
+    content: "P";
+    color: #999;
+    margin-left:0.25rem;
+  }
+}
+& h5::after {
+  content: "개";
+  color: #999;
+  margin-left:0.25rem;
   }
 `;
