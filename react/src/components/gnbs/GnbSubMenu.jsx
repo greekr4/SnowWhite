@@ -2,6 +2,7 @@ import * as S from "../../styles/new_styles";
 import icon_print from "../../assets/icons/printer2.png";
 import { useSpring, animated } from "react-spring";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const GnbSubMenu = ({ isVisible, submenus }) => {
   const isheight = `${submenus.length * 30 + 35}px`;
@@ -27,7 +28,9 @@ const GnbSubMenu = ({ isVisible, submenus }) => {
           {submenus.map((item) => (
             <>
               <S.HeaderSubMenuItem>
-                <S.HeaderSubMenuText>{item}</S.HeaderSubMenuText>
+                <Link to="/products/detail">
+                  <S.HeaderSubMenuText>{item}</S.HeaderSubMenuText>
+                </Link>
               </S.HeaderSubMenuItem>
             </>
           ))}

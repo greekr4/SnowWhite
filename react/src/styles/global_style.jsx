@@ -145,7 +145,7 @@ html,
     font-weight: bold;
   }
   input {    
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
   }
   button {
     border: none;

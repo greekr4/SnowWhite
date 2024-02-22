@@ -3,6 +3,12 @@ import styled from "styled-components";
 
 import star from "../assets/icons/star.png";
 import star_empty from "../assets/icons/star_empty.png";
+import arrow_up from "../assets/icons/arrow_up.png";
+import arrow_down from "../assets/icons/arrow_down.png";
+import arrow_left from "../assets/icons/arrow_left.png";
+import arrow_right from "../assets/icons/arrow_right.png";
+import double_left from "../assets/icons/double_left.png";
+import double_right from "../assets/icons/double_right.png";
 
 /**
  * 공통
@@ -15,6 +21,7 @@ export const Btn = styled.button`
   text-align: center;
   background-color: ${(props) => (props.btnBgc ? props.btnBgc : "#fff")};
   border: 1px solid ${(props) => (props.borderC ? props.borderC : "#ccc")};
+  width: ${(props) => (props.width ? props.width : "")};
   &:hover {
     background-color: ${(props) =>
       props.btnBgcHover ? props.btnBgcHover : "#fff"};
@@ -1185,7 +1192,7 @@ export const CartMidProdBox = styled.div`
   & th {
     height: 50px;
     line-height: 50px;
-    background-color: #f5f5f5;
+    background-color: #ebf2ff;
     font-size: 0.9rem;
   }
 
@@ -1252,7 +1259,7 @@ export const CartMidThumbnail = styled.div`
   width: 150px;
   height: 80px;
   margin: 0 auto;
-  background-color: aliceblue;
+  background-color: #ebf2ff;
 `;
 
 export const CartMidProdInfoBox = styled.div`
@@ -1285,7 +1292,7 @@ export const CartMidPriceBox = styled.div`
   & th {
     height: 50px;
     line-height: 50px;
-    background-color: #f5f5f5;
+    background-color: #ebf2ff;
     width: 23.5%;
     font-size: 0.9rem;
     &:nth-child(2n) {
@@ -1421,7 +1428,7 @@ export const MyPageUserInfoIcon = styled.div`
   display: block;
   width: 120px;
   height: 100px;
-  background-color: aliceblue;
+  background-color: aquamarine;
   margin-right: 2rem;
 `;
 export const MyPageUserInfoTextBox = styled.div`
@@ -1511,16 +1518,404 @@ export const MyPageCardItem = styled.div`
       margin-right: 0.25rem;
     }
   }
-  
+
   & h3::after {
     content: "P";
     color: #999;
-    margin-left:0.25rem;
+    margin-left: 0.25rem;
   }
-}
-& h5::after {
-  content: "개";
-  color: #999;
-  margin-left:0.25rem;
+
+  & h5::after {
+    content: "개";
+    color: #999;
+    margin-left: 0.25rem;
+  }
+`;
+
+export const MyPageStateWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+export const MyPageStateTitleBox = styled.div`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  & h1 {
+    font-size: 1.2rem;
+    padding-bottom: 0.75rem;
+  }
+
+  & p {
+    font-size: 0.9rem;
+    color: #777;
+  }
+`;
+export const MyPageStateCellBox = styled.div`
+  padding-bottom: 2rem;
+  & h1 {
+    padding-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+`;
+export const MyPageStateCellList = styled.div`
+  border: 1px solid #ccc;
+  display: flex;
+`;
+export const MyPageStateCellItem = styled.div`
+  flex-basis: calc(100% / 6);
+  text-align: center;
+  margin: 1rem;
+  margin-right: 0;
+  padding-right: 1rem;
+  border-right: 1px solid #ccc;
+
+  & h1 {
+    font-size: 1rem;
+    color: #777;
+    &::after {
+      position: relative;
+      display: inline-block;
+      content: "";
+      background-image: url(${arrow_right});
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 12px;
+      height: 12px;
+      margin-left: 0.5rem;
+    }
+    cursor: pointer;
+  }
+
+  & p {
+    font-size: 1.5rem;
+    padding: 2rem;
+    font-weight: 550;
+  }
+`;
+
+export const MyPageStateCardList = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const MyPageStateCardItem = styled.div`
+  flex-basis: calc(100% / 3 - 1rem);
+  background-color: #ebf2ff;
+  margin: 1rem;
+  padding: 1.5rem;
+
+  & h1 {
+    font-size: 1rem;
+    padding-bottom: 2.5rem;
+  }
+
+  & p {
+    font-size: 1.5rem;
+    font-weight: 550;
+    text-align: right;
+    padding-bottom: 1rem;
+    &::after {
+      position: relative;
+      display: inline-block;
+      content: "";
+      background-image: url(${arrow_right});
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 18px;
+      height: 18px;
+      margin-left: 0.5rem;
+    }
+  }
+`;
+
+export const MyPageStateEditWrapper = styled.div`
+  padding-top: 2rem;
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const MyPageStateEditBox = styled.div`
+  padding-bottom: 2rem;
+  & h1 {
+    padding-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+
+  & table {
+    width: 100%;
+    border-top: 1px solid #333;
+
+    & input {
+      border: 1px solid #eee;
+      padding-left: 0.75rem;
+      width: 40%;
+      height: 28px;
+    }
+
+    & input.tel {
+      width: calc(40% / 3 - 5px);
+      margin-right: 7.5px;
+    }
+
+    & input.email {
+      width: calc(40% / 2 - 9.5px);
+      & + span {
+        display: inline-block;
+        font-size: 0.9rem;
+        width: 15px;
+        margin-left: 2.5px;
+        margin-right: 2.5px;
+        text-align: center;
+      }
+    }
+
+    & tr {
+      border-bottom: 1px solid #eee;
+    }
+
+    & th {
+      text-align: left;
+      width: 15%;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    & td {
+      font-size: 0.9rem;
+      color: #777;
+    }
+  }
+`;
+
+export const MyPageStateEditDeliveryBox = styled.div`
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+  & h1 {
+    padding-bottom: 1rem;
+    font-size: 1.2rem;
+    float: left;
+  }
+
+  & table {
+    width: 100%;
+  }
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #ebf2ff;
+    font-size: 0.9rem;
+
+    &:nth-child(1) {
+      width: 50px;
+    }
+  }
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+`;
+
+export const MyPageStateEditBtns = styled.div`
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  & .edit {
+    float: left;
+    margin-right: 0.5rem;
+    width: 75px;
+  }
+  & .cancle {
+    width: 75px;
+  }
+  & .del {
+    float: left;
+  }
+
+  & .add {
+    float: right;
+  }
+`;
+
+/**
+ * 주문 내역
+ * OrderListPage
+ */
+
+export const OrderListTopAddtionBox = styled.div`
+  padding: 1rem 2rem 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f6fff7;
+
+  & label {
+    font-size: 0.75rem;
+    padding-bottom: 1rem;
+    margin-right: 1rem;
+  }
+
+  & button {
+    display: inline-block;
+    margin-right: 0.25rem;
+  }
+
+  & input {
+    width: 100px;
+    padding: 0 12px;
+    line-height: 32px;
+    font-size: 11px;
+    color: #333;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+
+  & .react-datepicker__day--outside-month {
+    visibility: hidden;
+  }
+
+  & .react-datepicker__header--custom {
+    background-color: aliceblue;
+  }
+  & .react-datepicker__day-name {
+    color: #333;
+    font-size: 0.75rem;
+  }
+`;
+
+export const RightInner = styled.div`
+  display: inline-block;
+  margin-right: 0.25rem;
+`;
+
+export const DatePickerHeader = styled.div`
+  & div.left {
+    display: flex;
+    align-items: center;
+  }
+  & div.right {
+    display: flex;
+    align-items: center;
+  }
+
+  & button.left {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${arrow_left}) center/contain no-repeat;
+  }
+
+  & button.right {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${arrow_right}) center/contain no-repeat;
+  }
+
+  & button.double-left {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${double_left}) center/contain no-repeat;
+  }
+
+  & button.double-right {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${double_right}) center/contain no-repeat;
+  }
+
+  & span {
+    width: 35%;
+    font-size: 0.75rem;
+    font-weight: 550;
+  }
+`;
+
+export const DatePickerHeaderBox = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+export const OrderListMidWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const OrderListMidTextBox = styled.div``;
+
+export const OrderListMidProdBox = styled.div`
+  margin-top: 2rem;
+  & table {
+    margin-bottom: 2rem;
+  }
+
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #ebf2ff;
+    font-size: 0.9rem;
+  }
+
+  & th:nth-child(1) {
+    width: 130px;
+  }
+  & th:nth-child(2) {
+    width: 620px;
+  }
+  & th:nth-child(3) {
+    width: 130px;
+  }
+  & th:nth-child(4) {
+    width: 130px;
+  }
+  & th:nth-child(5) {
+    width: 130px;
+  }
+  & th:nth-child(6) {
+    width: 130px;
+  }
+
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+  }
+  & td:nth-child(1) {
+  }
+
+  & td:nth-child(3) {
+    text-align: left;
+  }
+  & td:nth-child(3) {
+    font-size: 0.85rem;
+  }
+  & td:nth-child(4) {
+    font-size: 1rem;
+    font-weight: 520;
+    color: red;
+    &::after {
+      content: "원";
+    }
+  }
+  & td:nth-child(5) {
+    font-size: 0.85rem;
+  }
+  & td:nth-child(6) {
+    font-size: 0.85rem;
+    & button {
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  & tbody > tr {
+    border-bottom: 1px solid #eee;
   }
 `;
