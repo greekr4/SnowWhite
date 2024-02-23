@@ -30,6 +30,26 @@ export const Btn = styled.button`
   }
 `;
 
+export const Glob_Table = styled.table`
+  & tr {
+    border-bottom: 1px solid #eee;
+  }
+
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #ebf2ff;
+    font-size: 0.9rem;
+    width: ${(props) => props.width};
+  }
+
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+  }
+`;
+
 /**
  * 헤더
  * Header
@@ -1917,5 +1937,19 @@ export const OrderListMidProdBox = styled.div`
 
   & tbody > tr {
     border-bottom: 1px solid #eee;
+  }
+`;
+
+/**
+ * 공지사항
+ *
+ */
+
+export const NoticeDetailBox = styled(animated.div)`
+  width: 100%;
+  padding: 1rem;
+  background-color: #e8eaf5;
+  & h1 {
+    font-size: 1.2rem;
   }
 `;
