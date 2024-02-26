@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSpring } from "react-spring";
 import ReviewBoard from "../components/products/ReviewBoard";
 import TabBar from "../components/products/TabBar";
+import { Link } from "react-router-dom";
 
 const TestOptions = [
   { OptionName: "규격", OptionValue: ["90x50", "86x52"] },
@@ -187,7 +188,9 @@ const ProductDetailPage = () => {
                 <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
                 <S.ProdDetailPriceValue>3,400원</S.ProdDetailPriceValue>
               </S.ProdDetailPayBox>
-              <S.ProdDetailPayButton>결제하기</S.ProdDetailPayButton>
+              <Link to="/order">
+                <S.ProdDetailPayButton>주문하기</S.ProdDetailPayButton>
+              </Link>
             </S.ProdDetailRight>
           </S.ProdDetailBox>
         </S.ProdDetailWrapper>

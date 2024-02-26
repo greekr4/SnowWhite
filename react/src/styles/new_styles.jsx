@@ -22,6 +22,7 @@ export const Btn = styled.button`
   background-color: ${(props) => (props.btnBgc ? props.btnBgc : "#fff")};
   border: 1px solid ${(props) => (props.borderC ? props.borderC : "#ccc")};
   width: ${(props) => (props.width ? props.width : "")};
+  margin: ${(props) => props.margin};
   &:hover {
     background-color: ${(props) =>
       props.btnBgcHover ? props.btnBgcHover : "#fff"};
@@ -31,6 +32,8 @@ export const Btn = styled.button`
 `;
 
 export const Glob_Table = styled.table`
+  width: 100%;
+
   & tr {
     border-bottom: 1px solid #eee;
   }
@@ -698,7 +701,7 @@ export const BoardPageNum = styled.div`
   margin: 0.25rem;
 
   &.selected {
-    border: 1px solid #000;
+    border: 1px solid #777;
   }
 `;
 export const BoardPagePrev = styled.div`
@@ -1293,7 +1296,7 @@ export const CartMidProdInfoBox = styled.div`
     //주문일
     &:last-child::before {
       display: inline-block;
-      content: "주문일";
+      content: "담은 날";
       border: 1px solid #777;
       border-radius: 15%;
       height: 24px;
@@ -1665,7 +1668,6 @@ export const MyPageStateEditBox = styled.div`
 
   & table {
     width: 100%;
-    border-top: 1px solid #333;
 
     & input {
       border: 1px solid #eee;
@@ -1940,16 +1942,548 @@ export const OrderListMidProdBox = styled.div`
   }
 `;
 
+export const OrderListMidProdInfoBox = styled.div`
+  & h1 {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
+  }
+  & p {
+    font-size: 0.75rem;
+    padding-bottom: 0.5rem;
+    //주문일
+    &:last-child::before {
+      display: inline-block;
+      content: "주문일";
+      border: 1px solid #777;
+      border-radius: 15%;
+      height: 24px;
+      line-height: 24px;
+      width: 48px;
+      text-align: center;
+      margin-right: 1rem;
+    }
+  }
+`;
+
 /**
  * 공지사항
  *
  */
 
-export const NoticeDetailBox = styled(animated.div)`
+export const NoticeWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const NoticeTitleBox = styled.div`
+  & h1 {
+    font-size: 1.75rem;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+    text-align: center;
+  }
+`;
+
+export const NoticeBoardBox = styled.div`
+  padding-bottom: 8rem;
+`;
+
+export const NBBox = styled.div``;
+export const NBHeader = styled.div`
+  display: table;
   width: 100%;
-  padding: 1rem;
-  background-color: #e8eaf5;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background-color: #ebf2ff;
+  font-size: 0.9rem;
+`;
+export const NBTh = styled.div`
+  display: table-cell;
+  width: ${(props) => props.width};
+`;
+
+export const NBRow = styled.div`
+  width: 100%;
+`;
+export const NBTdBox = styled.div`
+  display: table;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #eee;
+`;
+export const NBTd = styled.div`
+  display: table-cell;
+  width: ${(props) => props.width};
+  text-align: center;
+  cursor: pointer;
+  &:nth-child(2) {
+    text-align: left;
+
+    &.selected {
+      font-weight: bold;
+    }
+  }
+`;
+
+export const NBDetailBox = styled(animated.div)`
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  transition: 0.1s;
+`;
+export const NBDetail = styled.div`
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  margin-left: 10%;
+`;
+
+/**
+ * 주문 페이지
+ *
+ */
+
+export const OrderWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const OrderTopWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+`;
+
+export const OrderMidProdBox = styled.div`
+  & table {
+    margin-bottom: 2rem;
+  }
+
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #ebf2ff;
+    font-size: 0.9rem;
+  }
+
+  & th:nth-child(1) {
+    width: 230px;
+  }
+  & th:nth-child(2) {
+    width: 320px;
+    text-align: left;
+    padding-left: 1rem;
+  }
+  & th:nth-child(3) {
+    width: 200px;
+  }
+  & th:nth-child(4) {
+    width: 130px;
+  }
+  & th:nth-child(5) {
+    width: 130px;
+  }
+  & th:nth-child(6) {
+    width: 130px;
+  }
+
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+  }
+  & td:nth-child(1) {
+  }
+
+  & td:nth-child(2) {
+    text-align: left;
+  }
+  & td:nth-child(3) {
+    font-size: 0.85rem;
+  }
+  & td:nth-child(4) {
+    font-size: 0.85rem;
+    &::after {
+      content: "원";
+    }
+  }
+  & td:nth-child(5) {
+    font-size: 0.85rem;
+    &::after {
+      content: "원";
+    }
+  }
+  & td:nth-child(6) {
+    font-size: 0.85rem;
+    color: red;
+    font-weight: 550;
+    &::after {
+      content: "원";
+    }
+  }
+
+  & tbody > tr {
+    border-bottom: 1px solid #eee;
+  }
+`;
+
+export const OrderMidProdInfoBox = styled.div`
   & h1 {
     font-size: 1.2rem;
+    padding-bottom: 1rem;
+  }
+  & p {
+    font-size: 0.75rem;
+    padding-bottom: 0.5rem;
+    //주문일
+    &:last-child::before {
+      display: inline-block;
+      content: "출고예정일";
+      border: 1px solid #777;
+      border-radius: 15%;
+      height: 24px;
+      line-height: 24px;
+      width: 72px;
+      text-align: center;
+      margin-right: 1rem;
+    }
+  }
+`;
+
+export const OrderMidWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const OrderBotWrapper = styled.div`
+  display: flex;
+  padding-bottom: 6rem;
+`;
+
+export const OBLeftBox = styled.div`
+  flex-basis: 65%;
+`;
+export const OBRightBox = styled.div`
+  flex-basis: 35%;
+`;
+
+export const OBTitleBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 83%;
+  font-size: 1.1rem;
+  font-weight: 550;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  color: cornflowerblue;
+  cursor: pointer;
+`;
+
+export const OBDeliveryBox = styled.div`
+  padding-top: 1rem;
+
+  & h1 {
+    font-size: 1.1rem;
+    font-weight: 520;
+    color: #333;
+  }
+
+  & input {
+    border: 1px solid #eee;
+    padding-left: 0.75rem;
+    width: 72%;
+    height: 36px;
+  }
+
+  & input.tel {
+    width: calc(72% / 3 - 5px);
+    margin-right: 7.5px;
+  }
+
+  & input.deli {
+    width: calc(100% - 5px);
+    margin-top: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  & input.message {
+    width: calc(100% - 5px);
+  }
+
+  & table {
+    width: 83%;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border-top: 1px solid #eee;
+
+    & tr {
+      border-bottom: 1px solid #eee;
+    }
+
+    & th {
+      width: 40%;
+      text-align: left;
+      height: 48px;
+      line-height: 48px;
+    }
+  }
+`;
+
+export const OBTextAndBtnBox = styled.div`
+  width: calc(81% + 9px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const StepMenu = styled(animated.div)`
+  overflow: hidden;
+`;
+
+export const OBDeliPriceBox = styled.div`
+  & h1 {
+    font-size: 1.1rem;
+    font-weight: 550;
+  }
+
+  & input {
+    border: 1px solid #eee;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    margin-right: 0.75rem;
+    width: 72%;
+    height: 36px;
+    text-align: right;
+    background-color: #f7f7f7;
+  }
+
+  & input.tel {
+    width: calc(72% / 3 - 5px);
+    margin-right: 7.5px;
+  }
+
+  & input.deli {
+    width: calc(100% - 5px);
+    margin-top: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  & input.message {
+    width: calc(100% - 5px);
+  }
+
+  & table {
+    width: 83%;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-top: 1px solid #eee;
+
+    & tr {
+      border-bottom: 1px solid #eee;
+    }
+
+    & th {
+      width: 40%;
+      text-align: left;
+      height: 48px;
+      line-height: 48px;
+    }
+  }
+`;
+
+export const OBRadioGroup = styled.div`
+  width: 80%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  height: 40px;
+`;
+export const OBRadioBox = styled.div`
+  & label {
+    font-size: 0.9rem;
+    padding-left: 0.25rem;
+    padding-right: 1.25rem;
+  }
+`;
+
+export const OBPaymentAddBox = styled(animated.div)`
+  height: 0px;
+  overflow: hidden;
+  font-size: 0.9rem;
+
+  & div {
+    width: 82%;
+    background-color: aliceblue;
+    height: 40px;
+    border-bottom: 1px solid #777;
+    & label {
+      padding-left: 1rem;
+      padding-right: 2rem;
+      height: 40px;
+      line-height: 40px;
+    }
+
+    & select {
+      width: 20%;
+      margin-right: 1rem;
+      padding-left: 0.5rem;
+    }
+  }
+`;
+
+export const OBPaymentBox = styled.div`
+  & table {
+    width: 80%;
+  }
+
+  & div.radio {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+
+    & input[type="radio"] {
+      cursor: pointer;
+      position: relative;
+      top: 1px;
+      left: 0;
+    }
+    & label {
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+      height: 16px;
+      line-height: 16px;
+    }
+  }
+
+  & tr.card_add {
+    background-color: #f7f7f7;
+    & td {
+      font-size: 0.9rem;
+      height: 2rem;
+      line-height: 2rem;
+      text-align: center;
+    }
+    & div.CardOptionBox {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      vertical-align: middle;
+      text-align: left;
+
+      & span {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      & select {
+        border-style: none;
+        background: #fcfcfc;
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+        width: 40%;
+        border: 1px solid #ccc;
+        padding-left: 0.5rem;
+        margin-right: 0.5rem;
+        cursor: pointer;
+      }
+    }
+  }
+`;
+
+export const OBPaymentSpan = styled.span`
+  display: block;
+  padding: 1rem 0 1rem 0;
+  font-size: 0.8rem;
+  color: #777;
+`;
+
+export const OBFinalPaymentBox = styled.div`
+  border: 1px solid #ccc;
+`;
+
+export const OBFinalRowBox = styled.div`
+  display: flex;
+  width: 80%;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  padding-bottom: 1rem;
+
+  &:first-child {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #333;
+
+    & div.right {
+      font-size: 1.1rem;
+      font-weight: 550;
+      color: red;
+    }
+  }
+
+  & div.left {
+    flex-basis: 20%;
+    font-weight: 550;
+  }
+  & div.right {
+    flex-basis: 80%;
+    text-align: right;
+
+    &::after {
+      content: "원";
+      padding-left: 0.1rem;
+    }
+  }
+`;
+
+export const OBFinalPymentBoxAddWrapper = styled.div`
+  width: 100%;
+  background-color: aliceblue;
+`;
+
+export const OBFinalPymentBoxAdd = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  font-size: 0.8rem;
+  color: #777;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  & p {
+    padding-top: 0.5rem;
+  }
+
+  & span {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  & input {
+    position: absolute;
+  }
+
+  & label {
+    padding-left: 1rem;
+  }
+
+  & button {
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 550;
   }
 `;

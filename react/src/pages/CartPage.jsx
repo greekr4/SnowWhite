@@ -1,5 +1,6 @@
 import React from "react";
 import * as S from "../styles/new_styles";
+import { Link } from "react-router-dom";
 
 const CartPage = () => {
   return (
@@ -25,14 +26,16 @@ const CartPage = () => {
             <div>
               <S.CartMidText>선택 상품 1개</S.CartMidText>
               <S.CartMidText color="red">결제 예정 금액 3,400원</S.CartMidText>
-              <S.Btn
-                btnBgc="#469cff"
-                fontColor="#fff"
-                btnBgcHover="#7cb9ff"
-                borderCHover="none"
-              >
-                선택 주문하기
-              </S.Btn>
+              <Link to="/order">
+                <S.Btn
+                  btnBgc="#469cff"
+                  fontColor="#fff"
+                  btnBgcHover="#7cb9ff"
+                  borderCHover="none"
+                >
+                  선택 주문하기
+                </S.Btn>
+              </Link>
             </div>
           </S.CartMidBtnBox>
           <S.CartMidProdBox>
@@ -63,14 +66,16 @@ const CartPage = () => {
                   <td>3,400</td>
                   <td>2024-02-15</td>
                   <td>
-                    <S.Btn
-                      btnBgc="#469cff"
-                      fontColor="#fff"
-                      btnBgcHover="#7cb9ff"
-                      borderCHover="none"
-                    >
-                      주문하기
-                    </S.Btn>
+                    <Link to="/order">
+                      <S.Btn
+                        btnBgc="#469cff"
+                        fontColor="#fff"
+                        btnBgcHover="#7cb9ff"
+                        borderCHover="none"
+                      >
+                        주문하기
+                      </S.Btn>
+                    </Link>
                     <S.Btn>편집하기</S.Btn>
                   </td>
                 </tr>
@@ -89,14 +94,16 @@ const CartPage = () => {
                   <td>3,400</td>
                   <td>2024-02-15</td>
                   <td>
-                    <S.Btn
-                      btnBgc="#469cff"
-                      fontColor="#fff"
-                      btnBgcHover="#7cb9ff"
-                      borderCHover="none"
-                    >
-                      주문하기
-                    </S.Btn>
+                    <Link to="/order">
+                      <S.Btn
+                        btnBgc="#469cff"
+                        fontColor="#fff"
+                        btnBgcHover="#7cb9ff"
+                        borderCHover="none"
+                      >
+                        주문하기
+                      </S.Btn>
+                    </Link>
                     <S.Btn>편집하기</S.Btn>
                   </td>
                 </tr>

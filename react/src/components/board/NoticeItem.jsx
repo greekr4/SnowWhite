@@ -16,13 +16,8 @@ const NoticeItem = ({ item }) => {
           <td key={index}>{i.text}</td>
         ))}
       </tr>
-      {isVisible ? (
-        <tr>
-          <td colSpan={item.cell.length}>
-            <NoticeItemDetail desc={item.desc} isVisible={isVisible} />
-          </td>
-        </tr>
-      ) : null}
+
+      <NoticeItemDetail desc={item.desc} isVisible={isVisible} />
 
       {/* {isVisible ? (
         <tr>

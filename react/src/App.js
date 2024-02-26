@@ -23,6 +23,7 @@ import ScrollToTop from "./hooks/ScrollToTop";
 import NoticePage from "./pages/NoticePage";
 import MyPage from "./pages/MyPage";
 import OrderListPage from "./pages/OrderListPage";
+import OrderPage from "./pages/OrderPage";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -76,6 +77,7 @@ function App() {
           <Route path="/products/detail" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orderlist" element={<OrderListPage />} />
+          <Route path="/order" element={<OrderPage />} />
           <Route path="/notice" element={<NoticePage />} />
           <Route path="/mypage" element={<MyPage />} />
         </Routes>

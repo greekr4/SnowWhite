@@ -112,11 +112,11 @@ const OrderListPage = () => {
                     <S.CartMidThumbnail></S.CartMidThumbnail>
                   </td>
                   <td>
-                    <S.CartMidProdInfoBox>
+                    <S.OrderListMidProdInfoBox>
                       <h1>일반 명함</h1>
                       <p>90 x 50 / 스노우(비코팅) 250g</p>
                       <p>2024-02-15</p>
-                    </S.CartMidProdInfoBox>
+                    </S.OrderListMidProdInfoBox>
                   </td>
                   <td>500</td>
                   <td>3,400</td>

@@ -28,8 +28,8 @@ const GnbSubMenu = ({ isVisible, submenus }) => {
           {submenus.map((item) => (
             <>
               <S.HeaderSubMenuItem>
-                <Link to="/products/detail">
-                  <S.HeaderSubMenuText>{item}</S.HeaderSubMenuText>
+                <Link to={item.link}>
+                  <S.HeaderSubMenuText>{item.name}</S.HeaderSubMenuText>
                 </Link>
               </S.HeaderSubMenuItem>
             </>

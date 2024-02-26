@@ -1,8 +1,9 @@
-import React from "react";
-import GlobalTable from "../global/GlobalTable";
-import NoticeTable from "./NoticeTable";
+import React, { useState } from "react";
+import * as S from "../../styles/new_styles";
+import { useSpring } from "react-spring";
+import NoticeDetail from "./NoticeDetail";
 
-const NoticeBoard = () => {
+const NB = () => {
   const data = {
     header: [
       {
@@ -11,11 +12,11 @@ const NoticeBoard = () => {
       },
       {
         text: "제목",
-        width: "80%",
+        width: "75%",
       },
       {
         text: "작성일",
-        width: "10%",
+        width: "15%",
       },
     ],
     rows: [
@@ -31,7 +32,7 @@ const NoticeBoard = () => {
             text: "2024-02-23",
           },
         ],
-        desc: "<h1>상세내용입니다</h1><p>감사합니다.</p>",
+        desc: "<h1>상세내용입니다</h1><b>감사합니다.</b>",
       },
       {
         cell: [
@@ -45,7 +46,7 @@ const NoticeBoard = () => {
             text: "2024-02-23",
           },
         ],
-        desc: "<h1>상세내용입니다</h1><p>감사합니다.</p>",
+        desc: "<h1>명함 리뉴얼 공지입니다.</h1><br/><br/><p>설명입니다.</p><p>설명입니다.</p><br/><br/><p>감사합니다.</p>",
       },
       {
         cell: [
@@ -59,12 +60,35 @@ const NoticeBoard = () => {
             text: "2024-02-23",
           },
         ],
-        desc: "<h1>상세내용입니다</h1><p>감사합니다.</p>",
+        desc: "<h1>설날 연휴 기간 배송에 대한 안내입니다.</h1><br/><br/><br/><br/><p>감사합니다.</p>",
       },
     ],
   };
 
-  return <NoticeTable data={data} />;
+  const widths = [];
+  data.header.map((item, index) => {
+    widths.push(item.width);
+  });
+
+  return (
+    <S.NBBox>
+      <S.NBHeader>
+        {data.header.map((item, index) => (
+          <S.NBTh width={item.width}>{item.text}</S.NBTh>
+        ))}
+      </S.NBHeader>
+      {data.rows.map((item, index) => (
+        <NoticeDetail item={item} widths={widths} />
+      ))}
+      <S.BoardPageBox>
+        <S.BoardPagePrev />
+        <S.BoardPageNum className="selected">1</S.BoardPageNum>
+        <S.BoardPageNum>2</S.BoardPageNum>
+        <S.BoardPageNum>3</S.BoardPageNum>
+        <S.BoardPageNext />
+      </S.BoardPageBox>
+    </S.NBBox>
+  );
 };
 
-export default NoticeBoard;
+export default NB;

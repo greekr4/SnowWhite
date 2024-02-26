@@ -1,18 +1,20 @@
 import React from "react";
 import * as S from "../../styles/new_styles";
-import { useSpring } from "react-spring";
+import { useSpring, animated } from "react-spring";
 
 const NoticeItemDetail = ({ desc, isVisible }) => {
-  const slideAnimation = useSpring({
+  const displayAni = useSpring({
     opacity: isVisible ? 1 : 0,
-    height: isVisible ? "100px" : "0px",
+    display: isVisible ? "table-cell" : "none",
+    config: { duration: 500 },
   });
 
   return (
-    <S.NoticeDetailBox
-      dangerouslySetInnerHTML={{ __html: desc }}
-      style={slideAnimation}
-    />
+    <animated.tr>
+      <animated.td style={displayAni} colSpan="3">
+        <S.NoticeDetailBox dangerouslySetInnerHTML={{ __html: desc }} />
+      </animated.td>
+    </animated.tr>
   );
 };
 

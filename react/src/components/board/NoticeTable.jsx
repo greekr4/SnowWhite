@@ -22,18 +22,3 @@ const NoticeTable = ({ data }) => {
 };
 
 export default NoticeTable;
-
-// {data.rows.map((item, index) => (
-//     <React.Fragment>
-//       <tr onClick={toggleVisible}>
-//         {item.cell.map((i, index) => (
-//           <td key={index}>{i.text}</td>
-//         ))}
-//       </tr>
-//       <tr>
-//         <td colSpan={data.header.length}>
-//           <NoticeDetail desc={item.desc} isVisible={isVisible} />
-//         </td>
-//       </tr>
-//     </React.Fragment>
-//   ))}
