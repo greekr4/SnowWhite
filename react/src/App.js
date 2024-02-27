@@ -25,6 +25,9 @@ import MyPage from "./pages/MyPage";
 import OrderListPage from "./pages/OrderListPage";
 import OrderPage from "./pages/OrderPage";
 
+import DefaultLayout from "./components/global/DefaultLayout";
+import EditorPage from "./pages/EditorPage";
+
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPopupOpen2, setIsPopupOpen2] = useState(false);
@@ -68,21 +71,19 @@ function App() {
           closePopup2={closePopup2}
           popupIndex2={popupIndex2}
         ></Potals.ModalPortal2>
-        {/* <Header></Header> */}
-        {/* <Header2 openPopup={openPopup}></Header2> */}
-        <Header3 openPopup={openPopup} />
         <Routes>
-          <Route path="/" element={<MainPage2 />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/detail" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/orderlist" element={<OrderListPage />} />
-          <Route path="/order" element={<OrderPage />} />
-          <Route path="/notice" element={<NoticePage />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route element={<DefaultLayout openPopup={openPopup} />}>
+            <Route path="/" element={<MainPage2 />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/detail" element={<ProductDetailPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/orderlist" element={<OrderListPage />} />
+            <Route path="/order" element={<OrderPage />} />
+            <Route path="/notice" element={<NoticePage />} />
+            <Route path="/mypage" element={<MyPage />} />
+          </Route>
+          <Route path="/editor" element={<EditorPage />} />
         </Routes>
-        {/* <Footer /> */}
-        <Footer2 />
       </BrowserRouter>
     </>
   );

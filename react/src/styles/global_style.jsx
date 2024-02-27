@@ -135,10 +135,10 @@ html,
     border-spacing: 0;
   }
   select {
-    /* border-style: none;
+    border-style: none;
     background: transparent;
     -webkit-appearance: none;
-    -moz-appearance: none; */
+    -moz-appearance: none;
   }
   b,
   strong {

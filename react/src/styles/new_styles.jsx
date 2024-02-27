@@ -2487,3 +2487,77 @@ export const OBFinalPymentBoxAdd = styled.div`
     font-weight: 550;
   }
 `;
+
+/** 에디터(Canvas)
+ *
+ *
+ */
+
+export const EditorWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 1024px;
+  background-color: #999;
+`;
+
+export const CanvasBox = styled.div`
+  // 에디터 사이즈
+  width: 900px;
+  height: 500px;
+  margin: auto;
+  & canvas {
+    width: 100%;
+    margin: auto;
+  }
+`;
+
+export const TextOption = styled.div`
+  position: absolute;
+  width: 200px;
+  height: 500px;
+  top: 10rem;
+  left: 70%;
+  background-color: white;
+`;
+
+export const AddBox = styled.div`
+  width: 300px;
+  height: 100%;
+  background-color: aliceblue;
+`;
+
+export const EHLayout = styled.div`
+  height: 80px;
+  background-color: #fff;
+`;
+
+export const EHWrapper = styled.div`
+  display: flex;
+`;
+
+export const EHBtnBox = styled.div`
+  height: 80px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & button {
+    width: 80px;
+    height: 40px;
+    font-size: 0.95rem;
+    margin-right: 0.5rem;
+  }
+`;
+
+export const ESideBtnBox = styled.div`
+  display: grid;
+  width: 100%;
+
+  & button {
+    font-size: 1.1rem;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 1rem;
+  }
+`;

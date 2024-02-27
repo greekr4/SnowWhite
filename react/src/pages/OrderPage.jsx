@@ -35,7 +35,7 @@ const OrderPage = () => {
             <p>주문할 상품을 확인하고 결제가 가능해요.</p>
           </S.CartTopTitleBox>
           <S.CartTopAddtionBox>
-            <p>주문 상품 2개</p>
+            <p>주문 상품 1개</p>
           </S.CartTopAddtionBox>
         </S.OrderTopWrapper>
         <S.OrderWrapper>

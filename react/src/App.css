@@ -23,3 +23,7 @@ a {
 .hide {
   display: none;
 }
+
+.canvas-container {
+  z-index: 999;
+}

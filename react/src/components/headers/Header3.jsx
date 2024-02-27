@@ -107,7 +107,7 @@ const Header3 = ({ openPopup }) => {
     submenu7: [{ name: "시험지", link: "/products/detail" }],
     submenu8: [{ name: "봉투", link: "/products/detail" }],
     service: [
-      { name: "마이페이지", link: "/mypage" },
+      { name: "공지사항", link: "/notice" },
       { name: "장바구니", link: "/cart" },
       { name: "주문 내역", link: "/orderlist" },
     ],

@@ -7,9 +7,10 @@ const NoticePage = () => {
     <S.MainLayout>
       <S.MainSection>
         <S.NoticeWrapper>
-          <S.NoticeTitleBox>
+          <S.CartTopTitleBox>
             <h1>공지사항</h1>
-          </S.NoticeTitleBox>
+            <p>스노우화이트의 공지사항 입니다.</p>
+          </S.CartTopTitleBox>
           <S.NoticeBoardBox>
             <NoticeBoard />
           </S.NoticeBoardBox>
