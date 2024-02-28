@@ -12,6 +12,7 @@ const EditorSidebar = ({ functions }) => {
       >
         텍스트
       </S.Btn>
+      <S.Btn onClick={functions.handleAddImgText}>이미지</S.Btn>
     </S.ESideBtnBox>
   );
 };

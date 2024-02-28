@@ -2502,8 +2502,8 @@ export const EditorWrapper = styled.div`
 
 export const CanvasBox = styled.div`
   // 에디터 사이즈
-  width: 900px;
-  height: 500px;
+  width: ${(props) => props.canvasWidth + "px"};
+  height: ${(props) => props.canvasHight + "px"};
   margin: auto;
   & canvas {
     width: 100%;
@@ -2543,10 +2543,11 @@ export const EHBtnBox = styled.div`
   align-items: center;
 
   & button {
-    width: 80px;
+    width: 100px;
     height: 40px;
     font-size: 0.95rem;
-    margin-right: 0.5rem;
+
+    margin-left: 0.5rem;
   }
 `;
 
@@ -2559,5 +2560,73 @@ export const ESideBtnBox = styled.div`
     width: 50%;
     margin: 0 auto;
     margin-top: 1rem;
+  }
+`;
+
+export const CanvasPopupBox = styled.div`
+  position: relative;
+  background-color: red;
+  left: -10%;
+  width: 100px;
+  height: 100px;
+`;
+export const CanvasPopup = styled.div`
+  position: relative;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
+  border: 1px solid rgb(204, 204, 204);
+  box-sizing: border-box;
+  width: 200px;
+  top: calc(${(props) => -props.canvasy + props.objy * props.objzoom + "px"});
+  left: calc(
+    ${(props) =>
+      60 - 25 * props.objzoom + props.objx * props.objzoom + props.objw + "px"}
+  );
+
+  z-index: 1000;
+
+  & div {
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 0.9rem;
+    padding-left: 0.5rem;
+  }
+  & div.title {
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #bbb;
+    font-weight: 550;
+  }
+
+  & div.option {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    line-height: 38px;
+    border-bottom: 1px solid #ccc;
+
+    & button {
+      margin-right: 0.5rem;
+      height: 28px;
+      line-height: 28px;
+    }
+
+    & input {
+      margin-left: 1rem;
+      width: 20%;
+      height: 28px;
+    }
+  }
+
+  & div.btnbox {
+    justify-content: center;
+  }
+
+  & div.size {
+    height: 24px;
+    line-height: 24px;
+    color: #777;
+    font-size: 0.8rem;
+    text-align: center;
   }
 `;

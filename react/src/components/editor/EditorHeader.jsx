@@ -8,9 +8,21 @@ const EditorHeader = ({ functions, zoom, setZoom }) => {
       <S.EHWrapper>
         <S.HeaderLogoBox img={logo_sample} />
         <S.EHBtnBox>
-          <S.Btn>이전</S.Btn>
-          <S.Btn>이후</S.Btn>
-          <S.Btn onClick={functions.handleDeleteSelected}>삭제</S.Btn>
+          <label htmlFor="">{Math.round(100 * zoom)}%</label>
+          <input
+            type="range"
+            min="0.5"
+            max="3"
+            step="0.1"
+            value={zoom}
+            onChange={(e) => setZoom(parseFloat(e.target.value))}
+          />
+          <S.Btn>실행 취소</S.Btn>
+          <S.Btn>되돌리기</S.Btn>
+          <S.Btn>테스트</S.Btn>
+          <S.Btn onClick={functions.testSave}>저장</S.Btn>
+          <S.Btn onClick={functions.testLoad}>불러오기</S.Btn>
+          <S.Btn onClick={functions.handleExport}>파일</S.Btn>
           {/* <input
           type="range"
           min="0.1"
