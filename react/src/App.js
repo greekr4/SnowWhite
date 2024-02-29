@@ -27,6 +27,8 @@ import OrderPage from "./pages/OrderPage";
 
 import DefaultLayout from "./components/global/DefaultLayout";
 import EditorPage from "./pages/EditorPage";
+import { TestPage } from "./pages/TestPage";
+import IntroPage0 from "./pages/IntroPage0";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -77,10 +79,12 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/products/detail" element={<ProductDetailPage />} />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/orderlist" element={<OrderListPage />} />
             <Route path="/order" element={<OrderPage />} />
+            <Route path="/orderlist" element={<OrderListPage />} />
             <Route path="/notice" element={<NoticePage />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/intro0" element={<IntroPage0 />} />
+            <Route path="/test" element={<TestPage />} />
           </Route>
           <Route path="/editor" element={<EditorPage />} />
         </Routes>

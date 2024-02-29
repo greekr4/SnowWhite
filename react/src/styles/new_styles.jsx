@@ -53,6 +53,14 @@ export const Glob_Table = styled.table`
   }
 `;
 
+export const Glob_Icon = styled.span`
+  display: inline-block;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  background: url(${(props) => props.icon}) center/contain no-repeat;
+  cursor: ${(props) => props.cursor};
+`;
+
 /**
  * 헤더
  * Header
@@ -1007,6 +1015,58 @@ export const Product_Detail_Option_ButtonBox = styled.div`
   margin-top: 0.5rem;
   border-top: 1px solid #ddd;
   border-left: 1px solid #ddd;
+
+  & .container {
+    min-width: 150px;
+    box-shadow: 0 4px 5px 0 #00000026;
+    position: relative;
+  }
+
+  & #dropdown {
+    left: 0;
+    visibility: hidden;
+    position: absolute;
+  }
+
+  & .dropdownLabel {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+  }
+
+  & .content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    background: white;
+    box-shadow: 0 4px 5px 0 #00000026;
+  }
+
+  & #dropdown:checked + label + div {
+    display: block;
+    border-top: 1px solid #00000026;
+  }
+
+  & .caretIcon {
+    transition: transform 250ms ease-out;
+  }
+  & #dropdown:checked + label > .caretIcon {
+    transform: rotate(-180deg);
+  }
+
+  & .content ul {
+    list-style-type: none;
+    padding: 12px;
+    margin: 0;
+  }
+  & .content ul li {
+    margin: 0.8rem 0;
+    cursor: pointer;
+    &:hover {
+      color: #999;
+    }
+  }
 `;
 export const Product_Detail_Option_Button = styled.div`
   display: inline-block;
@@ -1044,8 +1104,17 @@ export const Product_Detail_Option_Button_Span = styled.span`
   font-size: 12px;
 `;
 
-export const ProdDetailPayBox = styled.div`
+export const ProdDetailDesignBtns = styled.div`
+  border-top: 1px solid #ddd;
   margin-top: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+export const ProdDetailPayBox = styled.div`
   padding-top: 1rem;
   padding-bottom: 1.75rem;
   border-top: 1px solid #ddd;
@@ -2619,7 +2688,7 @@ export const CanvasPopup = styled.div`
   }
 
   & div.btnbox {
-    justify-content: center;
+    justify-content: space-around;
   }
 
   & div.size {
@@ -2629,4 +2698,62 @@ export const CanvasPopup = styled.div`
     font-size: 0.8rem;
     text-align: center;
   }
+`;
+
+/**
+ * 오시는 길
+ *
+ */
+
+export const IntroWayWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+`;
+
+export const KakaoMapBox = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 820px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+
+  & h1 {
+    font-size: 1.75rem;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  & div.sub {
+    display: flex;
+    width: 100%;
+    font-size: 0.9rem;
+    padding-bottom: 1rem;
+
+    & h2 {
+      flex-basis: 20%;
+      font-weight: 550;
+      color: #416ca1;
+    }
+    & p {
+      flex-basis: 80%;
+      & br {
+      }
+    }
+  }
+`;
+
+export const BusText = styled.label`
+  background-color: #47af1b;
+  padding: 0 5px 0 5px;
+  color: #fff;
+`;
+
+export const SubwayText = styled.label`
+  background-color: #ff8939;
+  border-radius: 100%;
+  padding: 0 8px 0 8px;
+  color: #fff;
 `;

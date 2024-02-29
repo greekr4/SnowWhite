@@ -51,27 +51,27 @@ const MyPage = () => {
             <S.MyPageStateCellList>
               <S.MyPageStateCellItem>
                 <h1>주문접수</h1>
-                <p>10</p>
+                <p>2</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>결제대기</h1>
-                <p>10</p>
+                <p>0</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>결제완료</h1>
-                <p>10</p>
+                <p>2</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>시안확인중</h1>
-                <p>10</p>
+                <p>1</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>제작진행</h1>
-                <p>10</p>
+                <p>1</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>발송완료</h1>
-                <p>10</p>
+                <p>3</p>
               </S.MyPageStateCellItem>
             </S.MyPageStateCellList>
           </S.MyPageStateCellBox>
@@ -79,11 +79,11 @@ const MyPage = () => {
             <S.MyPageStateCardList>
               <S.MyPageStateCardItem>
                 <h1>장바구니</h1>
-                <p>10건</p>
+                <p>2건</p>
               </S.MyPageStateCardItem>
               <S.MyPageStateCardItem>
                 <h1>주문진행</h1>
-                <p>2건</p>
+                <p>1건</p>
               </S.MyPageStateCardItem>
               <S.MyPageStateCardItem>
                 <h1>고객문의</h1>

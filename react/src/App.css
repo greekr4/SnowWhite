@@ -27,3 +27,35 @@ a {
 .canvas-container {
   z-index: 999;
 }
+
+.overlaybox {
+  position: relative;
+  width: 96px;
+  height: 96px;
+
+  background: url(./assets/cloud.png) no-repeat;
+  background-size: contain;
+}
+
+.overlaybox .title {
+  font-size: 0.7rem;
+  font-weight: 550;
+  padding-top: 0.7rem;
+  text-align: center;
+  width: 80px;
+  color: #efefef;
+}
+
+.overlaybox .find {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding-top: 0.6rem;
+  text-align: center;
+  width: 80px;
+  color: rgb(179, 179, 255);
+}
+
+.overlaybox .find:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
