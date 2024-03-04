@@ -8,6 +8,8 @@ import { EditorAddtion } from "../components/editor/EditorAddtion";
 import testlogo from "../assets/testlogo.png";
 import { tem1 } from "../components/editor/tem";
 
+const undoStack = [];
+const redoStack = [];
 const EditorPage = () => {
   const [objectsHistory, setObjectsHistory] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -60,13 +62,13 @@ const EditorPage = () => {
         setObjy(item.top);
         setObjw(item.width * item.scaleX);
         const object = initCanvas.getActiveObject();
-        console.log("이놈인가");
         console.log(options.selected);
         setSelectedObj(object);
         setPopupVisible(true);
       } else if (options.selected.length > 1) {
         // 객체가 1개 이상일 때 ( 다중 선택 )
         console.log(options);
+        console.log("드래그선택");
         const item = options.selected[options.selected.length - 1];
         setObjx(Math.round(item.group.left));
         setObjy(Math.round(item.group.top));
@@ -97,6 +99,7 @@ const EditorPage = () => {
           const object = initCanvas.getActiveObject();
           console.log(object);
           setSelectedObj(object);
+          setForceUpdate(forceUpdate++);
           setPopupVisible(true);
         }
       } catch (e) {
@@ -106,6 +109,7 @@ const EditorPage = () => {
 
     // 오브젝트 이동
     initCanvas.on("object:modified", (options) => {
+      functions.saveState();
       // 다수면
       try {
         if (options.target._objects.length > 1) {
@@ -366,7 +370,7 @@ const EditorPage = () => {
           left: 10,
           top: 10,
           radius: 50,
-          fill: "red",
+          fill: "rgba(0,0,0,0.4)",
         });
         newFabricCanvas.add(circle);
         newFabricCanvas.renderAll();
@@ -382,21 +386,25 @@ const EditorPage = () => {
           top: 10,
           width: 50,
           height: 50,
-          fill: "red",
+          fill: "rgba(0,0,0,1)",
+          opacity: 1,
         });
         newFabricCanvas.add(rect);
         newFabricCanvas.renderAll();
       }
     },
 
-    // 텍스트박스 성공
+    // 텍스트박스 생성
     handleAddText: (text) => {
       if (fabricCanvas) {
         const newFabricCanvas = fabricCanvas;
         const txt = new fabric.Textbox(text, {
-          fontFamily: "Delicious_500",
+          fontFamily: "굴림체",
+          lineHeight: 1.0,
           left: 100,
           top: 100,
+          fill: "rgba(0,0,0,1)",
+          textAlign: "left",
         });
         newFabricCanvas.add(txt);
         newFabricCanvas.renderAll();
@@ -524,6 +532,155 @@ const EditorPage = () => {
       fabricCanvas.loadFromJSON(tem1);
       fabricCanvas.renderAll();
     },
+
+    setColor: (obj, value) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.set("fill", value);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    setFontStyle: (obj, value) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.set("fontFamily", value);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    setFontHeight: (obj, value) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.set("lineHeight", value);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    setTextAlign: (obj, value) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.set("textAlign", value);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    setTextItalic: (obj) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.fontStyle === "italic"
+          ? obj.set("fontStyle", "normal")
+          : obj.set("fontStyle", "italic");
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    setTextUnderline: (obj) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.underline
+          ? obj.set("underline", false)
+          : obj.set("underline", true);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+
+    setOpacity: (obj, value) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        newFabricCanvas.getActiveObject().set("opacity", value);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+
+    handleCopy: (obj) => {
+      let _clipboard;
+      if (fabricCanvas) {
+        fabricCanvas.getActiveObject().clone(function (cloned) {
+          _clipboard = cloned;
+          // clone again, so you can do multiple copies.
+          _clipboard.clone(function (clonedObj) {
+            fabricCanvas.discardActiveObject();
+            clonedObj.set({
+              left: clonedObj.left + 10,
+              top: clonedObj.top + 10,
+              evented: true,
+            });
+            if (clonedObj.type === "activeSelection") {
+              // active selection needs a reference to the canvas.
+              clonedObj.canvas = fabricCanvas;
+              clonedObj.forEachObject(function (obj) {
+                fabricCanvas.add(obj);
+              });
+              // this should solve the unselectability
+              clonedObj.setCoords();
+            } else {
+              fabricCanvas.add(clonedObj);
+            }
+            _clipboard.top += 10;
+            _clipboard.left += 10;
+            fabricCanvas.setActiveObject(clonedObj);
+            fabricCanvas.requestRenderAll();
+          });
+        });
+      }
+    },
+    handleGroupObj: (obj) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        if (fabricCanvas.getActiveObject().type !== "activeSelection") {
+          return;
+        }
+        newFabricCanvas.getActiveObject().toGroup();
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    handleUngroupObj: (obj) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        if (newFabricCanvas.getActiveObject().type !== "group") {
+          return;
+        }
+        newFabricCanvas.getActiveObject().toActiveSelection();
+        // newFabricCanvas.discardActiveObject(); // 지정 해제
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+    saveState: () => {
+      if (fabricCanvas) {
+        const state = fabricCanvas.toJSON(["name"]);
+        undoStack.push(state);
+        redoStack.length = 0; // Clear redo stack when a new state is saved
+        console.log("save State");
+        console.log(undoStack);
+      }
+    },
+    undo: () => {
+      console.log("d");
+      console.log(undoStack);
+      if (undoStack.length > 1) {
+        const currentState = undoStack.pop();
+        redoStack.push(currentState);
+        const previousState = undoStack[undoStack.length - 1];
+        fabricCanvas.loadFromJSON(previousState, () => {
+          fabricCanvas.forEachObject((obj) => {
+            // 여기에서 원하는 조건에 따라 selectable 속성을 설정할 수 있습니다.
+            if (obj.name === "background") {
+              obj.set("selectable", false);
+              obj.set("evented", false);
+            } else {
+              obj.set("selectable", true);
+              obj.set("evented", true);
+            }
+          });
+          fabricCanvas.renderAll();
+        });
+      }
+    },
+    redo: () => {
+      if (redoStack.length > 0) {
+        const nextState = redoStack.pop();
+        undoStack.push(nextState);
+        fabricCanvas.loadFromJSON(nextState, () => {
+          fabricCanvas.renderAll();
+        });
+      }
+    },
   };
 
   return (
@@ -544,6 +701,7 @@ const EditorPage = () => {
               <canvas ref={canvasRef} />
               {popupVisible && (
                 <EditorAddtion
+                  canvas={fabricCanvas}
                   canvasx={defaultWidth}
                   canvasy={defaultHight}
                   objx={objx}

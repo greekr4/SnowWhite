@@ -17,9 +17,8 @@ const EditorHeader = ({ functions, zoom, setZoom }) => {
             value={zoom}
             onChange={(e) => setZoom(parseFloat(e.target.value))}
           />
-          <S.Btn>실행 취소</S.Btn>
-          <S.Btn>되돌리기</S.Btn>
-          <S.Btn>테스트</S.Btn>
+          <S.Btn onClick={functions.undo}>실행 취z소</S.Btn>
+
           <S.Btn onClick={functions.testSave}>저장</S.Btn>
           <S.Btn onClick={functions.testLoad}>불러오기</S.Btn>
           <S.Btn onClick={functions.handleExport}>파일</S.Btn>

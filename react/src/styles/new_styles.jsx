@@ -9,6 +9,13 @@ import arrow_left from "../assets/icons/arrow_left.png";
 import arrow_right from "../assets/icons/arrow_right.png";
 import double_left from "../assets/icons/double_left.png";
 import double_right from "../assets/icons/double_right.png";
+import v_bar from "../assets/icons/v_bar.png";
+import font_height from "../assets/icons/font_height.png";
+import align_center from "../assets/icons/align_center.png";
+import align_left from "../assets/icons/align_left.png";
+import align_right from "../assets/icons/align_right.png";
+import underline from "../assets/icons/underline.png";
+import italic from "../assets/icons/italic.png";
 
 /**
  * 공통
@@ -59,6 +66,11 @@ export const Glob_Icon = styled.span`
   height: ${(props) => props.height};
   background: url(${(props) => props.icon}) center/contain no-repeat;
   cursor: ${(props) => props.cursor};
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 /**
@@ -2645,7 +2657,7 @@ export const CanvasPopup = styled.div`
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
   border: 1px solid rgb(204, 204, 204);
   box-sizing: border-box;
-  width: 200px;
+  width: 260px;
   top: calc(${(props) => -props.canvasy + props.objy * props.objzoom + "px"});
   left: calc(
     ${(props) =>
@@ -2654,17 +2666,19 @@ export const CanvasPopup = styled.div`
 
   z-index: 1000;
 
-  & div {
+  & div.line {
     width: 100%;
     height: 24px;
     line-height: 24px;
     font-size: 0.9rem;
     padding-left: 0.5rem;
   }
+
   & div.title {
     background-color: #f3f3f3;
     border-bottom: 1px solid #bbb;
     font-weight: 550;
+    font-size: 0.8rem;
   }
 
   & div.option {
@@ -2687,6 +2701,53 @@ export const CanvasPopup = styled.div`
     }
   }
 
+  & div.option-default {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 38px;
+    line-height: 38px;
+    border-bottom: 1px solid #ccc;
+    font-size: 0.8rem;
+
+    & input {
+      margin-top: 15px;
+      width: 100%;
+    }
+  }
+
+  & div.option-font {
+    align-items: center;
+    height: 38px;
+    line-height: 38px;
+    border-bottom: 1px solid #ccc;
+    font-size: 0.8rem;
+
+    & label {
+      line-height: 15px;
+    }
+  }
+
+  & div.option-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 38px;
+    line-height: 38px;
+    border-bottom: 1px solid #ccc;
+    font-size: 0.8rem;
+
+    & input {
+      width: 100% !important;
+      height: 24px !important;
+      padding: 3px 5px 3px !important;
+    }
+
+    & label {
+      line-height: 15px;
+    }
+  }
+
   & div.btnbox {
     justify-content: space-around;
   }
@@ -2695,11 +2756,146 @@ export const CanvasPopup = styled.div`
     height: 24px;
     line-height: 24px;
     color: #777;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-align: center;
   }
 `;
 
+export const FontStyleBox = styled.div`
+  & select {
+    width: 95%;
+    height: 25px;
+    line-height: 22px;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+  }
+
+  &::after {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${arrow_down}) center/contain no-repeat;
+    left: -16px;
+    top: 0px;
+  }
+`;
+
+export const ColorPickerOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+export const ColorPickerBox = styled.div`
+  position: relative;
+  /* top: calc(${(props) => props.canvasy + props.objy * props.objzoom + "px"});
+  left: calc(${(props) => props.canvasx + "px"}); */
+  left: -2px;
+  top: -14px;
+  z-index: 1001;
+`;
+
+export const ColorWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: #777;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ColorBox = styled.div`
+  border: 1px solid #ccc;
+  width: 24px;
+  height: 24px;
+  background-color: ${(props) => props.color};
+  margin-right: 20px;
+
+  cursor: pointer;
+  &::before {
+    content: "";
+    display: block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${arrow_down}) center/contain no-repeat;
+    left: 28px;
+    top: 6px;
+  }
+`;
+
+export const ColorBtn = styled.div`
+  position: relative;
+  width: 45px;
+  height: 33px;
+  top: -18px;
+  left: -5px;
+`;
+
+export const V_Bar = styled.div`
+  background: url(${v_bar}) center/contain no-repeat;
+  width: 18px;
+  height: 18px;
+`;
+
+export const FontSizeBox = styled.div`
+  margin-right: -10px;
+  & select {
+    width: 80px;
+    height: 25px;
+    line-height: 22px;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+  }
+
+  &::after {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${arrow_down}) center/contain no-repeat;
+    left: -16px;
+    top: 0px;
+  }
+`;
+
+export const FontHeightBox = styled.div`
+  &::before {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 18px;
+    height: 18px;
+    top: 3px;
+    left: -3px;
+    background: url(${font_height}) center/contain no-repeat;
+  }
+
+  & select {
+    width: 50px;
+    height: 25px;
+    line-height: 22px;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+    margin-left: 3px;
+  }
+
+  &::after {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: url(${arrow_down}) center/contain no-repeat;
+    left: -16px;
+    top: 0px;
+  }
+`;
 /**
  * 오시는 길
  *
