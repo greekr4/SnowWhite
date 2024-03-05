@@ -7,34 +7,48 @@ import EditorSidebar from "../components/editor/EditorSidebar";
 import { EditorAddtion } from "../components/editor/EditorAddtion";
 import testlogo from "../assets/testlogo.png";
 import { tem1 } from "../components/editor/tem";
+import background1 from "../assets/editor/background1.png";
+import background2 from "../assets/editor/background2.png";
 
 const undoStack = [];
 const redoStack = [];
+const defaultWidth = 900;
+const defaultHight = 500;
+
 const EditorPage = () => {
   const [objectsHistory, setObjectsHistory] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
-
   const canvasRef = useRef(null);
   const [fabricCanvas, setFabricCanvas] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [dimensions, setDimentions] = useState({ width: 0, height: 0 });
   const [pan, setPan] = useState(false);
-
   const [test, setTest] = useState(null);
-
   const [popupVisible, setPopupVisible] = useState(false);
-
   const [objx, setObjx] = useState(0);
   const [objy, setObjy] = useState(0);
   const [objw, setObjw] = useState(0);
   const [selectedObj, setSelectedObj] = useState();
-
-  const defaultWidth = 900;
-  const defaultHight = 500;
   const [canvasWidth, setCanvasWidth] = useState(defaultWidth);
   const [canvasHight, setCanvasHight] = useState(defaultHight);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
+
+  // Set initial canvas size based on window
+  const updateCanvasSize = (initCanvas) => {
+    if (initCanvas) {
+      const width = canvasWidth * zoom;
+      const height = canvasHight * zoom;
+      // const width = window.innerWidth;
+      // const height = window.innerHeight;
+      // setDimentions({ width, height });
+      initCanvas.setZoom(zoom);
+      initCanvas.setWidth(width);
+      initCanvas.setHeight(height);
+      initCanvas.setBackgroundColor("#fff");
+      initCanvas.renderAll();
+    }
+  };
 
   useEffect(() => {
     const initCanvas = new fabric.Canvas(canvasRef.current, {
@@ -52,6 +66,16 @@ const EditorPage = () => {
     //     setPopupVisible(true);
     //   }
     // });
+
+    const backgroundImageUrl = background1; // 이미지 URL로 변경
+    fabric.Image.fromURL(backgroundImageUrl, (img) => {
+      img.set({
+        width: initCanvas.width,
+        height: initCanvas.height,
+        selectable: false,
+      });
+      initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
+    });
 
     // 드래그 선택
     initCanvas.on("selection:created", (options) => {
@@ -141,21 +165,7 @@ const EditorPage = () => {
 
     setFabricCanvas(initCanvas);
 
-    // Set initial canvas size based on window
-    const updateCanvasSize = () => {
-      if (initCanvas) {
-        const width = canvasWidth;
-        const height = canvasHight;
-        // const width = window.innerWidth;
-        // const height = window.innerHeight;
-        setDimentions({ width, height });
-        initCanvas.setWidth(width);
-        initCanvas.setHeight(height);
-        initCanvas.setBackgroundColor("#fff");
-        initCanvas.renderAll();
-      }
-    };
-    updateCanvasSize();
+    updateCanvasSize(initCanvas);
 
     const initGrid = () => {
       // Create grid lines
@@ -258,7 +268,7 @@ const EditorPage = () => {
       initCanvas.add(backgroundLineGroup);
     };
 
-    initGrid();
+    // initGrid();
 
     /*
     // Add random objects
@@ -281,11 +291,11 @@ const EditorPage = () => {
     */
 
     // Add event listener for window resize
-    window.addEventListener("resize", updateCanvasSize);
+    window.addEventListener("resize", updateCanvasSize(fabricCanvas));
 
     // Clean up the event listener on component unmount
     return () => {
-      window.removeEventListener("resize", updateCanvasSize);
+      window.removeEventListener("resize", updateCanvasSize(fabricCanvas));
     };
   }, []);
 
@@ -294,7 +304,6 @@ const EditorPage = () => {
       fabricCanvas.setZoom(zoom);
       setCanvasWidth(defaultWidth * zoom);
       setCanvasHight(defaultHight * zoom);
-
       fabricCanvas.setWidth(defaultWidth * zoom);
       fabricCanvas.setHeight(defaultHight * zoom);
       setPopupVisible(false);
@@ -336,8 +345,8 @@ const EditorPage = () => {
   //       newFabricCanvas.setHeight(dimensions.height * zoom);
   //       newFabricCanvas.setWidth(dimensions.width * zoom);
   //     } else {
-  //       newFabricCanvas.setHeight(dimensions.height);
-  //       newFabricCanvas.setWidth(dimensions.width);
+  //       newFabricCanvas.setHeight(dimensions.height * zoom);
+  //       newFabricCanvas.setWidth(dimensions.width * zoom);
   //     }
   //     newFabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
   //     setFabricCanvas(newFabricCanvas);
@@ -370,7 +379,7 @@ const EditorPage = () => {
           left: 10,
           top: 10,
           radius: 50,
-          fill: "rgba(0,0,0,0.4)",
+          fill: "rgba(0,0,0,1)",
         });
         newFabricCanvas.add(circle);
         newFabricCanvas.renderAll();
@@ -384,8 +393,8 @@ const EditorPage = () => {
         const rect = new fabric.Rect({
           left: 10,
           top: 10,
-          width: 50,
-          height: 50,
+          width: 100,
+          height: 100,
           fill: "rgba(0,0,0,1)",
           opacity: 1,
         });
@@ -398,11 +407,11 @@ const EditorPage = () => {
     handleAddText: (text) => {
       if (fabricCanvas) {
         const newFabricCanvas = fabricCanvas;
-        const txt = new fabric.Textbox(text, {
+        const txt = new fabric.Textbox("텍스트", {
           fontFamily: "굴림체",
           lineHeight: 1.0,
-          left: 100,
-          top: 100,
+          left: 10,
+          top: 10,
           fill: "rgba(0,0,0,1)",
           textAlign: "left",
         });
@@ -521,7 +530,7 @@ const EditorPage = () => {
       });
     },
 
-    handleAddImgText: () => {
+    handleAddImg: () => {
       const imgURL = testlogo; // 이미지 파일의 URL 또는 Base64 데이터
       fabric.Image.fromURL(imgURL, (img) => {
         // 캔버스에 이미지 객체 추가
@@ -651,26 +660,9 @@ const EditorPage = () => {
       }
     },
     undo: () => {
-      console.log("d");
-      console.log(undoStack);
-      if (undoStack.length > 1) {
-        const currentState = undoStack.pop();
-        redoStack.push(currentState);
-        const previousState = undoStack[undoStack.length - 1];
-        fabricCanvas.loadFromJSON(previousState, () => {
-          fabricCanvas.forEachObject((obj) => {
-            // 여기에서 원하는 조건에 따라 selectable 속성을 설정할 수 있습니다.
-            if (obj.name === "background") {
-              obj.set("selectable", false);
-              obj.set("evented", false);
-            } else {
-              obj.set("selectable", true);
-              obj.set("evented", true);
-            }
-          });
-          fabricCanvas.renderAll();
-        });
-      }
+      fabricCanvas.setBackgroundColor("blue", () => {
+        fabricCanvas.renderAll();
+      });
     },
     redo: () => {
       if (redoStack.length > 0) {
@@ -681,6 +673,11 @@ const EditorPage = () => {
         });
       }
     },
+    setBackgroundColor: (color) => {
+      fabricCanvas.setBackgroundColor(color, () => {
+        fabricCanvas.renderAll();
+      });
+    },
   };
 
   return (
@@ -689,13 +686,11 @@ const EditorPage = () => {
         <EditorHeader functions={functions} zoom={zoom} setZoom={setZoom} />
         <S.MainLayout>
           <S.EditorWrapper>
-            <S.AddBox>
-              <EditorSidebar
-                functions={functions}
-                zoom={zoom}
-                setZoom={setZoom}
-              />
-            </S.AddBox>
+            <EditorSidebar
+              functions={functions}
+              zoom={zoom}
+              setZoom={setZoom}
+            />
 
             <S.CanvasBox canvasWidth={canvasWidth} canvasHight={canvasHight}>
               <canvas ref={canvasRef} />

@@ -16,6 +16,7 @@ import align_left from "../assets/icons/align_left.png";
 import align_right from "../assets/icons/align_right.png";
 import underline from "../assets/icons/underline.png";
 import italic from "../assets/icons/italic.png";
+import trans_background from "../assets/editor/trans_background.png";
 
 /**
  * 공통
@@ -66,11 +67,6 @@ export const Glob_Icon = styled.span`
   height: ${(props) => props.height};
   background: url(${(props) => props.icon}) center/contain no-repeat;
   cursor: ${(props) => props.cursor};
-  opacity: 0.6;
-
-  &:hover {
-    opacity: 1;
-  }
 `;
 
 /**
@@ -2577,6 +2573,7 @@ export const OBFinalPymentBoxAdd = styled.div`
 export const EditorWrapper = styled.div`
   display: flex;
   width: 100%;
+  min-width: 1300px;
   height: 1024px;
   background-color: #999;
 `;
@@ -2599,12 +2596,6 @@ export const TextOption = styled.div`
   top: 10rem;
   left: 70%;
   background-color: white;
-`;
-
-export const AddBox = styled.div`
-  width: 300px;
-  height: 100%;
-  background-color: aliceblue;
 `;
 
 export const EHLayout = styled.div`
@@ -2632,15 +2623,172 @@ export const EHBtnBox = styled.div`
   }
 `;
 
+export const ESWrapper = styled.div`
+  width: 70px;
+  height: 100%;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+`;
+
 export const ESideBtnBox = styled.div`
   display: grid;
   width: 100%;
+`;
 
-  & button {
-    font-size: 1.1rem;
-    width: 50%;
-    margin: 0 auto;
-    margin-top: 1rem;
+export const ESideBtnItem = styled.div`
+  display: grid;
+  justify-content: center;
+  justify-items: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  & p {
+    font-size: 0.8rem;
+    text-align: center;
+    padding-top: 0.5rem;
+  }
+
+  cursor: pointer;
+  &:hover {
+    background-color: #eee;
+  }
+`;
+
+export const ESideAddWrapper = styled.div`
+  width: 260px;
+  height: 100%;
+  background-color: #fbfbfb;
+`;
+
+export const ESideAddBox = styled.div`
+  padding: 1rem;
+
+  & h1 {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 550;
+    padding: 1rem;
+  }
+`;
+export const ESideAddShapesBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+  height: 800px;
+`;
+
+export const ESTempateBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+  flex-direction: column;
+  align-items: center;
+  height: 800px;
+`;
+
+export const ESTemplateItem = styled.div`
+  width: 85%;
+  height: 95px;
+  margin: 0.25rem;
+  border: 1px solid #ccc;
+  background-image: url(${trans_background});
+  cursor: pointer;
+`;
+
+export const ESideAddShapesItem = styled.div`
+  width: 95px;
+  height: 95px;
+  margin: 0.25rem;
+  border: 1px solid #ccc;
+  background-image: url(${trans_background});
+  cursor: pointer;
+`;
+
+export const ESideAddBgBox = styled.div`
+  display: grid;
+`;
+
+export const ESideAddBgItem_first = styled.div`
+  & p {
+    padding: 0.5rem 0 1rem 1rem;
+    font-size: 0.8rem;
+    color: #333;
+  }
+
+  border-bottom: 1px solid #eee;
+`;
+
+export const ESideAddBgItem = styled.div`
+  & p {
+    padding: 1rem 0 1rem 1rem;
+    font-size: 0.8rem;
+    color: #333;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: url(${(props) => (props.show ? arrow_up : arrow_down)})
+        center/contain no-repeat;
+      float: right;
+    }
+  }
+
+  border-bottom: 1px solid #eee;
+`;
+
+export const ESideAddBgColorsBox = styled(animated.div)`
+  overflow: hidden;
+`;
+
+export const ESideAddBgColors = styled(animated.div)`
+  padding: 0.75rem;
+  padding-top: 0;
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const BgColorBtn = styled.div`
+  width: 40px;
+  height: 40px;
+  background-color: ${(props) => props.color};
+  box-sizing: border-box;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #000;
+
+    &::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 1px solid #fff;
+    }
+  }
+`;
+
+export const BgColorBtn_plus = styled.div`
+  width: 40px;
+  height: 40px;
+  background-color: ${(props) => props.color};
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #000;
+
+    &::after {
+      content: "";
+      box-sizing: border-box;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 1px solid #fff;
+    }
   }
 `;
 
@@ -2672,6 +2820,14 @@ export const CanvasPopup = styled.div`
     line-height: 24px;
     font-size: 0.9rem;
     padding-left: 0.5rem;
+
+    & span {
+      opacity: 0.6;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 
   & div.title {
@@ -2794,8 +2950,8 @@ export const ColorPickerBox = styled.div`
   position: relative;
   /* top: calc(${(props) => props.canvasy + props.objy * props.objzoom + "px"});
   left: calc(${(props) => props.canvasx + "px"}); */
-  left: -2px;
-  top: -14px;
+  left: ${(props) => (props.left ? props.left : "-2px")};
+  top: ${(props) => (props.top ? props.top : "-14px")};
   z-index: 1001;
 `;
 

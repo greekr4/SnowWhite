@@ -13,6 +13,7 @@ export const EditorAddtion = ({
   functions,
   forceUpdate,
   canvas,
+  zoom,
 }) => {
   const [type, setType] = useState();
   const [thisFontStyle, SetThisFontStyle] = useState(null);
