@@ -66,6 +66,7 @@ export const Glob_Icon = styled.span`
   width: ${(props) => props.width};
   height: ${(props) => props.height};
   background: url(${(props) => props.icon}) center/contain no-repeat;
+  margin: ${(props) => props.margin};
   cursor: ${(props) => props.cursor};
 `;
 
@@ -111,7 +112,7 @@ export const HeaderGnbRows = styled.div`
 export const HeaderLogoBox = styled.div`
   display: block;
   width: 100px;
-  height: 80px;
+  height: ${(props) => (props.height ? props.height : "80px")};
   background-image: url(${(props) => (props.img ? props.img : "")});
   background-position: center;
   background-size: contain;
@@ -2599,32 +2600,60 @@ export const TextOption = styled.div`
 `;
 
 export const EHLayout = styled.div`
-  height: 80px;
+  height: 60px;
   background-color: #fff;
 `;
 
 export const EHWrapper = styled.div`
+  min-width: 1140px;
+`;
+
+export const EHTopBox = styled.div`
+  width: 100%;
   display: flex;
+  margin-left: 2rem;
+  /* border-bottom: 1px solid #ddd; */
+  & span {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    font-weight: 550;
+    height: 60px;
+    line-height: 60px;
+    color: #333;
+  }
+`;
+export const EHBotBox = styled.div`
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background-color: #fbfbfb;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  left: 70px;
+  z-index: 1002;
+
+  &.side-open {
+    left: 330px;
+  }
 `;
 
 export const EHBtnBox = styled.div`
-  height: 80px;
-  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  height: 40px;
+  & span {
+    opacity: 0.5;
 
-  & button {
-    width: 100px;
-    height: 40px;
-    font-size: 0.95rem;
-
-    margin-left: 0.5rem;
+    &:hover {
+      opacity: 1;
+    }
   }
 `;
 
 export const ESWrapper = styled.div`
   width: 70px;
+  min-width: 70px;
   height: 100%;
   background-color: #fff;
   border-top: 1px solid #ddd;
@@ -2657,8 +2686,10 @@ export const ESideBtnItem = styled.div`
 
 export const ESideAddWrapper = styled.div`
   width: 260px;
+  min-width: 260px;
   height: 100%;
   background-color: #fbfbfb;
+  border-right: 1px solid #ddd;
 `;
 
 export const ESideAddBox = styled.div`
@@ -2688,7 +2719,7 @@ export const ESTempateBox = styled.div`
 `;
 
 export const ESTemplateItem = styled.div`
-  width: 85%;
+  width: 80%;
   height: 95px;
   margin: 0.25rem;
   border: 1px solid #ccc;
@@ -2697,6 +2728,9 @@ export const ESTemplateItem = styled.div`
 `;
 
 export const ESideAddShapesItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 95px;
   height: 95px;
   margin: 0.25rem;
@@ -2809,7 +2843,7 @@ export const CanvasPopup = styled.div`
   top: calc(${(props) => -props.canvasy + props.objy * props.objzoom + "px"});
   left: calc(
     ${(props) =>
-      60 - 25 * props.objzoom + props.objx * props.objzoom + props.objw + "px"}
+      (props.objx + props.objw) * props.objzoom + 30 * props.objzoom + "px"}
   );
 
   z-index: 1000;
@@ -2918,8 +2952,10 @@ export const CanvasPopup = styled.div`
 `;
 
 export const FontStyleBox = styled.div`
+  width: 50%;
+  display: inline-block;
   & select {
-    width: 95%;
+    width: 90%;
     height: 25px;
     line-height: 22px;
     border: 1px solid #ccc;

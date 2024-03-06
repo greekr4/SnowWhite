@@ -96,15 +96,15 @@ const EditorSideAddtion = ({ functions, type }) => {
             <S.ESideAddShapesItem onClick={functions.handleAddRectangle}>
               <S.Glob_Icon
                 icon={imagesContext("./rectangle.png")}
-                width="95px"
-                height="95px"
+                width="75px"
+                height="75px"
               />
             </S.ESideAddShapesItem>
             <S.ESideAddShapesItem onClick={functions.handleAddCircle}>
               <S.Glob_Icon
                 icon={imagesContext("./cricle.png")}
-                width="95px"
-                height="95px"
+                width="75px"
+                height="75px"
               />
             </S.ESideAddShapesItem>
           </S.ESideAddShapesBox>
@@ -229,16 +229,16 @@ const EditorSideAddtion = ({ functions, type }) => {
           <S.ESideAddShapesBox>
             <S.ESideAddShapesItem onClick={functions.handleAddImg}>
               <S.Glob_Icon
-                icon={imagesContext("./clipart.png")}
-                width="95px"
-                height="95px"
+                icon={imagesContext("./clipart1.png")}
+                width="75px"
+                height="75px"
               />
             </S.ESideAddShapesItem>
             <S.ESideAddShapesItem onClick={functions.handleAddImg}>
               <S.Glob_Icon
-                icon={imagesContext("./copy.png")}
-                width="95px"
-                height="95px"
+                icon={imagesContext("./clipart1.png")}
+                width="75px"
+                height="75px"
               />
             </S.ESideAddShapesItem>
           </S.ESideAddShapesBox>

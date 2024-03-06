@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import * as S from "../../styles/new_styles";
 import EditorSideAddtion from "./EditorSideAddtion";
 
-const EditorSidebar = ({ functions }) => {
-  const [isAddVisible, setIsAddVisible] = useState(false);
+const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
   const [type, setType] = useState();
 
   const handleClick = (value) => {

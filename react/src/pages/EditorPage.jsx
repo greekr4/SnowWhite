@@ -9,20 +9,18 @@ import testlogo from "../assets/testlogo.png";
 import { tem1 } from "../components/editor/tem";
 import background1 from "../assets/editor/background1.png";
 import background2 from "../assets/editor/background2.png";
+import "fabric-history";
 
 const undoStack = [];
 const redoStack = [];
 const defaultWidth = 900;
 const defaultHight = 500;
-
+const backgroundImageUrl = background1; // 이미지 URL로 변경
 const EditorPage = () => {
-  const [objectsHistory, setObjectsHistory] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(-1);
   const canvasRef = useRef(null);
   const [fabricCanvas, setFabricCanvas] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [dimensions, setDimentions] = useState({ width: 0, height: 0 });
-  const [pan, setPan] = useState(false);
   const [test, setTest] = useState(null);
   const [popupVisible, setPopupVisible] = useState(false);
   const [objx, setObjx] = useState(0);
@@ -33,6 +31,9 @@ const EditorPage = () => {
   const [canvasHight, setCanvasHight] = useState(defaultHight);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
+
+  // 사이드바 상태 관리
+  const [isAddVisible, setIsAddVisible] = useState(false);
 
   // Set initial canvas size based on window
   const updateCanvasSize = (initCanvas) => {
@@ -67,15 +68,16 @@ const EditorPage = () => {
     //   }
     // });
 
-    const backgroundImageUrl = background1; // 이미지 URL로 변경
-    fabric.Image.fromURL(backgroundImageUrl, (img) => {
-      img.set({
-        width: initCanvas.width,
-        height: initCanvas.height,
-        selectable: false,
-      });
-      initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
-    });
+    // fabric.Image.fromURL(backgroundImageUrl, (img) => {
+    //   img.set({
+    //     width: initCanvas.width,
+    //     height: initCanvas.height,
+    //     selectable: false,
+    //   });
+    //   initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
+    //   initCanvas.onHistory();
+    //   initCanvas.clearHistory();
+    // });
 
     // 드래그 선택
     initCanvas.on("selection:created", (options) => {
@@ -133,7 +135,6 @@ const EditorPage = () => {
 
     // 오브젝트 이동
     initCanvas.on("object:modified", (options) => {
-      functions.saveState();
       // 다수면
       try {
         if (options.target._objects.length > 1) {
@@ -147,6 +148,7 @@ const EditorPage = () => {
           setPopupVisible(true);
         }
       } catch (e) {
+        console.log("asdasd");
         const item = options.target;
         setObjx(Math.round(item.left));
         setObjy(Math.round(item.top));
@@ -164,131 +166,7 @@ const EditorPage = () => {
     });
 
     setFabricCanvas(initCanvas);
-
     updateCanvasSize(initCanvas);
-
-    const initGrid = () => {
-      // Create grid lines
-      const gridSize = 50;
-      const gridColor = "#ccc";
-      const width = canvasWidth;
-      const height = canvasHight;
-      const xgrids = [];
-      const ygrids = [];
-      for (let i = 0; i < width / gridSize; i++) {
-        const line = new fabric.Line([i * gridSize, 0, i * gridSize, height], {
-          stroke: gridColor,
-          // selectable: false,
-          // evented: false,
-        });
-        xgrids.push(line);
-        // initCanvas.add(line);
-      }
-
-      for (let i = 0; i < height / gridSize; i++) {
-        const line = new fabric.Line([0, i * gridSize, width, i * gridSize], {
-          stroke: gridColor,
-          selectable: false,
-          evented: false,
-        });
-        ygrids.push(line);
-        // initCanvas.add(line);
-      }
-
-      // Create xy 선
-
-      const maxWidth = window.innerWidth;
-      const maxHeight = window.innerHeight;
-
-      //[x 시작 , y시작 , x끝 , y 끝]
-
-      const xAxis = new fabric.Line([5, 5, width - 5, 5], {
-        //가로선
-        stroke: "#aaa",
-        strokeWidth: 1.5,
-        strokeDashArray: [3, 3], // 점선 패턴 지정
-        selectable: false,
-        evented: false,
-      });
-
-      const xAxis2 = new fabric.Line([5, height - 5, width - 5, height - 5], {
-        //가로선
-        stroke: "#aaa",
-        strokeWidth: 1.5,
-        strokeDashArray: [3, 3], // 점선 패턴 지정
-        selectable: false,
-        evented: false,
-      });
-
-      const yAxis = new fabric.Line([5, 5, 5, height - 5], {
-        //세로선
-        stroke: "#aaa",
-        strokeWidth: 1.5,
-        strokeDashArray: [3, 3], // 점선 패턴 지정
-        selectable: false,
-        evented: false,
-      });
-
-      const yAxis2 = new fabric.Line([width - 5, 5, width - 5, height - 5], {
-        //세로선
-        stroke: "#aaa",
-        strokeWidth: 1.5,
-        strokeDashArray: [3, 3], // 점선 패턴 지정
-        selectable: false,
-        evented: false,
-      });
-
-      // initCanvas.add(xAxis, yAxis, xAxis2, yAxis2);
-      // initCanvas.insertAt(xAxis, 0, true);
-
-      const xGridGroup = new fabric.Group(xgrids, {
-        // selectable: false,
-        // evented: false,
-      });
-
-      const yGridGroup = new fabric.Group(ygrids, {
-        // selectable: false,
-        // evented: false,
-      });
-
-      const xyLinesGroup = new fabric.Group([xAxis, yAxis, xAxis2, yAxis2], {
-        // selectable: false,
-        // evented: false,
-      });
-      // 추가된 그리드와 xyLines를 그룹으로 묶음
-      const backgroundLineGroup = new fabric.Group(
-        [xGridGroup, yGridGroup, xyLinesGroup],
-        {
-          name: "background",
-          selectable: false,
-          evented: false,
-        }
-      );
-      // 그룹 묶은 개체 생성
-      initCanvas.add(backgroundLineGroup);
-    };
-
-    // initGrid();
-
-    /*
-    // Add random objects
-    const rect = new fabric.Rect({
-      left: 100,
-      top: 100,
-      fill: "red",
-      width: 60,
-      height: 70
-    });
-
-    const circle = new fabric.Circle({
-      left: 200,
-      top: 200,
-      fill: "green",
-      radius: 50
-    });
-
-    initCanvas.add(rect, circle);
-    */
 
     // Add event listener for window resize
     window.addEventListener("resize", updateCanvasSize(fabricCanvas));
@@ -298,6 +176,15 @@ const EditorPage = () => {
       window.removeEventListener("resize", updateCanvasSize(fabricCanvas));
     };
   }, []);
+
+  // 캔버스 초기화 useEffect
+  useEffect(() => {
+    if (fabricCanvas) {
+      functions.addSafeZone();
+      fabricCanvas.onHistory();
+      fabricCanvas.clearHistory();
+    }
+  }, [fabricCanvas]);
 
   useEffect(() => {
     if (fabricCanvas) {
@@ -356,18 +243,44 @@ const EditorPage = () => {
   const functions = {
     // 파일로 저장
     handleExport: () => {
+      let gridOn = false;
+      let safeOn = false;
       if (fabricCanvas) {
         // Change the color of the current background
-        fabricCanvas.backgroundColor = "white";
+        // fabricCanvas.backgroundColor = "white";
         // Export the canvas with the white background
+        const allObjects = fabricCanvas.getObjects();
+        const gridObjects = allObjects.filter((obj) => obj.name === "grid");
+        const safeObjects = allObjects.filter((obj) => obj.name === "safe");
+        if (gridObjects.length > 0) {
+          gridObjects.forEach((gridObj) => {
+            fabricCanvas.remove(gridObj);
+            gridOn = true;
+          });
+        }
+
+        if (safeObjects.length > 0) {
+          safeObjects.forEach((safeObj) => {
+            fabricCanvas.remove(safeObj);
+            safeOn = true;
+          });
+        }
+
         const link = document.createElement("a");
         link.href = fabricCanvas.toDataURL({
           format: "png",
           quality: 0.8,
         });
         let file_name = (Math.random() + 1).toString(36).substring(7);
-        link.download = `canvas_export_${file_name}.png`;
+        link.download = `snowwhite_export_${file_name}.png`;
         link.click();
+
+        if (gridOn === true) {
+          functions.addGridLayout();
+        }
+        if (safeOn === true) {
+          functions.addSafeZone();
+        }
       }
     },
 
@@ -409,6 +322,7 @@ const EditorPage = () => {
         const newFabricCanvas = fabricCanvas;
         const txt = new fabric.Textbox("텍스트", {
           fontFamily: "굴림체",
+          fontWeight: 500,
           lineHeight: 1.0,
           left: 10,
           top: 10,
@@ -460,7 +374,7 @@ const EditorPage = () => {
         newFabricCanvas.sendToBack(object);
         //디폴트 배경 뒤로가기
         newFabricCanvas.forEachObject((obj) => {
-          if (obj.name === "background") {
+          if (obj.name === "grid") {
             newFabricCanvas.sendToBack(obj);
           } else {
           }
@@ -485,7 +399,7 @@ const EditorPage = () => {
         newFabricCanvas.bringToFront(object);
         //라인 뒤로가기
         newFabricCanvas.forEachObject((obj) => {
-          if (obj.name === "background") {
+          if (obj.name === "grid") {
             newFabricCanvas.sendToBack(obj);
           } else {
           }
@@ -511,6 +425,7 @@ const EditorPage = () => {
     },
     testSave: () => {
       setTest(fabricCanvas.toJSON(["name"]));
+      console.log(fabricCanvas.toJSON(["name"]));
     },
 
     testLoad: () => {
@@ -560,6 +475,14 @@ const EditorPage = () => {
       if (fabricCanvas) {
         const newFabricCanvas = fabricCanvas;
         obj.set("lineHeight", value);
+        newFabricCanvas.requestRenderAll();
+      }
+    },
+
+    setFontWeight: (obj, value) => {
+      if (fabricCanvas) {
+        const newFabricCanvas = fabricCanvas;
+        obj.set("fontWeight", value);
         newFabricCanvas.requestRenderAll();
       }
     },
@@ -650,46 +573,184 @@ const EditorPage = () => {
         newFabricCanvas.requestRenderAll();
       }
     },
-    saveState: () => {
-      if (fabricCanvas) {
-        const state = fabricCanvas.toJSON(["name"]);
-        undoStack.push(state);
-        redoStack.length = 0; // Clear redo stack when a new state is saved
-        console.log("save State");
-        console.log(undoStack);
-      }
-    },
+
     undo: () => {
-      fabricCanvas.setBackgroundColor("blue", () => {
-        fabricCanvas.renderAll();
-      });
+      fabricCanvas.undo();
     },
     redo: () => {
-      if (redoStack.length > 0) {
-        const nextState = redoStack.pop();
-        undoStack.push(nextState);
-        fabricCanvas.loadFromJSON(nextState, () => {
-          fabricCanvas.renderAll();
-        });
-      }
+      fabricCanvas.redo();
     },
     setBackgroundColor: (color) => {
       fabricCanvas.setBackgroundColor(color, () => {
         fabricCanvas.renderAll();
       });
     },
+    addGridLayout: () => {
+      const allObjects = fabricCanvas.getObjects();
+      const gridObjects = allObjects.filter((obj) => obj.name === "grid");
+      if (gridObjects.length > 0) {
+        gridObjects.forEach((gridObj) => {
+          fabricCanvas.remove(gridObj);
+        });
+        return;
+      }
+
+      const gridLine = [];
+
+      // 메인 그리드 그리기
+      let gridSize_X = defaultWidth / 5;
+      let girdSize_Y = defaultHight / 3;
+      for (let x = 1; x < defaultWidth / gridSize_X; x++) {
+        const grid_x = new fabric.Line(
+          [gridSize_X * x - 0.5, 0, gridSize_X * x - 0.5, 900],
+          {
+            stroke: "#ccc",
+            strokeWidth: 2,
+            selectable: false,
+            name: "grid",
+          }
+        );
+        gridLine.push(grid_x);
+        // grid_x.sendToBack();
+      }
+
+      for (let y = 1; y < defaultHight / girdSize_Y; y++) {
+        const grid_y = new fabric.Line(
+          [0, girdSize_Y * y + 0.5, 900, girdSize_Y * y + 0.5],
+          {
+            stroke: "#ccc",
+            strokeWidth: 2,
+            selectable: false,
+            name: "grid",
+          }
+        );
+        gridLine.push(grid_y);
+        // grid_y.sendToBack();
+      }
+
+      // 서브 그리드 그리기
+      gridSize_X = defaultWidth / 90;
+      girdSize_Y = defaultHight / 48;
+      for (let x = 1; x < defaultWidth / gridSize_X; x++) {
+        const grid_x = new fabric.Line(
+          [gridSize_X * x, 0, gridSize_X * x, 900],
+          {
+            stroke: "#eee",
+            strokeWidth: 1,
+            selectable: false,
+            name: "grid",
+          }
+        );
+        gridLine.push(grid_x);
+        // grid_x.sendToBack();
+      }
+
+      for (let y = 1; y < defaultHight / girdSize_Y; y++) {
+        const grid_y = new fabric.Line(
+          [0, girdSize_Y * y, 900, girdSize_Y * y],
+          {
+            stroke: "#eee",
+            strokeWidth: 1,
+            selectable: false,
+            name: "grid",
+          }
+        );
+        gridLine.push(grid_y);
+        // grid_y.sendToBack();
+      }
+
+      let gridGroup = new fabric.Group(gridLine, {
+        selectable: false,
+        evented: false,
+        name: "grid",
+      });
+      fabricCanvas.add(gridGroup);
+      gridGroup.sendToBack();
+
+      // fabricCanvas.onHistory();
+      // fabricCanvas.clearHistory();
+    },
+
+    addSafeZone: () => {
+      const safeline = [];
+
+      const safesize = 30;
+      const lineColor = "#888";
+      const lineWeight = 1.5;
+      //[x 시작 , y시작 , x끝 , y 끝]
+
+      safeline.push(
+        new fabric.Line([safesize, safesize, safesize, 500 - safesize], {
+          stroke: lineColor,
+          strokeWidth: lineWeight,
+          selectable: false,
+          evented: false,
+          strokeDashArray: [10, 4], // 점선 패턴 지정
+        })
+      );
+
+      safeline.push(
+        new fabric.Line(
+          [900 - safesize, safesize, 900 - safesize, 501 - safesize],
+          {
+            stroke: lineColor,
+            strokeWidth: lineWeight,
+            selectable: false,
+            evented: false,
+            strokeDashArray: [10, 4], // 점선 패턴 지정
+          }
+        )
+      );
+
+      safeline.push(
+        new fabric.Line([safesize, safesize, 900 - safesize, safesize], {
+          stroke: lineColor,
+          strokeWidth: lineWeight,
+          selectable: false,
+          evented: false,
+          strokeDashArray: [10, 3], // 점선 패턴 지정
+        })
+      );
+
+      safeline.push(
+        new fabric.Line(
+          [safesize, 500 - safesize, 900 - safesize, 500 - safesize],
+          {
+            stroke: lineColor,
+            strokeWidth: lineWeight,
+            selectable: false,
+            evented: false,
+            strokeDashArray: [10, 3], // 점선 패턴 지정
+          }
+        )
+      );
+      let safeGroup = new fabric.Group(safeline, {
+        selectable: false,
+        evented: false,
+        name: "safe",
+      });
+      fabricCanvas.add(safeGroup);
+      safeGroup.sendToBack();
+    },
   };
 
   return (
     <>
       <div>
-        <EditorHeader functions={functions} zoom={zoom} setZoom={setZoom} />
+        <EditorHeader
+          functions={functions}
+          zoom={zoom}
+          setZoom={setZoom}
+          isAddVisible={isAddVisible}
+        />
         <S.MainLayout>
           <S.EditorWrapper>
             <EditorSidebar
               functions={functions}
               zoom={zoom}
               setZoom={setZoom}
+              isAddVisible={isAddVisible}
+              setIsAddVisible={setIsAddVisible}
             />
 
             <S.CanvasBox canvasWidth={canvasWidth} canvasHight={canvasHight}>
@@ -706,6 +767,7 @@ const EditorPage = () => {
                   obj={selectedObj}
                   functions={functions}
                   forceUpdate={forceUpdate}
+                  zoom={zoom}
                 />
               )}
             </S.CanvasBox>

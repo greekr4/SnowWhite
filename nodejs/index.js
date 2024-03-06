@@ -107,3 +107,24 @@ app.get("/payload", auth, (req, res) => {
     },
   });
 });
+
+app.post("/join", async (req, res, next) => {
+  console.log(req);
+  const pram_userid = req.query.userid;
+  const pram_userpw = req.query.userpw;
+  const pram_usernm = req.query.usernm;
+
+  const conn = await getConn();
+  const query = `insert into tb_user (user_id,user_pw,user_nm ) values ('${pram_userid}','${pram_userpw}','${pram_usernm}')`;
+  let [result] = await conn.query(query, []);
+
+  console.log(result);
+
+  return res.status(200).json({
+    code: 200,
+    message: "회원가입 성공",
+    data: {
+      result: result,
+    },
+  });
+});

@@ -16,9 +16,10 @@ export const EditorAddtion = ({
   zoom,
 }) => {
   const [type, setType] = useState();
-  const [thisFontStyle, SetThisFontStyle] = useState(null);
+  const [thisFontStyle, setThisFontStyle] = useState(null);
   const [thisFontSize, setThisFontSize] = useState(null);
   const [thisFontHeight, setThisFontHeight] = useState(null);
+  const [thisFontWeight, setThisFontWeight] = useState(null);
   const [thisTextAlign, setThisTextAlign] = useState(null);
   const [thisOpacity, setThisOpacity] = useState(1);
   const [thisColor, setThisColor] = useState(null);
@@ -69,8 +70,9 @@ export const EditorAddtion = ({
         setThisColor(obj.fill);
         setRealWidth(Math.round(obj.width * obj.scaleX) / 10);
         setRealHeight(Math.round(obj.height * obj.scaleY) / 10);
-        SetThisFontStyle(obj.fontFamily);
+        setThisFontStyle(obj.fontFamily);
         setThisFontHeight(obj.lineHeight);
+        setThisFontWeight(obj.fontWeight);
       },
       image: () => {
         console.log("이미지임");
@@ -152,6 +154,7 @@ export const EditorAddtion = ({
     )
   );
 
+  console.log(zoom);
   return (
     <>
       <S.CanvasPopup
@@ -161,16 +164,16 @@ export const EditorAddtion = ({
         objzoom={objzoom}
         canvasx={canvasx}
         canvasy={canvasy}
+        zoom={zoom}
       >
         <div className="line title">{type}</div>
         {type === "텍스트" ? (
           <>
-            {" "}
             <div className="line option-font">
               <S.FontStyleBox>
                 <select
                   onChange={(e) => {
-                    SetThisFontStyle(e.target.value);
+                    setThisFontStyle(e.target.value);
                     functions.setFontStyle(obj, e.target.value);
                   }}
                   value={thisFontStyle}
@@ -187,6 +190,38 @@ export const EditorAddtion = ({
                   </option>
                   <option value="궁서" style={{ fontFamily: "궁서" }}>
                     궁서체
+                  </option>
+                </select>
+              </S.FontStyleBox>
+              <S.FontStyleBox>
+                <select
+                  onChange={(e) => {
+                    setThisFontWeight(e.target.value);
+                    functions.setFontWeight(obj, e.target.value);
+                  }}
+                  value={thisFontWeight}
+                  style={{ fontWeight: thisFontWeight }}
+                >
+                  <option value="100" style={{ fontWeight: "100" }}>
+                    굵기
+                  </option>
+                  <option value="200" style={{ fontWeight: "200" }}>
+                    굵기
+                  </option>
+                  <option value="300" style={{ fontWeight: "300" }}>
+                    굵기
+                  </option>
+                  <option value="400" style={{ fontWeight: "400" }}>
+                    굵기
+                  </option>
+                  <option value="500" style={{ fontWeight: "500" }}>
+                    굵기
+                  </option>
+                  <option value="600" style={{ fontWeight: "500" }}>
+                    굵기
+                  </option>
+                  <option value="700" style={{ fontWeight: "500" }}>
+                    굵기
                   </option>
                 </select>
               </S.FontStyleBox>
