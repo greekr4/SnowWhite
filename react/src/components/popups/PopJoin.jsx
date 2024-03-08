@@ -35,7 +35,7 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
     });
 
     const isCkEmpty = ckRefs.current.some((e) => {
-      if (!e.checked) {
+      if (!e.checked && !isInputEmpty) {
         alert(`필수 약관 동의 부탁드립니다.`);
         return true;
       }
@@ -54,9 +54,16 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
           usernm: usernm,
         })
         .then((res) => {
-          console.log(res.data);
+          if (res.status === 200) {
+            console.log(res);
+            alert(res.data.msg);
+            openPopup(0);
+          }
         })
-        .catch((message) => console.log(message));
+        .catch((error) => {
+          console.log(error);
+          alert(error.data.msg);
+        });
     }
   };
 

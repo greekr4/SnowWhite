@@ -9,7 +9,7 @@ import Header from "./components/headers/Header";
 import Footer from "./components/footers/Footer";
 import Header2 from "./components/headers/Header2";
 import Potals from "./components/popups/Potals";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
@@ -29,12 +29,21 @@ import DefaultLayout from "./components/global/DefaultLayout";
 import EditorPage from "./pages/EditorPage";
 import { TestPage } from "./pages/TestPage";
 import IntroPage0 from "./pages/IntroPage0";
+import { Cookies } from "react-cookie";
+import { QueryClient } from "react-query";
+import useUserinfoQuery from "./hooks/User";
+// import useUserinfoQuery from "./hooks/User";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPopupOpen2, setIsPopupOpen2] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
   const [popupIndex2, setPopupIndex2] = useState(0);
+
+  const cookies = new Cookies();
+  const queryClient = new QueryClient();
+  const token = cookies.get("token");
+  useUserinfoQuery(token);
 
   const openPopup = (index) => {
     setIsPopupOpen(true);

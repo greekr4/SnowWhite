@@ -4,13 +4,17 @@ import GnbSubMenu from "../gnbs/GnbSubMenu";
 import { useEffect, useState } from "react";
 import bannerBg from "../../assets/header_banner.png";
 import { Link } from "react-router-dom";
+import { QueryClient, useQuery, useQueryClient } from "react-query";
+import { LoginCheck } from "../../hooks/User";
+import { Cookies } from "react-cookie";
 
 const Header3 = ({ openPopup }) => {
+  const queryClient = useQueryClient();
+  const cookies = new Cookies();
   const [scrollPositon, setScrollPosition] = useState(0);
   const [isFixed, setIsFixed] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
-
   const [menuShow, setMenuShow] = useState({
     menu1: false,
     menu2: false,
@@ -23,6 +27,13 @@ const Header3 = ({ openPopup }) => {
     service: false,
     mymenu: false,
   });
+
+  /** userinfo
+   *
+   */
+
+  const { data } = useQuery("userinfo", { enabled: false });
+  const userNm = data?.data?.USER_NM;
 
   const handleOverMenu = (menu) => {
     setMenuShow({
@@ -53,8 +64,6 @@ const Header3 = ({ openPopup }) => {
 
   useEffect(() => {
     const maxheight = document.body.offsetHeight;
-    console.log(maxheight);
-    console.log(scrollPositon);
     if (maxheight > 1300 && scrollPositon > 70) {
       setIsFixed(true);
     } else {
@@ -273,39 +282,53 @@ const Header3 = ({ openPopup }) => {
             </S.HeaderMenuItem>
           </S.HeaderMenuList>
           <S.HeaderMenuList>
-            <S.HeaderMenuItem
-              onClick={() => {
-                openPopup(0);
-              }}
-            >
-              <S.HeaderMenuText>로그인</S.HeaderMenuText>
-            </S.HeaderMenuItem>
-
-            <S.HeaderMenuItem>
-              <S.HeaderMenuText
-                onClick={() => {
-                  openPopup(1);
-                }}
-              >
-                회원가입
-              </S.HeaderMenuText>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("mymenu");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("mymenu");
-              }}
-            >
-              <Link to={"/mypage"}>
-                <S.HeaderMenuText>Mypage</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.mymenu}
-                  submenus={submenus.mymenu}
-                />
-              </Link>
-            </S.HeaderMenuItem>
+            {userNm ? (
+              <>
+                <S.HeaderMenuItem
+                  onClick={() => {
+                    cookies.remove("token");
+                    queryClient.setQueryData("userinfo");
+                  }}
+                >
+                  <S.HeaderMenuText>로그아웃</S.HeaderMenuText>
+                </S.HeaderMenuItem>
+                <S.HeaderMenuItem
+                  onMouseOver={() => {
+                    handleOverMenu("mymenu");
+                  }}
+                  onMouseLeave={() => {
+                    handleLeaveMenu("mymenu");
+                  }}
+                >
+                  <Link to={"/mypage"}>
+                    <S.HeaderMenuText>{userNm}님</S.HeaderMenuText>
+                    <GnbSubMenu
+                      isVisible={menuShow.mymenu}
+                      submenus={submenus.mymenu}
+                    />
+                  </Link>
+                </S.HeaderMenuItem>
+              </>
+            ) : (
+              <>
+                <S.HeaderMenuItem
+                  onClick={() => {
+                    openPopup(0);
+                  }}
+                >
+                  <S.HeaderMenuText>로그인</S.HeaderMenuText>
+                </S.HeaderMenuItem>
+                <S.HeaderMenuItem>
+                  <S.HeaderMenuText
+                    onClick={() => {
+                      openPopup(1);
+                    }}
+                  >
+                    회원가입
+                  </S.HeaderMenuText>
+                </S.HeaderMenuItem>
+              </>
+            )}
           </S.HeaderMenuList>
         </S.HeaderGnbRows>
       </S.HeaderGnbWrapper>
