@@ -7,8 +7,15 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const jwt = require("jsonwebtoken"); // JWT 모듈 연결
+const {
+  auth,
+  makeToken,
+  makeRefreshToken,
+  refreshVerify,
+} = require("./snowwhite/utils/authMiddleware");
+const { getConnection } = require("./snowwhite/utils/dbUtils");
+const { login, refresh } = require("./snowwhite/controller/user");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
-const { auth } = require("./authMiddleware");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,76 +44,60 @@ const getConn = async () => {
 
 app.use(cors(corsOptions));
 
-app.post("/testSelect", async (req, res) => {
-  const conn = await getConn();
-  const query = "SELECT * FROM TB_USER";
-  let [rows, fields] = await conn.query(query, []);
-  conn.release();
-
-  res.send(rows);
-});
-
 app.listen("3030", () => {
   console.log("Server started");
 });
 
-app.post("/login", async (req, res, next) => {
-  // 데이터베이스 연결
-  const conn = await getConn();
-  try {
-    // 파라미터
-    const { userid, userpw } = req.body;
-    const query = `SELECT USER_NM,USER_PW FROM TB_USER WHERE USER_ID = '${userid}'`;
-    let [rows, fields] = await conn.query(query, []);
-    if (rows.length > 0) {
-      if (rows[0].USER_PW === userpw) {
-        console.log("로그인 성공");
-        const nickname = rows[0].USER_NM;
-        //토큰 생성
-        token = jwt.sign(
-          {
-            type: "JWT",
-            userid: userid,
-          },
-          SECRET_KEY,
-          {
-            expiresIn: "10m", //만료시간
-            issuer: "nodeJS",
-          }
-        );
-        return res.status(200).json({
-          code: 200,
-          message: "success",
-          token: token,
-        });
-      } else {
-        //비밀번호 틀릴 시
-        return res.status(201).json({
-          code: 201,
-          message: "password-error",
-        });
-      }
-    } else {
-      //아이디가 없을 시
-      return res.status(202).json({
-        code: 202,
-        message: "id-error",
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    if (conn) {
-      await conn.release();
-    }
-  }
-});
+app.post("/api/login", login);
 
-app.post("/userinfo", auth, async (req, res) => {
+app.post("/api/refresh", refresh);
+
+// app.post("/api/login", async login => {
+//   // // 데이터베이스 연결
+//   // const conn = await getConn();
+//   // try {
+//   //   // 파라미터
+//   //   const { userid, userpw } = req.body;
+//   //   const query = `SELECT USER_NM,USER_PW FROM TB_USER WHERE USER_ID = '${userid}'`;
+//   //   let [rows, fields] = await conn.query(query, []);
+//   //   if (rows.length > 0) {
+//   //     if (rows[0].USER_PW === userpw) {
+//   //       console.log("로그인 성공");
+//   //       //토큰 생성
+//   //       const token = makeToken(userid);
+//   //       const rep = makeRefreshToken();
+//   //       return res.status(200).json({
+//   //         code: 200,
+//   //         message: "success",
+//   //         token: token,
+//   //       });
+//   //     } else {
+//   //       //비밀번호 틀릴 시
+//   //       return res.status(201).json({
+//   //         code: 201,
+//   //         message: "password-error",
+//   //       });
+//   //     }
+//   //   } else {
+//   //     //아이디가 없을 시
+//   //     return res.status(202).json({
+//   //       code: 202,
+//   //       message: "id-error",
+//   //     });
+//   //   }
+//   // } catch (error) {
+//   //   console.log(error);
+//   // } finally {
+//   //   if (conn) {
+//   //     await conn.release();
+//   //   }
+//   // }
+// });
+
+app.post("/api/userinfo", auth, async (req, res) => {
   const conn = await getConn();
-  const userid = req.decoded.userid;
   try {
-    console.log("d");
+    const userid = req.decoded.userid;
     const qry = `SELECT * FROM TB_USER WHERE USER_ID = '${userid}'`;
     let [row] = await conn.query(qry, []);
     if (row) {
@@ -136,8 +127,7 @@ app.post("/userinfo", auth, async (req, res) => {
   }
 });
 
-app.post("/join", async (req, res, next) => {
-  // 데이터베이스 연결
+app.post("/api/join", async (req, res, next) => {
   const conn = await getConn();
   try {
     // 파라미터
@@ -156,9 +146,6 @@ app.post("/join", async (req, res, next) => {
 
     const query = `INSERT INTO tb_user (user_id, user_pw, user_nm) VALUES (?, ?, ?)`;
     const [result] = await conn.query(query, [userid, userpw, usernm]);
-
-    // 데이터베이스 연결 해제
-    await conn.release();
 
     // 성공 응답
     return res.status(200).json({
@@ -182,5 +169,37 @@ app.post("/join", async (req, res, next) => {
       code: 500,
       message: "서버 오류",
     });
+  } finally {
+    if (conn) {
+      await conn.release();
+    }
   }
+});
+
+app.post("/api/delis", auth, async (req, res, next) => {
+  const conn = await getConn();
+  try {
+    const { userid } = req.body;
+    const qry = `select * from tb_delivery_address where USER_ID = '${userid}'`;
+    let [rows] = await conn.query(qry, []);
+    return res.status(200).json({
+      code: 200,
+      msg: "success",
+      data: rows,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      code: 500,
+      message: "서버 오류",
+    });
+  } finally {
+    if (conn) {
+      await conn.release();
+    }
+  }
+});
+
+app.get("/api", () => {
+  refreshVerify("123123", "a");
 });

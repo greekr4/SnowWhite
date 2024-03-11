@@ -34,7 +34,7 @@ const LoginPage = () => {
     console.log(inputId);
     console.log(inputPw);
     axios
-      .post("http://localhost:3030/login", null, {
+      .post("api/login", null, {
         params: { userid: inputId, userpw: inputPw },
         withCredentials: true,
       })

@@ -1,7 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "../styles/new_styles";
+import { useQuery } from "react-query";
+import axios from "axios";
+import { Cookies } from "react-cookie";
 
 const MyPage = () => {
+  const { data } = useQuery("userinfo", { enabled: false });
+  const cookies = new Cookies();
+
+  const USER_ADDRESS =
+    data?.data?.USER_ADDRESS || "기본 배송지를 설정해주세요.";
+  const USER_POINT =
+    Math.round(data?.data?.USER_POINT).toLocaleString("en-US") || 0;
+  const USER_ID = data?.data?.USER_ID;
+  const USER_NM = data?.data?.USER_NM || "이름";
+  const USER_TEL0 = data?.data?.USER_TEL0 || "";
+  const USER_TEL1 = data?.data?.USER_TEL1 || "";
+
+  const [delis, setDelis] = useState();
+
+  useEffect(() => {
+    const token = cookies.get("token");
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+
+    axios
+      .post(
+        "/api/delis",
+        {
+          userid: USER_ID,
+        },
+        { headers: headers }
+      )
+      .then((res) => {
+        setDelis(res.data.data);
+        console.log(res.data.data);
+        console.log(delis);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <S.MainLayout>
       <S.MainSection bgc="aliceblue">
@@ -12,9 +54,9 @@ const MyPage = () => {
                 <S.MyPageUserInfoIcon></S.MyPageUserInfoIcon>
                 <S.MyPageUserInfoTextBox>
                   <h1>개인회원</h1>
-                  <h2>김태균</h2>
+                  <h2>{USER_NM}</h2>
                   <h3>기본배송지</h3>
-                  <h4>경기도 고양시 일산동구 장대길 00-00</h4>
+                  <h4>{USER_ADDRESS}</h4>
                 </S.MyPageUserInfoTextBox>
               </S.MyPageUserInfoBox>
               <S.MyPageUserBtnBox>
@@ -27,7 +69,7 @@ const MyPage = () => {
               <S.MyPageCardBox>
                 <S.MyPageCardItem>
                   <h1>포인트</h1>
-                  <h2>12,345</h2>
+                  <h2>{USER_POINT}</h2>
                   <h3>0</h3>
                 </S.MyPageCardItem>
                 <S.MyPageCardItem>
@@ -106,51 +148,69 @@ const MyPage = () => {
                 <tr>
                   <th>아이디</th>
                   <td>
-                    <input value="snowwhite"></input>
+                    <input value={USER_ID} disabled></input>
                   </td>
                 </tr>
                 <tr>
                   <th>이름</th>
                   <td>
-                    <input value="김태균"></input>
+                    <input value={USER_NM} disabled></input>
                   </td>
                 </tr>
                 <tr>
                   <th>비밀번호</th>
                   <td>
-                    <input value="*******"></input>
+                    <input value=""></input>
                   </td>
                 </tr>
                 <tr>
                   <th>비밀번호 확인</th>
                   <td>
-                    <input value="*******"></input>
+                    <input value=""></input>
                   </td>
                 </tr>
                 <tr>
                   <th>휴대폰번호</th>
                   <td>
-                    <input className="tel" value="010"></input>
-                    <input className="tel" value="1234"></input>
-                    <input className="tel" value="5678"></input>
+                    <input
+                      className="tel"
+                      value={USER_TEL0.split("-")[0]}
+                    ></input>
+                    <input
+                      className="tel"
+                      value={USER_TEL0.split("-")[1]}
+                    ></input>
+                    <input
+                      className="tel"
+                      value={USER_TEL0.split("-")[2]}
+                    ></input>
                   </td>
                 </tr>
                 <tr>
                   <th>전화번호</th>
                   <td>
-                    <input className="tel" value="031"></input>
-                    <input className="tel" value="123"></input>
-                    <input className="tel" value="4567"></input>
+                    <input
+                      className="tel"
+                      value={USER_TEL1.split("-")[0]}
+                    ></input>{" "}
+                    <input
+                      className="tel"
+                      value={USER_TEL1.split("-")[1]}
+                    ></input>
+                    <input
+                      className="tel"
+                      value={USER_TEL1.split("-")[2]}
+                    ></input>
                   </td>
                 </tr>
-                <tr>
+                {/* <tr>
                   <th>이메일</th>
                   <td>
                     <input className="email" value="snow"></input>
                     <span>@</span>
                     <input className="email" value="naver.com"></input>
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
             <S.MyPageStateEditBtns>
@@ -182,30 +242,23 @@ const MyPage = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <input type="checkbox"></input>
-                  </td>
-                  <td>배송지1</td>
-                  <td>홍길동</td>
-                  <td>경기도 고양시 일산동구 장대길 12-34</td>
-                  <td>010-1234-5678</td>
-                  <td>
-                    <S.Btn>삭제</S.Btn>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input type="checkbox"></input>
-                  </td>
-                  <td>배송지1</td>
-                  <td>홍길동</td>
-                  <td>경기도 고양시 일산동구 장대길 12-34</td>
-                  <td>010-1234-5678</td>
-                  <td>
-                    <S.Btn>삭제</S.Btn>
-                  </td>
-                </tr>
+                {delis &&
+                  delis.map((el, index) => (
+                    <tr key={index}>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                      <td>{el.DELI_NM}</td>
+                      <td>{el.DELI_REC}</td>
+                      <td>
+                        {el.DELI_ADDRESS} ({el.DELI_POSTCODE})
+                      </td>
+                      <td>{el.DELI_TEL0}</td>
+                      <td>
+                        <S.Btn>삭제</S.Btn>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
             <S.MyPageStateEditBtns>

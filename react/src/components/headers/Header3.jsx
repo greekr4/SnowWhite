@@ -287,6 +287,7 @@ const Header3 = ({ openPopup }) => {
                 <S.HeaderMenuItem
                   onClick={() => {
                     cookies.remove("token");
+                    cookies.remove("refreshToken");
                     queryClient.setQueryData("userinfo");
                   }}
                 >

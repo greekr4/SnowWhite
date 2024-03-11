@@ -32,7 +32,7 @@ import IntroPage0 from "./pages/IntroPage0";
 import { Cookies } from "react-cookie";
 import { QueryClient } from "react-query";
 import useUserinfoQuery from "./hooks/User";
-// import useUserinfoQuery from "./hooks/User";
+import "./hooks/axiosConfig.jsx";
 
 function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -43,7 +43,7 @@ function App() {
   const cookies = new Cookies();
   const queryClient = new QueryClient();
   const token = cookies.get("token");
-  useUserinfoQuery(token);
+  useUserinfoQuery();
 
   const openPopup = (index) => {
     setIsPopupOpen(true);

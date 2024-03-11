@@ -1,0 +1,8 @@
+{
+  "host": "localhost",
+  "port": "3306",
+  "user": "SNOW",
+  "password": "1",
+  "database": "snowdb",
+  "connectionLimit": 30
+}

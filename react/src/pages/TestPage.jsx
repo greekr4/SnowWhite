@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import axios from "axios";
 
 const testAxios = () => {
-  return axios.post("http://localhost:3030/testSelect");
+  return axios.post("api/testSelect");
 };
 
 export const TestPage = () => {
