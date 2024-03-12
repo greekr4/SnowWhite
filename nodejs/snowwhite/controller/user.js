@@ -7,6 +7,10 @@ const {
 } = require("../utils/authMiddleware");
 const { getConnection } = require("../utils/dbUtils");
 
+/**
+ * 로그인
+ *
+ */
 exports.login = async (req, res) => {
   const { userid, userpw } = req.body;
 
@@ -40,6 +44,10 @@ exports.login = async (req, res) => {
   return res.status(200).send({ userid, accessToken, refreshToken });
 };
 
+/**
+ * 리프레시토큰
+ *
+ */
 exports.refresh = async (req, res) => {
   if (req.headers["authorization"] && req.headers["refresh"]) {
     const accessToken = req.headers["authorization"];
@@ -92,4 +100,170 @@ const failResponse = (code, message) => {
     code: code,
     message: message,
   };
+};
+
+/**
+ * 유저 인포
+ *
+ */
+exports.userinfo = async (req, res) => {
+  const userid = req.decoded.userid;
+  const SelectUserInfo = `
+  select
+	T1.USER_ID,
+	T1.USER_NM,
+	T1.USER_TEL0,
+	T1.USER_TEL1,
+	T1.USER_POINT,
+	T1.USER_GRADE,
+	T2.DELI_ADDRESS,
+	T2.DELI_POSTCODE
+from
+	TB_USER T1
+left outer join TB_DELIVERY_ADDRESS T2 on
+	T1.DELI_CODE = T2.DELI_CODE
+where
+	T1.USER_ID = '${userid}'
+  `;
+  const res_userinfo = await getConnection(SelectUserInfo);
+
+  return res.status(200).send(res_userinfo.row[0]);
+};
+
+exports.delivery = async (req, res) => {
+  const { userid } = req.body;
+  const qry = `
+select
+	DELI_CODE,
+	DELI_ADDRESS,
+  DELI_POSTCODE,
+	DELI_TEL0,
+	DELI_TEL1,
+	DELI_NM ,
+	DELI_REC
+from
+	TB_DELIVERY_ADDRESS
+where
+	USER_ID = '${userid}'
+  `;
+
+  const res_delivery = await getConnection(qry);
+
+  return res.status(200).send(res_delivery.row);
+};
+
+/**
+ * 회원가입
+ *
+ */
+exports.join = async (req, res) => {
+  const { userid, userpw, usernm } = req.body;
+
+  const selectUser = `SELECT (1) FROM TB_USER WHERE USER_ID = '${userid}'`;
+  const res_id = await getConnection(selectUser);
+
+  if (res_id.row.length != 0) return res.status(401).send("ID 중복");
+
+  const insertUser = `INSERT INTO tb_user (user_id, user_pw, user_nm) VALUES (?, ?, ?)`;
+  const res_insert = await getConnection(insertUser, [userid, userpw, usernm]);
+
+  if (res_insert.state === false) return res.status(401).send("DB Error.");
+
+  return res.status(200).send("OK");
+};
+
+/**
+ * 배송지 추가
+ *
+ */
+
+exports.insert_delivery = async (req, res) => {
+  const { userid, delinm, delirec, deliaddress, delipostcode, delitel } =
+    req.body;
+  const qry = `
+INSERT
+	INTO
+	TB_DELIVERY_ADDRESS (
+	USER_ID,
+	DELI_NM,
+	DELI_REC,
+	DELI_ADDRESS,
+	DELI_POSTCODE,
+	DELI_TEL0
+	)
+VALUES (
+?,
+?,
+?,
+?,
+?,
+?
+)
+`;
+  const res_insert = await getConnection(qry, [
+    userid,
+    delinm,
+    delirec,
+    deliaddress,
+    delipostcode,
+    delitel,
+  ]);
+  if (res_insert.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+/**
+ * 배송지 수정
+ *
+ */
+
+exports.update_delivery = async (req, res) => {
+  const { delicode, delinm, delirec, deliaddress, delipostcode, delitel } =
+    req.body;
+  const qry = `
+UPDATE
+	TB_DELIVERY_ADDRESS 
+SET
+  DELI_NM = ?,
+  DELI_REC = ?,
+  DELI_ADDRESS = ?,
+  DELI_POSTCODE = ?,
+  DELI_TEL0 = ?
+WHERE
+DELI_CODE = ?
+`;
+  const res_update = await getConnection(qry, [
+    delinm,
+    delirec,
+    deliaddress,
+    delipostcode,
+    delitel,
+    delicode,
+  ]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+/**
+ * 배송지 삭제
+ *
+ */
+
+exports.delete_delivery = async (req, res) => {
+  const { delicode } = req.body;
+  const qry = `
+  DELETE
+  FROM
+    TB_DELIVERY_ADDRESS
+  WHERE
+    DELI_CODE = ?
+  `;
+  console.log(qry);
+  const res_delete = await getConnection(qry, [delicode]);
+  if (res_delete.state === false) return res.status(401).send("DB Error.");
+  if (res_delete.row.affectedRows == 0)
+    return res.status(401).send("삭제할 게 없음");
+  console.log(res_delete);
+
+  return res.status(200).send("OK");
 };

@@ -1,48 +1,171 @@
 import React, { useEffect, useState } from "react";
 import * as S from "../styles/new_styles";
-import { useQuery } from "react-query";
+import { QueryClient, useQuery } from "react-query";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 const MyPage = () => {
+  const queryClient = new QueryClient();
   const { data } = useQuery("userinfo", { enabled: false });
   const cookies = new Cookies();
+  const USER_ADDRESS = data?.USER_ADDRESS || "기본 배송지를 설정해주세요.";
+  const USER_POINT = Math.round(data?.USER_POINT).toLocaleString("en-US") || 0;
+  const USER_ID = data?.USER_ID;
+  const USER_NM = data?.USER_NM || "이름";
+  const USER_TEL0 = data?.USER_TEL0 || "";
+  const USER_TEL1 = data?.USER_TEL1 || "";
 
-  const USER_ADDRESS =
-    data?.data?.USER_ADDRESS || "기본 배송지를 설정해주세요.";
-  const USER_POINT =
-    Math.round(data?.data?.USER_POINT).toLocaleString("en-US") || 0;
-  const USER_ID = data?.data?.USER_ID;
-  const USER_NM = data?.data?.USER_NM || "이름";
-  const USER_TEL0 = data?.data?.USER_TEL0 || "";
-  const USER_TEL1 = data?.data?.USER_TEL1 || "";
+  const [delis, setDelis] = useState([]);
 
-  const [delis, setDelis] = useState();
+  const [allSelected, setAllSelected] = useState(false);
+  const [seletedDelis, setSeletedDelis] = useState([]);
 
-  useEffect(() => {
+  // 배송지 추가/수정 state
+
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [addressVisible, setAddressVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [inputDelicode, setInputDelicode] = useState();
+  const [inputAddress, setInputAddress] = useState("");
+  const [inputPostcode, setInputPostcode] = useState("");
+  const [inputNm, setInputNm] = useState();
+  const [inputRec, setInputRec] = useState();
+  const [inputTel, setInputTel] = useState();
+
+  const resetInput = () => {
+    setInputAddress("");
+    setInputPostcode("");
+    setInputNm("");
+    setInputRec("");
+    setInputTel("");
+  };
+
+  const handleAddDeli = () => {
+    if (!inputAddress || !inputPostcode || !inputNm || !inputRec || !inputTel) {
+      alert("정확히 입력 해주세요!");
+      return false;
+    }
+
+    axios
+      .post("/api/delivery/add", {
+        userid: USER_ID,
+        delinm: inputNm,
+        delirec: inputRec,
+        deliaddress: inputAddress,
+        delipostcode: inputPostcode,
+        delitel: inputTel,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          alert("등록 완료");
+          getDelis();
+          setPopupVisible(false);
+          setAddressVisible(false);
+          resetInput();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleEditDeli = () => {
+    if (!inputAddress || !inputPostcode || !inputNm || !inputRec || !inputTel) {
+      alert("정확히 입력 해주세요!");
+      return false;
+    }
+
+    axios
+      .post("/api/delivery/edit", {
+        delicode: inputDelicode,
+        delinm: inputNm,
+        delirec: inputRec,
+        deliaddress: inputAddress,
+        delipostcode: inputPostcode,
+        delitel: inputTel,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          alert("수정 완료");
+          getDelis();
+          setPopupVisible(false);
+          setAddressVisible(false);
+          resetInput();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleDelDeli = (delicode) => {
+    axios
+      .post("/api/delivery/del", {
+        delicode: delicode,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          alert("삭제 완료");
+          getDelis();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleSeleted = (index) => {
+    const updated = [...seletedDelis];
+    updated[index] = !updated[index];
+    setSeletedDelis(updated);
+
+    console.log(seletedDelis);
+    console.log(delis);
+  };
+
+  const handleAllSeleted = () => {
+    setAllSelected(!allSelected);
+    const updated = seletedDelis.map(() => !allSelected);
+    setSeletedDelis(updated);
+  };
+
+  const getDelis = () => {
     const token = cookies.get("token");
     const headers = {
       "Content-Type": "application/json",
       Authorization: token,
     };
-
     axios
       .post(
-        "/api/delis",
+        "/api/delivery",
         {
           userid: USER_ID,
         },
         { headers: headers }
       )
       .then((res) => {
-        setDelis(res.data.data);
-        console.log(res.data.data);
-        console.log(delis);
+        setDelis(res.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    getDelis();
+  }, [data]);
+
+  useEffect(() => {
+    const initialSelectedDelis = Array.from(
+      { length: delis.length },
+      () => false
+    );
+    setSeletedDelis(initialSelectedDelis);
+  }, [delis]);
 
   return (
     <S.MainLayout>
@@ -232,7 +355,11 @@ const MyPage = () => {
               <thead>
                 <tr>
                   <th>
-                    <input type="checkbox"></input>
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      onChange={handleAllSeleted}
+                    />
                   </th>
                   <th>배송지명</th>
                   <th>받는사람</th>
@@ -242,11 +369,18 @@ const MyPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {delis &&
+                {delis.length > 0 ? (
                   delis.map((el, index) => (
                     <tr key={index}>
                       <td>
-                        <input type="checkbox" />
+                        <input
+                          type="checkbox"
+                          onChange={() => {
+                            handleSeleted(index);
+                          }}
+                          checked={seletedDelis[index]}
+                        />
+                        <input type="hidden" value={el.DELI_CODE} />
                       </td>
                       <td>{el.DELI_NM}</td>
                       <td>{el.DELI_REC}</td>
@@ -255,28 +389,184 @@ const MyPage = () => {
                       </td>
                       <td>{el.DELI_TEL0}</td>
                       <td>
-                        <S.Btn>삭제</S.Btn>
+                        <S.Btn
+                          className="del"
+                          btnBgc="#469cff"
+                          fontColor="#fff"
+                          btnBgcHover="#7cb9ff"
+                          borderCHover="none"
+                          margin="0 0.5rem 0 0"
+                          onClick={() => {
+                            setPopupVisible(true);
+                            setAddressVisible(false);
+                            setEditVisible(true);
+                            setInputDelicode(el.DELI_CODE);
+                            setInputNm(el.DELI_NM);
+                            setInputRec(el.DELI_REC);
+                            setInputAddress(el.DELI_ADDRESS);
+                            setInputPostcode(el.DELI_POSTCODE);
+                            setInputTel(el.DELI_TEL0);
+                          }}
+                        >
+                          수정
+                        </S.Btn>
+                        <S.Btn
+                          onClick={() => {
+                            handleDelDeli(el.DELI_CODE);
+                          }}
+                        >
+                          삭제
+                        </S.Btn>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>배송지를 추가해주세요.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
             <S.MyPageStateEditBtns>
-              <S.Btn className="del">선택 삭제</S.Btn>
+              <S.Btn
+                className="del"
+                btnBgc="#469cff"
+                fontColor="#fff"
+                btnBgcHover="#7cb9ff"
+                borderCHover="none"
+                margin="0 0.5rem 0 0"
+                width="80px"
+              >
+                기본 배송지
+              </S.Btn>
+              <S.Btn className="del" width="80px">
+                선택 삭제
+              </S.Btn>
               <S.Btn
                 className="add"
                 btnBgc="#469cff"
                 fontColor="#fff"
                 btnBgcHover="#7cb9ff"
                 borderCHover="none"
-                width="75px"
+                width="80px"
+                onClick={() => {
+                  setPopupVisible(true);
+                  setAddressVisible(false);
+                  setEditVisible(false);
+                }}
               >
                 추가
               </S.Btn>
+              <div></div>
             </S.MyPageStateEditBtns>
           </S.MyPageStateEditDeliveryBox>
         </S.MyPageStateEditWrapper>
       </S.MainSection>
+      {popupVisible && (
+        <>
+          <S.MypagePopWrap>
+            <table>
+              <tr>
+                <th style={{ width: "15%" }}>배송지명</th>
+                <th style={{ width: "15%" }}>받는사람</th>
+                <th>주소</th>
+                <th style={{ width: "9%" }}></th>
+                <th style={{ width: "15%" }}>연락처</th>
+                <th style={{ width: "9%" }}></th>
+              </tr>
+              <tr>
+                <td>
+                  <input
+                    placeholder="배송지 명을 입력해주세요."
+                    value={inputNm}
+                    onChange={(e) => {
+                      setInputNm(e.target.value);
+                    }}
+                  />
+                </td>
+                <td>
+                  <input
+                    placeholder="받는 분을 입력해주세요."
+                    value={inputRec}
+                    onChange={(e) => {
+                      setInputRec(e.target.value);
+                    }}
+                  />
+                </td>
+                <td>
+                  <input
+                    disabled
+                    placeholder="주소 찾기를 이용해주세요."
+                    value={inputAddress && `${inputAddress} (${inputPostcode})`}
+                    // onClick={() => {
+                    //   setAddressVisible(true);
+                    // }}
+                  />
+                </td>
+                <td>
+                  <S.Btn
+                    onClick={() => {
+                      setAddressVisible(true);
+                    }}
+                  >
+                    주소찾기
+                  </S.Btn>
+                </td>
+                <td>
+                  <input
+                    placeholder="연락처를 입력해주세요."
+                    value={inputTel}
+                    onChange={(e) => {
+                      setInputTel(e.target.value);
+                    }}
+                  />
+                </td>
+                <td>
+                  {editVisible ? (
+                    <S.Btn
+                      btnBgc="#469cff"
+                      fontColor="#fff"
+                      btnBgcHover="#7cb9ff"
+                      borderCHover="none"
+                      width="60px"
+                      onClick={handleEditDeli}
+                    >
+                      수정
+                    </S.Btn>
+                  ) : (
+                    <S.Btn
+                      btnBgc="#469cff"
+                      fontColor="#fff"
+                      btnBgcHover="#7cb9ff"
+                      borderCHover="none"
+                      width="60px"
+                      onClick={handleAddDeli}
+                    >
+                      등록
+                    </S.Btn>
+                  )}
+                </td>
+              </tr>
+            </table>
+            {addressVisible && (
+              <div className="postWrapper">
+                <DaumPostcodeEmbed
+                  onComplete={(data) => {
+                    setInputAddress(data.address);
+                    setInputPostcode(data.zonecode);
+                    setAddressVisible(false);
+                  }}
+                />
+              </div>
+            )}
+          </S.MypagePopWrap>
+          <S.MypagePopOverRay
+            onClick={() => {
+              setPopupVisible(false);
+            }}
+          />
+        </>
+      )}
     </S.MainLayout>
   );
 };

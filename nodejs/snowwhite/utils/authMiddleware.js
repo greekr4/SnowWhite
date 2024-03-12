@@ -10,7 +10,7 @@ exports.makeToken = (userid) => {
     },
     SECRET_KEY,
     {
-      expiresIn: "5", //만료시간
+      expiresIn: "180m", //만료시간
       issuer: "nodeJS",
     }
   );

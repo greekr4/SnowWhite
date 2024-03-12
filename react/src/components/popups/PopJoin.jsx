@@ -56,13 +56,13 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
         .then((res) => {
           if (res.status === 200) {
             console.log(res);
-            alert(res.data.msg);
+            alert(res.data);
             openPopup(0);
           }
         })
         .catch((error) => {
           console.log(error);
-          alert(error.data.msg);
+          alert(error.response.data);
         });
     }
   };

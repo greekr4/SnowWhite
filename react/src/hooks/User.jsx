@@ -3,17 +3,7 @@ import { Cookies } from "react-cookie";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
 
 const getUserData = async (token) => {
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: token,
-  };
-  const response = await axios.post(
-    "api/userinfo",
-    {},
-    {
-      headers: headers,
-    }
-  );
+  const response = await axios.post("api/userinfo");
   return response.data;
 };
 

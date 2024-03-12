@@ -464,7 +464,7 @@ export const Pop_Container = styled.div`
       ${(props) => (props.widthValue ? props.widthValue / 2 + "px" : "250px")}
   );
   top: calc(
-    50% -
+    30% -
       ${(props) => (props.heightValue ? props.heightValue / 2 + "px" : "250px")}
   );
   width: ${(props) => (props.widthValue ? props.widthValue + "px" : "200px")};
@@ -1817,6 +1817,10 @@ export const MyPageStateEditDeliveryBox = styled.div`
     vertical-align: middle;
     text-align: center;
     border-bottom: 1px solid #eee;
+
+    &:last-child {
+      width: 15%;
+    }
   }
 `;
 
@@ -1839,6 +1843,56 @@ export const MyPageStateEditBtns = styled.div`
   & .add {
     float: right;
   }
+`;
+
+export const MypagePopWrap = styled.div`
+  position: fixed;
+  left: calc(50% - 570px);
+  top: calc(40% - 100px);
+  min-width: 1140px;
+  width: 1140px;
+  height: 120px;
+  background-color: #fff;
+  z-index: 1000;
+  box-shadow: 2px 2px 2px 0px #777;
+
+  & table {
+    width: 100%;
+    height: 100%;
+    font-size: 0.8rem;
+  }
+  & th {
+    height: 50px;
+    line-height: 50px;
+    background-color: #ebf2ff;
+    font-size: 0.9rem;
+  }
+  & td {
+    padding: 1rem;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+
+  & div.postWrapper {
+    position: fixed;
+    width: 550px;
+    left: calc(50% - 275px);
+  }
+
+  & input {
+    width: 100%;
+  }
+`;
+
+export const MypagePopOverRay = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 `;
 
 /**

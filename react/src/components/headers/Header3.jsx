@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
 import { LoginCheck } from "../../hooks/User";
 import { Cookies } from "react-cookie";
+import useAxios from "axios-hooks";
+import axios from "axios";
 
 const Header3 = ({ openPopup }) => {
   const queryClient = useQueryClient();
@@ -15,25 +17,54 @@ const Header3 = ({ openPopup }) => {
   const [isFixed, setIsFixed] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
-  const [menuShow, setMenuShow] = useState({
-    menu1: false,
-    menu2: false,
-    menu3: false,
-    menu4: false,
-    menu5: false,
-    menu6: false,
-    menu7: false,
-    menu8: false,
-    service: false,
-    mymenu: false,
-  });
+  const [menuShow, setMenuShow] = useState({ mymenu: false });
 
-  /** userinfo
-   *
-   */
+  const [Cate, SetCate] = useState();
 
   const { data } = useQuery("userinfo", { enabled: false });
-  const userNm = data?.data?.USER_NM;
+  const userNm = data?.USER_NM;
+
+  useEffect(() => {
+    axios.post("/api/cate").then((res) => {
+      const groupedCategories =
+        res.data &&
+        res.data.reduce((result, category) => {
+          if (category.CATE_PID === null) {
+            // 대카테고리인 경우
+            result.push({
+              ...category,
+              subCate: [],
+            });
+          } else {
+            // 하위 카테고리인 경우
+            const parentCategory = result.find(
+              (parent) => parent.CATE_SID === category.CATE_PID
+            );
+            if (parentCategory) {
+              parentCategory.subCate.push(category);
+            }
+          }
+          return result;
+        }, []);
+
+      // 결과 출력
+      console.log(groupedCategories);
+      SetCate(groupedCategories);
+
+      //메뉴
+      const resultObj = {};
+      res.data
+        .filter((el) => el.CATE_PID === null)
+        .map((el, index) => {
+          resultObj[el.CATE_SID] = false;
+        });
+      setMenuShow({ ...menuShow, ...resultObj });
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(menuShow);
+  }, [menuShow]);
 
   const handleOverMenu = (menu) => {
     setMenuShow({
@@ -72,53 +103,6 @@ const Header3 = ({ openPopup }) => {
   }, [scrollPositon]);
 
   const submenus = {
-    submenu1: [
-      { name: "일반 명함", link: "/products/detail" },
-      { name: "고급 명함", link: "/products/detail" },
-    ],
-    submenu2: [
-      { name: "정기간행물", link: "/products/detail" },
-      { name: "보고서/자료집", link: "/products/detail" },
-      { name: "제안서", link: "/products/detail" },
-      { name: "출판도서", link: "/products/detail" },
-      { name: "회사소개서", link: "/products/detail" },
-      { name: "교재", link: "/products/detail" },
-      { name: "작품집", link: "/products/detail" },
-      { name: "카다로그/브로슈어", link: "/products/detail" },
-      // "정기간행물",
-      // "보고서/자료집",
-      // "제안서",
-      // "출판도서",
-      // "회사소개서",
-      // "교재",
-      // "작품집",
-      // "화보집/팬북",
-      // "노트",
-      // "카다로그/브로슈어",
-      // "사보",
-      // "학급문집",
-      // "소식지",
-      // "지명원",
-    ],
-    submenu3: [
-      { name: "일반 스티커", link: "/products/detail" },
-      { name: "고급 스티커", link: "/products/detail" },
-    ],
-    submenu4: [{ name: "현수막", link: "/products/detail" }],
-    submenu5: [
-      { name: "캘린더", link: "/products/detail" },
-      { name: "고급 캘린더", link: "/products/detail" },
-    ],
-    submenu6: [
-      { name: "박스", link: "/products/detail" },
-      { name: "대형 박스", link: "/products/detail" },
-    ],
-    submenu7: [{ name: "시험지", link: "/products/detail" }],
-    submenu8: [{ name: "봉투", link: "/products/detail" }],
-    service: [
-      { name: "공지사항", link: "/notice" },
-      { name: "회사소개", link: "/intro0" },
-    ],
     mymenu: [
       { name: "마이페이지", link: "/mypage" },
       { name: "장바구니", link: "/cart" },
@@ -138,161 +122,29 @@ const Header3 = ({ openPopup }) => {
             <S.HeaderLogoBox img={logo_sample} />
           </Link>
           <S.HeaderMenuList>
-            <Link to="/products">
-              <S.HeaderMenuItem
-                onMouseOver={() => {
-                  handleOverMenu("menu1");
-                }}
-                onMouseLeave={() => {
-                  handleLeaveMenu("menu1");
-                }}
-              >
-                <S.HeaderMenuText>명함</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu1}
-                  submenus={submenus.submenu1}
-                />
-              </S.HeaderMenuItem>
-            </Link>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu2");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu2");
-              }}
-            >
-              <S.HeaderMenuText>책자</S.HeaderMenuText>
-              <GnbSubMenu
-                isVisible={menuShow.menu2}
-                submenus={submenus.submenu2}
-              />
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu3");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu3");
-              }}
-            >
-              <Link to="/products">
-                <S.HeaderMenuText>스티커</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu3}
-                  submenus={submenus.submenu3}
-                />
-              </Link>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu4");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu4");
-              }}
-            >
-              <Link to="/products">
-                <S.HeaderMenuText>현수막</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu4}
-                  submenus={submenus.submenu4}
-                />
-              </Link>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu5");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu5");
-              }}
-            >
-              <Link to="/products">
-                <S.HeaderMenuText>캘린더</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu5}
-                  submenus={submenus.submenu5}
-                />
-              </Link>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu6");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu6");
-              }}
-            >
-              <Link to="/products">
-                <S.HeaderMenuText>박스</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu6}
-                  submenus={submenus.submenu6}
-                />
-              </Link>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu7");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu7");
-              }}
-            >
-              <Link to="/products">
-                <S.HeaderMenuText>시험지</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu7}
-                  submenus={submenus.submenu7}
-                />
-              </Link>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("menu8");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("menu8");
-              }}
-            >
-              <Link to="/products">
-                <S.HeaderMenuText>봉투</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.menu8}
-                  submenus={submenus.submenu8}
-                />
-              </Link>
-            </S.HeaderMenuItem>
-            <S.HeaderMenuItem
-              onMouseOver={() => {
-                handleOverMenu("service");
-              }}
-              onMouseLeave={() => {
-                handleLeaveMenu("service");
-              }}
-            >
-              <Link to={"/notice"}>
-                <S.HeaderMenuText>고객센터</S.HeaderMenuText>
-                <GnbSubMenu
-                  isVisible={menuShow.service}
-                  submenus={submenus.service}
-                />
-              </Link>
-            </S.HeaderMenuItem>
+            {Cate &&
+              Cate.map((el, index) => (
+                <Link to="/products">
+                  <S.HeaderMenuItem
+                    onMouseOver={() => {
+                      handleOverMenu(el.CATE_SID);
+                    }}
+                    onMouseLeave={() => {
+                      handleLeaveMenu(el.CATE_SID);
+                    }}
+                  >
+                    <S.HeaderMenuText>{el.CATE_NM}</S.HeaderMenuText>
+                    <GnbSubMenu
+                      isVisible={menuShow[el.CATE_SID]}
+                      submenus={el.subCate}
+                    />
+                  </S.HeaderMenuItem>
+                </Link>
+              ))}
           </S.HeaderMenuList>
           <S.HeaderMenuList>
             {userNm ? (
               <>
-                <S.HeaderMenuItem
-                  onClick={() => {
-                    cookies.remove("token");
-                    cookies.remove("refreshToken");
-                    queryClient.setQueryData("userinfo");
-                  }}
-                >
-                  <S.HeaderMenuText>로그아웃</S.HeaderMenuText>
-                </S.HeaderMenuItem>
                 <S.HeaderMenuItem
                   onMouseOver={() => {
                     handleOverMenu("mymenu");
@@ -305,9 +157,22 @@ const Header3 = ({ openPopup }) => {
                     <S.HeaderMenuText>{userNm}님</S.HeaderMenuText>
                     <GnbSubMenu
                       isVisible={menuShow.mymenu}
-                      submenus={submenus.mymenu}
+                      submenus={[
+                        { CATE_NM: "마이페이지", CATE_LINK: "/mypage" },
+                        { CATE_NM: "장바구니", CATE_LINK: "/cart" },
+                        { CATE_NM: "주문 내역", CATE_LINK: "/orderlist" },
+                      ]}
                     />
                   </Link>
+                </S.HeaderMenuItem>
+                <S.HeaderMenuItem
+                  onClick={() => {
+                    cookies.remove("token");
+                    cookies.remove("refreshToken");
+                    queryClient.setQueryData("userinfo");
+                  }}
+                >
+                  <S.HeaderMenuText>로그아웃</S.HeaderMenuText>
                 </S.HeaderMenuItem>
               </>
             ) : (
