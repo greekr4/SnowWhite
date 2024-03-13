@@ -10,8 +10,7 @@ import { Cookies } from "react-cookie";
 import useAxios from "axios-hooks";
 import axios from "axios";
 
-const Header3 = ({ openPopup }) => {
-  const queryClient = useQueryClient();
+const Header3 = ({ openPopup, queryClient }) => {
   const cookies = new Cookies();
   const [scrollPositon, setScrollPosition] = useState(0);
   const [isFixed, setIsFixed] = useState(false);
@@ -124,7 +123,7 @@ const Header3 = ({ openPopup }) => {
           <S.HeaderMenuList>
             {Cate &&
               Cate.map((el, index) => (
-                <Link to="/products">
+                <Link to={`/products/${el.CATE_SID}`}>
                   <S.HeaderMenuItem
                     onMouseOver={() => {
                       handleOverMenu(el.CATE_SID);

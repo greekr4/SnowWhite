@@ -4,12 +4,14 @@ import { QueryClient, useQuery } from "react-query";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { useSpring } from "react-spring";
 
-const MyPage = () => {
-  const queryClient = new QueryClient();
+const MyPage = ({ queryClient }) => {
   const { data } = useQuery("userinfo", { enabled: false });
   const cookies = new Cookies();
-  const USER_ADDRESS = data?.USER_ADDRESS || "기본 배송지를 설정해주세요.";
+  const USER_ADDRESS = data?.DELI_ADDRESS
+    ? `${data?.DELI_ADDRESS} (${data?.DELI_POSTCODE}) ${data?.DELI_ADD_ADDRESS}`
+    : "기본 배송지를 설정해주세요.";
   const USER_POINT = Math.round(data?.USER_POINT).toLocaleString("en-US") || 0;
   const USER_ID = data?.USER_ID;
   const USER_NM = data?.USER_NM || "이름";
@@ -28,17 +30,64 @@ const MyPage = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [inputDelicode, setInputDelicode] = useState();
   const [inputAddress, setInputAddress] = useState("");
+  const [inputAddAddress, setInputAddAddress] = useState("");
   const [inputPostcode, setInputPostcode] = useState("");
   const [inputNm, setInputNm] = useState();
   const [inputRec, setInputRec] = useState();
   const [inputTel, setInputTel] = useState();
 
+  // 회원정보수정 state
+
+  const [userEditVisible, setUserEditVisible] = useState(false);
+  const [inputUserId, setInputUserId] = useState();
+  const [inputAuthPw, setInputAuthPw] = useState();
+  const [inputUserPw, setInputUserPw] = useState();
+  const [inputUserPwck, setInputUserPwck] = useState();
+  const [inputUserNm, setInputUserNm] = useState();
+  const [inputUserTel0_0, setInputUserTel0_0] = useState();
+  const [inputUserTel0_1, setInputUserTel0_1] = useState();
+  const [inputUserTel0_2, setInputUserTel0_2] = useState();
+  const [inputUserTel1_0, setInputUserTel1_0] = useState();
+  const [inputUserTel1_1, setInputUserTel1_1] = useState();
+  const [inputUserTel1_2, setInputUserTel1_2] = useState();
+
+  const SlideDown = useSpring({
+    height: userEditVisible ? "300px" : "0px",
+  });
+
   const resetInput = () => {
     setInputAddress("");
+    setInputAddAddress("");
     setInputPostcode("");
     setInputNm("");
     setInputRec("");
     setInputTel("");
+  };
+
+  const handleEditUser = () => {
+    if (inputUserPw != inputUserPwck) {
+      alert("비밀번호가 다릅니다.");
+      return false;
+    }
+    const usertel0 = `${inputUserTel0_0}-${inputUserTel0_1}-${inputUserTel0_2}`;
+    const usertel1 = `${inputUserTel1_0}-${inputUserTel1_1}-${inputUserTel1_2}`;
+
+    axios
+      .post("/api/mypage/edituser", {
+        userid: USER_ID,
+        userpw: inputUserPw,
+        usertel0: usertel0,
+        usertel1: usertel1,
+      })
+      .then((res) => {
+        console.log(res);
+        alert("성공");
+        setUserEditVisible(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("실패");
+      });
   };
 
   const handleAddDeli = () => {
@@ -53,6 +102,7 @@ const MyPage = () => {
         delinm: inputNm,
         delirec: inputRec,
         deliaddress: inputAddress,
+        deliaddaddress: inputAddAddress,
         delipostcode: inputPostcode,
         delitel: inputTel,
       })
@@ -83,6 +133,7 @@ const MyPage = () => {
         delinm: inputNm,
         delirec: inputRec,
         deliaddress: inputAddress,
+        deliaddaddress: inputAddAddress,
         delipostcode: inputPostcode,
         delitel: inputTel,
       })
@@ -116,6 +167,37 @@ const MyPage = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handleAllDelDeli = () => {
+    const hasTrue = seletedDelis.some((item) => item === true);
+
+    if (hasTrue) {
+      alert("삭제합니다.");
+    } else {
+      alert("선택해주세요.");
+      return false;
+    }
+
+    seletedDelis.map((el, index) => {
+      if (el) {
+        console.log(index);
+        console.log(delis[index]);
+        axios
+          .post("/api/delivery/del", {
+            delicode: delis[index].DELI_CODE,
+          })
+          .then((res) => {
+            console.log(res);
+            if (res.status === 200) {
+              getDelis();
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
   };
 
   const handleSeleted = (index) => {
@@ -157,6 +239,14 @@ const MyPage = () => {
 
   useEffect(() => {
     getDelis();
+    setInputUserId(USER_ID);
+    setInputUserNm(USER_NM);
+    setInputUserTel0_0(USER_TEL0.split("-")[0]);
+    setInputUserTel0_1(USER_TEL0.split("-")[1]);
+    setInputUserTel0_2(USER_TEL0.split("-")[2]);
+    setInputUserTel1_0(USER_TEL1.split("-")[0]);
+    setInputUserTel1_1(USER_TEL1.split("-")[1]);
+    setInputUserTel1_2(USER_TEL1.split("-")[2]);
   }, [data]);
 
   useEffect(() => {
@@ -266,67 +356,102 @@ const MyPage = () => {
         <S.MyPageStateEditWrapper>
           <S.MyPageStateEditBox>
             <h1>회원정보수정</h1>
-            <table>
-              <tbody>
-                <tr>
-                  <th>아이디</th>
-                  <td>
-                    <input value={USER_ID} disabled></input>
-                  </td>
-                </tr>
-                <tr>
-                  <th>이름</th>
-                  <td>
-                    <input value={USER_NM} disabled></input>
-                  </td>
-                </tr>
-                <tr>
-                  <th>비밀번호</th>
-                  <td>
-                    <input value=""></input>
-                  </td>
-                </tr>
-                <tr>
-                  <th>비밀번호 확인</th>
-                  <td>
-                    <input value=""></input>
-                  </td>
-                </tr>
-                <tr>
-                  <th>휴대폰번호</th>
-                  <td>
-                    <input
-                      className="tel"
-                      value={USER_TEL0.split("-")[0]}
-                    ></input>
-                    <input
-                      className="tel"
-                      value={USER_TEL0.split("-")[1]}
-                    ></input>
-                    <input
-                      className="tel"
-                      value={USER_TEL0.split("-")[2]}
-                    ></input>
-                  </td>
-                </tr>
-                <tr>
-                  <th>전화번호</th>
-                  <td>
-                    <input
-                      className="tel"
-                      value={USER_TEL1.split("-")[0]}
-                    ></input>{" "}
-                    <input
-                      className="tel"
-                      value={USER_TEL1.split("-")[1]}
-                    ></input>
-                    <input
-                      className="tel"
-                      value={USER_TEL1.split("-")[2]}
-                    ></input>
-                  </td>
-                </tr>
-                {/* <tr>
+            <S.userEditAnimated style={SlideDown}>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>아이디</th>
+                    <td>
+                      <input value={inputUserId} disabled></input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>이름</th>
+                    <td>
+                      <input value={inputUserNm} disabled></input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>비밀번호</th>
+                    <td>
+                      <input
+                        value={inputUserPw}
+                        onChange={(e) => {
+                          setInputUserPw(e.target.value);
+                        }}
+                      ></input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>비밀번호 확인</th>
+                    <td>
+                      <input
+                        value={inputUserPwck}
+                        onChange={(e) => {
+                          setInputUserPwck(e.target.value);
+                        }}
+                      ></input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>휴대폰번호</th>
+                    <td>
+                      <input
+                        className="tel"
+                        value={inputUserTel0_0}
+                        onChange={(e) => {
+                          if (e.target.value.length > 3) return false;
+                          setInputUserTel0_0(e.target.value);
+                        }}
+                      ></input>
+                      <input
+                        className="tel"
+                        value={inputUserTel0_1}
+                        onChange={(e) => {
+                          if (e.target.value.length > 4) return false;
+                          setInputUserTel0_1(e.target.value);
+                        }}
+                      ></input>
+                      <input
+                        className="tel"
+                        value={inputUserTel0_2}
+                        onChange={(e) => {
+                          if (e.target.value.length > 4) return false;
+                          setInputUserTel0_2(e.target.value);
+                        }}
+                      ></input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>전화번호</th>
+                    <td>
+                      <input
+                        className="tel"
+                        value={inputUserTel1_0}
+                        onChange={(e) => {
+                          if (e.target.value.length > 3) return false;
+                          setInputUserTel1_0(e.target.value);
+                        }}
+                      ></input>
+                      <input
+                        className="tel"
+                        value={inputUserTel1_1}
+                        onChange={(e) => {
+                          if (e.target.value.length > 4) return false;
+                          setInputUserTel1_1(e.target.value);
+                        }}
+                      ></input>
+                      <input
+                        className="tel"
+                        value={inputUserTel1_2}
+                        onChange={(e) => {
+                          if (e.target.value.length > 4) return false;
+                          setInputUserTel1_2(e.target.value);
+                        }}
+                      ></input>
+                    </td>
+                  </tr>
+                  {/* <tr>
                   <th>이메일</th>
                   <td>
                     <input className="email" value="snow"></input>
@@ -334,20 +459,69 @@ const MyPage = () => {
                     <input className="email" value="naver.com"></input>
                   </td>
                 </tr> */}
-              </tbody>
-            </table>
-            <S.MyPageStateEditBtns>
-              <S.Btn
-                className="edit"
-                btnBgc="#469cff"
-                fontColor="#fff"
-                btnBgcHover="#7cb9ff"
-                borderCHover="none"
-              >
-                변경
-              </S.Btn>
-              <S.Btn className="cancle">취소</S.Btn>
-            </S.MyPageStateEditBtns>
+                </tbody>
+              </table>
+
+              <S.MyPageStateEditBtns>
+                <S.Btn
+                  className="edit"
+                  btnBgc="#469cff"
+                  fontColor="#fff"
+                  btnBgcHover="#7cb9ff"
+                  borderCHover="none"
+                  onClick={handleEditUser}
+                >
+                  변경
+                </S.Btn>
+                <S.Btn
+                  className="cancle"
+                  onClick={() => {
+                    setUserEditVisible(false);
+                  }}
+                >
+                  취소
+                </S.Btn>
+              </S.MyPageStateEditBtns>
+            </S.userEditAnimated>
+
+            {!userEditVisible && (
+              <S.MyPagePasswordWrapper>
+                <div className="box">
+                  <h1>본인 인증</h1>
+                  <div className="btns">
+                    <input
+                      type="password"
+                      placeholder="비밀번호를 입력해주세요."
+                      value={inputAuthPw}
+                      onChange={(e) => {
+                        setInputAuthPw(e.target.value);
+                      }}
+                    />
+                    <S.Btn
+                      onClick={() => {
+                        axios
+                          .post("/api/mypage/auth", {
+                            userid: USER_ID,
+                            authpw: inputAuthPw,
+                          })
+                          .then((res) => {
+                            console.log(res);
+                            if (res.status === 200) {
+                              setUserEditVisible(true);
+                            }
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                            alert("비밀번호 오류");
+                          });
+                      }}
+                    >
+                      확인
+                    </S.Btn>
+                  </div>
+                </div>
+              </S.MyPagePasswordWrapper>
+            )}
           </S.MyPageStateEditBox>
           <S.MyPageStateEditDeliveryBox>
             <h1>배송지 관리</h1>
@@ -385,7 +559,8 @@ const MyPage = () => {
                       <td>{el.DELI_NM}</td>
                       <td>{el.DELI_REC}</td>
                       <td>
-                        {el.DELI_ADDRESS} ({el.DELI_POSTCODE})
+                        {el.DELI_ADDRESS} ({el.DELI_POSTCODE}){" "}
+                        {el.DELI_ADD_ADDRESS}
                       </td>
                       <td>{el.DELI_TEL0}</td>
                       <td>
@@ -404,6 +579,7 @@ const MyPage = () => {
                             setInputNm(el.DELI_NM);
                             setInputRec(el.DELI_REC);
                             setInputAddress(el.DELI_ADDRESS);
+                            setInputAddAddress(el.DELI_ADD_ADDRESS);
                             setInputPostcode(el.DELI_POSTCODE);
                             setInputTel(el.DELI_TEL0);
                           }}
@@ -436,10 +612,34 @@ const MyPage = () => {
                 borderCHover="none"
                 margin="0 0.5rem 0 0"
                 width="80px"
+                onClick={() => {
+                  const trueCount = seletedDelis.filter(
+                    (item) => item === true
+                  ).length;
+
+                  if (trueCount != 1) {
+                    alert("1개만 선택 가능합니다.");
+                    return false;
+                  }
+
+                  const trueIndex = seletedDelis.indexOf(true);
+                  axios
+                    .post("/api/delivery/default", {
+                      userid: USER_ID,
+                      delicode: delis[trueIndex].DELI_CODE,
+                    })
+                    .then((res) => {
+                      queryClient.refetchQueries("userinfo");
+                      alert("성공");
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }}
               >
                 기본 배송지
               </S.Btn>
-              <S.Btn className="del" width="80px">
+              <S.Btn className="del" width="80px" onClick={handleAllDelDeli}>
                 선택 삭제
               </S.Btn>
               <S.Btn
@@ -453,6 +653,7 @@ const MyPage = () => {
                   setPopupVisible(true);
                   setAddressVisible(false);
                   setEditVisible(false);
+                  resetInput();
                 }}
               >
                 추가
@@ -467,9 +668,9 @@ const MyPage = () => {
           <S.MypagePopWrap>
             <table>
               <tr>
-                <th style={{ width: "15%" }}>배송지명</th>
-                <th style={{ width: "15%" }}>받는사람</th>
-                <th>주소</th>
+                <th style={{ width: "12%" }}>배송지명</th>
+                <th style={{ width: "12%" }}>받는사람</th>
+                <th colSpan={2}>주소</th>
                 <th style={{ width: "9%" }}></th>
                 <th style={{ width: "15%" }}>연락처</th>
                 <th style={{ width: "9%" }}></th>
@@ -498,9 +699,15 @@ const MyPage = () => {
                     disabled
                     placeholder="주소 찾기를 이용해주세요."
                     value={inputAddress && `${inputAddress} (${inputPostcode})`}
-                    // onClick={() => {
-                    //   setAddressVisible(true);
-                    // }}
+                  />
+                </td>
+                <td style={{ width: "15%" }}>
+                  <input
+                    placeholder="나머지 주소 (동/호)"
+                    value={inputAddAddress}
+                    onChange={(e) => {
+                      setInputAddAddress(e.target.value);
+                    }}
                   />
                 </td>
                 <td>
@@ -517,7 +724,33 @@ const MyPage = () => {
                     placeholder="연락처를 입력해주세요."
                     value={inputTel}
                     onChange={(e) => {
-                      setInputTel(e.target.value);
+                      const input = e.target.value.replace(/-/g, ""); // 기존의 하이픈 제거
+                      let formattedInput;
+
+                      if (input.length <= 3) {
+                        formattedInput = input;
+                      } else if (input.length <= 7) {
+                        formattedInput = `${input.slice(0, 3)}-${input.slice(
+                          3
+                        )}`;
+                      } else if (input.length < 11) {
+                        formattedInput = `${input.slice(0, 3)}-${input.slice(
+                          3,
+                          6
+                        )}-${input.slice(6, 11)}`;
+                      } else if (input.length === 11) {
+                        formattedInput = `${input.slice(0, 3)}-${input.slice(
+                          3,
+                          7
+                        )}-${input.slice(7, 12)}`;
+                      } else {
+                        formattedInput = `${input.slice(0, 3)}-${input.slice(
+                          3,
+                          7
+                        )}-${input.slice(7, 11)}`;
+                      }
+
+                      setInputTel(formattedInput);
                     }}
                   />
                 </td>

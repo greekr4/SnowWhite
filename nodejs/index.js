@@ -23,8 +23,16 @@ const {
   insert_delivery,
   delete_delivery,
   update_delivery,
+  default_deli,
+  auth_pw,
+  update_user,
 } = require("./snowwhite/controller/user");
 const { cate } = require("./snowwhite/controller/menu");
+const {
+  select_products_main,
+  select_products_thumbnail,
+  select_banner,
+} = require("./snowwhite/controller/product");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -70,11 +78,21 @@ app.post("/api/join", join);
 
 app.post("/api/delivery", auth, delivery);
 
-app.post("/api/delivery/add", insert_delivery);
+app.post("/api/delivery/add", auth, insert_delivery);
 
-app.post("/api/delivery/edit", update_delivery);
+app.post("/api/delivery/edit", auth, update_delivery);
 
-app.post("/api/delivery/del", delete_delivery);
+app.post("/api/delivery/del", auth, delete_delivery);
+
+app.post("/api/delivery/default", auth, default_deli);
+
+app.post("/api/mypage/auth", auth, auth_pw);
+
+app.post("/api/mypage/edituser", auth, update_user);
+
+app.post("/api/product/thumbnail", select_products_thumbnail);
+
+app.post("/api/banner", select_banner);
 
 app.get("/api", () => {
   refreshVerify("123123", "a");

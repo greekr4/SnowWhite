@@ -3,7 +3,7 @@ import { Cookies } from "react-cookie";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
 
 const getUserData = async (token) => {
-  const response = await axios.post("api/userinfo");
+  const response = await axios.post("/api/userinfo");
   return response.data;
 };
 

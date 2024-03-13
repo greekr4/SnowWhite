@@ -34,14 +34,13 @@ import { QueryClient } from "react-query";
 import useUserinfoQuery from "./hooks/User";
 import "./hooks/axiosConfig.jsx";
 
-function App() {
+function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPopupOpen2, setIsPopupOpen2] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
   const [popupIndex2, setPopupIndex2] = useState(0);
 
   const cookies = new Cookies();
-  const queryClient = new QueryClient();
   const token = cookies.get("token");
   useUserinfoQuery();
 
@@ -83,15 +82,22 @@ function App() {
           popupIndex2={popupIndex2}
         ></Potals.ModalPortal2>
         <Routes>
-          <Route element={<DefaultLayout openPopup={openPopup} />}>
+          <Route
+            element={
+              <DefaultLayout openPopup={openPopup} queryClient={queryClient} />
+            }
+          >
             <Route path="/" element={<MainPage2 />} />
-            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/:cateid" element={<ProductsPage />} />
             <Route path="/products/detail" element={<ProductDetailPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/order" element={<OrderPage />} />
             <Route path="/orderlist" element={<OrderListPage />} />
             <Route path="/notice" element={<NoticePage />} />
-            <Route path="/mypage" element={<MyPage />} />
+            <Route
+              path="/mypage"
+              element={<MyPage queryClient={queryClient} />}
+            />
             <Route path="/intro0" element={<IntroPage0 />} />
             <Route path="/test" element={<TestPage />} />
           </Route>

@@ -377,6 +377,21 @@ export const GlobProdItemBtn = styled.span`
   color: #2c83e9;
 `;
 
+export const NoProdBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 400px;
+
+  & h1 {
+    text-align: center;
+    padding-top: 2rem;
+    font-size: 1.5rem;
+  }
+`;
+
 /**
  * 메인 페이지 - 포트폴리오
  * MainPage - Portfolio
@@ -1739,6 +1754,7 @@ export const MyPageStateEditWrapper = styled.div`
 
 export const MyPageStateEditBox = styled.div`
   padding-bottom: 2rem;
+
   & h1 {
     padding-bottom: 1rem;
     font-size: 1.2rem;
@@ -1746,7 +1762,7 @@ export const MyPageStateEditBox = styled.div`
 
   & table {
     width: 100%;
-
+    color: #333;
     & input {
       border: 1px solid #eee;
       padding-left: 0.75rem;
@@ -1801,6 +1817,7 @@ export const MyPageStateEditDeliveryBox = styled.div`
 
   & table {
     width: 100%;
+    color: #333;
   }
   & th {
     height: 50px;
@@ -1893,6 +1910,26 @@ export const MypagePopOverRay = styled.div`
   left: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
+`;
+
+export const MyPagePasswordWrapper = styled.div`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  & div.btns {
+    display: flex;
+  }
+
+  & input {
+    border: 1px solid #efefef;
+    padding-left: 0.5rem;
+    height: 34px;
+    margin-right: 0.5rem;
+  }
+`;
+
+export const userEditAnimated = styled(animated.div)`
+  overflow: hidden;
 `;
 
 /**
