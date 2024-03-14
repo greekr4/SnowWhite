@@ -6,9 +6,10 @@ import { useEffect, useRef, useState } from "react";
 import { useSpring } from "react-spring";
 import ReviewBoard from "../components/products/ReviewBoard";
 import TabBar from "../components/products/TabBar";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { FaAngleDown } from "react-icons/fa";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const TestOptions = [
   { OptionName: "규격", OptionValue: ["90x50", "86x52"] },
@@ -63,6 +64,98 @@ const ProductDetailPage = () => {
   const DtailBox = useRef(null);
   const DropDown = useRef(null);
 
+  const { prod_sid } = useParams();
+  const [prodDetail, setProdDetail] = useState();
+  const [prodImages, setProdImages] = useState([]);
+  const [prodOptions, setProdOptions] = useState([]);
+  const [prodPrice, setProdPrice] = useState(0);
+
+  const [seletedOptions, setSeletedOptions] = useState([]);
+
+  useEffect(() => {
+    axios
+      .post("/api/product/detail", { prod_sid: prod_sid })
+      .then((res) => {
+        console.log(res);
+        setProdDetail(res.data);
+        setProdPrice(Math.round(res.data.PROD_PRICE));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+      .post("/api/product/images", { prod_sid: prod_sid })
+      .then((res) => {
+        console.log(res);
+        setProdImages(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+      .post("/api/product/options", { prod_sid: prod_sid })
+      .then((res) => {
+        const groupedData = {};
+        res.data.forEach((option) => {
+          const category = option.OPTION_CATE;
+          if (!groupedData[category]) {
+            groupedData[category] = {
+              TITLE: category,
+              OPTION: [],
+            };
+          }
+          groupedData[category].OPTION.push(option);
+        });
+
+        const result = Object.values(groupedData);
+
+        console.log(result);
+        setProdOptions(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [prod_sid]);
+
+  useEffect(() => {
+    // 초기 옵션 값 설정 (첫번째로)
+    const seletedset = [];
+    prodOptions.forEach((e, index) => {
+      seletedset[index] = {
+        TITLE: e.TITLE,
+        OPTION_SID: e.OPTION[0].OPTION_SID,
+        OPTION_PRICE: e.OPTION[0].OPTION_PRICE,
+        OPTION_NM: e.OPTION[0].OPTION_NM,
+        OPTION_DETAIL: e.OPTION[0].OPTION_DETAIL,
+      };
+    });
+    setSeletedOptions(seletedset);
+  }, [prodOptions]);
+
+  useEffect(() => {
+    //가격 초기 세팅
+    const copy_seletedOptions = seletedOptions;
+    let total_price = 0;
+    copy_seletedOptions.map((el) => {
+      console.log(el.OPTION_PRICE);
+      total_price += parseFloat(el.OPTION_PRICE);
+    });
+    setProdPrice(parseFloat(prodDetail?.PROD_PRICE) + total_price);
+  }, [seletedOptions]);
+
+  const calcPrice = () => {
+    // 옵션별로 가격 세팅
+    const copy_seletedOptions = seletedOptions;
+    let total_price = 0;
+    copy_seletedOptions.map((el) => {
+      console.log(el.OPTION_PRICE);
+      total_price += parseFloat(el.OPTION_PRICE);
+    });
+    setProdPrice(parseFloat(prodDetail?.PROD_PRICE) + total_price);
+  };
+
   const navigate = useNavigate();
 
   const handleDropdown = (value) => {
@@ -86,10 +179,6 @@ const ProductDetailPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  useEffect(() => {
-    console.log("teset");
-  }, [scrollPositon]);
 
   const handleSlideClick = (index) => {
     SetSliderIndex(index);
@@ -119,33 +208,39 @@ const ProductDetailPage = () => {
             <S.ProdDetailLeft>
               <S.ProdDetailSliderBox topValue={scrollPositon + 30}>
                 <S.ProdDetailMainSlider>
-                  <S.ProdDetailMainSliderView img={imagePaths[SliderIndex]}>
+                  <S.ProdDetailMainSliderView
+                    img={prodImages[SliderIndex]?.IMAGE_LOCATION}
+                  >
                     <S.ProdDetailSliderPrev onClick={handlePrevClick} />
                     <S.ProdDetailSliderNext onClick={handleNextClick} />
                   </S.ProdDetailMainSliderView>
                 </S.ProdDetailMainSlider>
                 <S.ProdDetailSubSlider>
-                  {imagePaths.map((item, index) => (
+                  {prodImages?.map((item, index) => (
                     <S.ProdDetailSubSliderView
                       className={index === SliderIndex ? "selected" : null}
                       onClick={() => {
                         handleSlideClick(index);
                       }}
-                      img={imagePaths[index]}
+                      img={item.IMAGE_LOCATION}
                     />
                   ))}
                 </S.ProdDetailSubSlider>
               </S.ProdDetailSliderBox>
             </S.ProdDetailLeft>
             <S.ProdDetailRight>
-              <S.ProdDetailTitle>표준사이즈 명함</S.ProdDetailTitle>
-              <S.ProdDetailDesc>
-                가장 일반적으로 사용되는 사이즈 입니다.
-              </S.ProdDetailDesc>
-              <S.ProdDetailDesc>사이즈 : 90mm x 50mm</S.ProdDetailDesc>
+              <S.ProdDetailTitle>{prodDetail?.PROD_NM}</S.ProdDetailTitle>
+              {prodDetail?.PROD_DETAIL?.split("|").map((el, index) => (
+                <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
+              ))}
               <S.Product_Detail_Option_ItemWrapper>
-                {TestOptions.map((options, index) => (
-                  <OptionItem Options={options} />
+                {prodOptions?.map((options, index) => (
+                  <OptionItem
+                    Options={options}
+                    seletedOptions={seletedOptions}
+                    setSeletedOptions={setSeletedOptions}
+                    calcPrice={calcPrice}
+                  />
                 ))}
                 {/* 수량 */}
                 <S.Product_Detail_Option_ItemBox>
@@ -216,12 +311,9 @@ const ProductDetailPage = () => {
                   </S.Product_Detail_Option_ButtonBox>
                 </S.Product_Detail_Option_ItemBox>
               </S.Product_Detail_Option_ItemWrapper>
-              <S.ProdDetailDesc>
-                효과의 경우 중복 선택이 불가능합니다.
-              </S.ProdDetailDesc>
-              <S.ProdDetailDesc>
-                생산 제작 과정에서 출고 예정일보다 다소 지연될 수 있습니다.
-              </S.ProdDetailDesc>
+              {prodDetail?.PROD_NOTI?.split("|").map((el, index) => (
+                <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
+              ))}
 
               <S.ProdDetailDesignBtns>
                 <S.Btn
@@ -243,7 +335,9 @@ const ProductDetailPage = () => {
               </S.ProdDetailDesignBtns>
               <S.ProdDetailPayBox>
                 <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
-                <S.ProdDetailPriceValue>3,400원</S.ProdDetailPriceValue>
+                <S.ProdDetailPriceValue>
+                  {Math.round(prodPrice).toLocaleString("ko-KR")}원
+                </S.ProdDetailPriceValue>
               </S.ProdDetailPayBox>
               <Link to="/order">
                 <S.ProdDetailPayButton>주문하기</S.ProdDetailPayButton>

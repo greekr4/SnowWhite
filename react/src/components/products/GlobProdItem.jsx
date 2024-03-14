@@ -5,7 +5,7 @@ import noimg from "../../assets/products/product_noimg.png";
 
 const GlobProdItem = ({ item }) => {
   return (
-    <Link to="/products/detail" spy smooth duration={500}>
+    <Link to={"/products/detail/" + item.PROD_SID} spy smooth duration={500}>
       <S.GlobProdItemBox>
         <S.GlobProdItemImgBox
           img={item.IMAGE_LOCATION ? item.IMAGE_LOCATION : noimg}

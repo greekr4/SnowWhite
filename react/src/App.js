@@ -89,7 +89,10 @@ function App({ queryClient }) {
           >
             <Route path="/" element={<MainPage2 />} />
             <Route path="/products/:cateid" element={<ProductsPage />} />
-            <Route path="/products/detail" element={<ProductDetailPage />} />
+            <Route
+              path="/products/detail/:prod_sid"
+              element={<ProductDetailPage />}
+            />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/order" element={<OrderPage />} />
             <Route path="/orderlist" element={<OrderListPage />} />

@@ -61,10 +61,6 @@ const Header3 = ({ openPopup, queryClient }) => {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(menuShow);
-  }, [menuShow]);
-
   const handleOverMenu = (menu) => {
     setMenuShow({
       ...Object.fromEntries(Object.keys(menuShow).map((key) => [key, false])),
