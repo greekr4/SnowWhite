@@ -178,7 +178,7 @@ const MyPage = ({ queryClient }) => {
       alert("선택해주세요.");
       return false;
     }
-
+    console.log(seletedDelis);
     seletedDelis.map((el, index) => {
       if (el) {
         console.log(index);

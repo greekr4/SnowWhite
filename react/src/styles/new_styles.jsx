@@ -351,7 +351,7 @@ export const GlobProdItemImgBox = styled.div`
   height: 280px;
   background-image: url(${(props) => props.img});
   background-position: center;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 `;
 export const GlobProdItemTextBox = styled.div`
@@ -1042,7 +1042,7 @@ export const Product_Detail_Option_ButtonBox = styled.div`
 
   & .container {
     min-width: 150px;
-    box-shadow: 0 4px 5px 0 #00000026;
+    box-shadow: 0 2px 7px 0 #00000026;
     position: relative;
   }
 
@@ -1303,6 +1303,7 @@ export const CartMidText = styled.p`
 export const CartMidProdBox = styled.div`
   & table {
     margin-bottom: 2rem;
+    width: 100%;
   }
 
   & th {
@@ -1313,15 +1314,15 @@ export const CartMidProdBox = styled.div`
   }
 
   & th:nth-child(1) {
-    width: 230px;
+    width: 50px;
   }
   & th:nth-child(2) {
-    width: 320px;
+    width: 230px;
     text-align: left;
     padding-left: 1rem;
   }
   & th:nth-child(3) {
-    width: 200px;
+    width: 350px;
   }
   & th:nth-child(4) {
     width: 130px;
@@ -1341,13 +1342,13 @@ export const CartMidProdBox = styled.div`
   & td:nth-child(1) {
   }
 
-  & td:nth-child(2) {
+  & td:nth-child(3) {
     text-align: left;
   }
-  & td:nth-child(3) {
+  & td:nth-child(4) {
     font-size: 0.85rem;
   }
-  & td:nth-child(4) {
+  & td:nth-child(5) {
     font-size: 1rem;
     font-weight: 520;
     color: red;
@@ -1355,10 +1356,10 @@ export const CartMidProdBox = styled.div`
       content: "원";
     }
   }
-  & td:nth-child(5) {
+  & td:nth-child(6) {
     font-size: 0.85rem;
   }
-  & td:nth-child(6) {
+  & td:nth-child(7) {
     font-size: 0.85rem;
     & button {
       margin-bottom: 0.25rem;
@@ -1375,7 +1376,7 @@ export const CartMidThumbnail = styled.div`
   width: 150px;
   height: 80px;
   margin: 0 auto;
-  background-color: #ebf2ff;
+  background: url(${(props) => props.img}) center/contain no-repeat;
 `;
 
 export const CartMidProdInfoBox = styled.div`

@@ -10,6 +10,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { FaAngleDown } from "react-icons/fa";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "react-query";
 
 const TestOptions = [
   { OptionName: "규격", OptionValue: ["90x50", "86x52"] },
@@ -57,7 +58,7 @@ const imagePaths = imageContext.keys().map(imageContext);
 ////////////////////////////////////////
 
 const ProductDetailPage = () => {
-  const [qty, setQty] = useState(50);
+  const [qty, setQty] = useState();
   const [scrollPositon, setScrollPosition] = useState(0);
   const [imgPath, SetImgPath] = useState(imagePaths[0]);
   const [SliderIndex, SetSliderIndex] = useState(0);
@@ -72,6 +73,9 @@ const ProductDetailPage = () => {
 
   const [seletedOptions, setSeletedOptions] = useState([]);
 
+  const { data } = useQuery("userinfo", { enabled: false });
+  const USER_ID = data?.USER_ID;
+
   useEffect(() => {
     axios
       .post("/api/product/detail", { prod_sid: prod_sid })
@@ -79,6 +83,7 @@ const ProductDetailPage = () => {
         console.log(res);
         setProdDetail(res.data);
         setProdPrice(Math.round(res.data.PROD_PRICE));
+        setQty(res.data.PROD_QUANTITY.split(",")[0]);
       })
       .catch((error) => {
         console.log(error);
@@ -102,7 +107,7 @@ const ProductDetailPage = () => {
           const category = option.OPTION_CATE;
           if (!groupedData[category]) {
             groupedData[category] = {
-              TITLE: category,
+              OPTION_CATE: category,
               OPTION: [],
             };
           }
@@ -124,7 +129,7 @@ const ProductDetailPage = () => {
     const seletedset = [];
     prodOptions.forEach((e, index) => {
       seletedset[index] = {
-        TITLE: e.TITLE,
+        OPTION_CATE: e.OPTION_CATE,
         OPTION_SID: e.OPTION[0].OPTION_SID,
         OPTION_PRICE: e.OPTION[0].OPTION_PRICE,
         OPTION_NM: e.OPTION[0].OPTION_NM,
@@ -135,30 +140,29 @@ const ProductDetailPage = () => {
   }, [prodOptions]);
 
   useEffect(() => {
-    //가격 초기 세팅
-    const copy_seletedOptions = seletedOptions;
-    let total_price = 0;
-    copy_seletedOptions.map((el) => {
-      console.log(el.OPTION_PRICE);
-      total_price += parseFloat(el.OPTION_PRICE);
-    });
-    setProdPrice(parseFloat(prodDetail?.PROD_PRICE) + total_price);
-  }, [seletedOptions]);
+    calcPrice();
+  }, [seletedOptions, qty]);
 
   const calcPrice = () => {
     // 옵션별로 가격 세팅
+    console.log(seletedOptions);
     const copy_seletedOptions = seletedOptions;
     let total_price = 0;
     copy_seletedOptions.map((el) => {
-      console.log(el.OPTION_PRICE);
       total_price += parseFloat(el.OPTION_PRICE);
     });
-    setProdPrice(parseFloat(prodDetail?.PROD_PRICE) + total_price);
+    console.log(total_price);
+    console.log(prodDetail?.PROD_PRICE);
+    setProdPrice(
+      (parseFloat(prodDetail?.PROD_PRICE) + total_price) *
+        (qty / prodDetail?.PROD_UNIT)
+    );
   };
 
   const navigate = useNavigate();
 
   const handleDropdown = (value) => {
+    console.log(prodDetail?.PROD_QUANTITY?.split(","));
     setQty(value);
     DropDown.current.checked = false;
   };
@@ -256,55 +260,17 @@ const ProductDetailPage = () => {
                       </label>
                       <div className="content">
                         <ul>
-                          <li
-                            onClick={() => {
-                              handleDropdown(50);
-                            }}
-                          >
-                            50
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDropdown(100);
-                            }}
-                          >
-                            100
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDropdown(150);
-                            }}
-                          >
-                            150
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDropdown(200);
-                            }}
-                          >
-                            200
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDropdown(400);
-                            }}
-                          >
-                            400
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDropdown(800);
-                            }}
-                          >
-                            800
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDropdown(1200);
-                            }}
-                          >
-                            1200
-                          </li>
+                          {prodDetail?.PROD_QUANTITY?.split(",").map(
+                            (el, index) => (
+                              <li
+                                onClick={() => {
+                                  handleDropdown(el);
+                                }}
+                              >
+                                {el}
+                              </li>
+                            )
+                          )}
                         </ul>
                       </div>
                     </div>
@@ -339,9 +305,42 @@ const ProductDetailPage = () => {
                   {Math.round(prodPrice).toLocaleString("ko-KR")}원
                 </S.ProdDetailPriceValue>
               </S.ProdDetailPayBox>
-              <Link to="/order">
-                <S.ProdDetailPayButton>주문하기</S.ProdDetailPayButton>
-              </Link>
+              {/* <Link to="/order"> */}
+              <S.ProdDetailPayButton
+                onClick={() => {
+                  // PROD_SID,
+                  // ITEM_OPTION,
+                  // ITEM_QUANTITY,
+                  // ITEM_AMOUNT,
+                  // ITEM_DESIGN,
+                  // USER_ID,
+                  const PROD_SID = prodDetail.PROD_SID;
+                  const ITEM_OPTION = JSON.stringify(seletedOptions);
+                  const ITEM_QUANTITY = qty;
+                  const ITEM_AMOUNT = prodPrice;
+                  const ITEM_DESIGN = JSON.stringify([]);
+
+                  axios
+                    .post("/api/cart/add", {
+                      PROD_SID: PROD_SID,
+                      ITEM_OPTION: ITEM_OPTION,
+                      ITEM_QUANTITY: ITEM_QUANTITY,
+                      ITEM_AMOUNT: ITEM_AMOUNT,
+                      ITEM_DESIGN: ITEM_DESIGN,
+                      USER_ID: USER_ID,
+                    })
+                    .then((res) => {
+                      console.log(res);
+                      alert("장바구니에 추가되었습니다.");
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }}
+              >
+                장바구니에 담기
+              </S.ProdDetailPayButton>
+              {/* </Link> */}
             </S.ProdDetailRight>
           </S.ProdDetailBox>
         </S.ProdDetailWrapper>

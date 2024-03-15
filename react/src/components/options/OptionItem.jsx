@@ -11,14 +11,11 @@ const OptionItem = ({
   const optionRef = useRef([]);
   const [select, setSelect] = useState(Options.OPTION[0]?.OPTION_SID);
 
-  useEffect(() => {
-    console.log(select);
-    console.log(Options.OPTION[0]?.OPTION_SID);
-  }, [select]);
+  useEffect(() => {}, [select]);
 
-  const findIndexByTitle = (obj, title) => {
+  const findIndexByCate = (obj, cate) => {
     for (const key in obj) {
-      if (obj[key].TITLE === title) {
+      if (obj[key].OPTION_CATE === cate) {
         return parseInt(key);
       }
     }
@@ -32,7 +29,7 @@ const OptionItem = ({
   return (
     <S.Product_Detail_Option_ItemBox>
       <S.Product_Detail_Option_ItemText>
-        {Options.TITLE}
+        {Options.OPTION_CATE}
       </S.Product_Detail_Option_ItemText>
       <S.Product_Detail_Option_ButtonBox>
         {Options?.OPTION?.map((item, index) => (
@@ -44,14 +41,10 @@ const OptionItem = ({
                 el.classList.remove("selected");
               });
               optionRef.current[index]?.classList.add("selected");
-              // setSelect(item.OPTION_SID);
-              console.log(seletedOptions);
-              console.log(Options.TITLE);
-              console.log(findIndexByTitle(seletedOptions, Options.TITLE));
               const copy = seletedOptions;
-              const option_index = findIndexByTitle(
+              const option_index = findIndexByCate(
                 seletedOptions,
-                Options.TITLE
+                Options.OPTION_CATE
               );
               copy[option_index].OPTION_SID = item.OPTION_SID;
               copy[option_index].OPTION_PRICE = item.OPTION_PRICE;
@@ -60,6 +53,7 @@ const OptionItem = ({
 
               setSeletedOptions(copy);
               calcPrice();
+              console.log(copy);
             }}
           >
             <S.Product_Detail_Option_Button_Span>

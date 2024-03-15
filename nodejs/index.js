@@ -35,6 +35,8 @@ const {
   select_products_detail,
   select_products_options,
   select_products_images,
+  select_cart,
+  insert_custom_prod_and_cart,
 } = require("./snowwhite/controller/product");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
@@ -101,8 +103,11 @@ app.post("/api/product/images", select_products_images);
 
 app.post("/api/product/options", select_products_options);
 
-app.post("/api/banner", select_banner);
+app.post("/api/cart", select_cart);
 
+app.post("/api/cart/add", insert_custom_prod_and_cart);
+
+app.post("/api/banner", select_banner);
 app.get("/api", () => {
   refreshVerify("123123", "a");
 });

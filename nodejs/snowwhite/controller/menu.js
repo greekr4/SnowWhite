@@ -12,3 +12,5 @@ exports.cate = async (req, res) => {
 
   return res.status(200).send(res_qry.row);
 };
+
+

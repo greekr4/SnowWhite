@@ -15,14 +15,14 @@ const MainPage2 = () => {
     {
       PROD_NM: "일반 명함",
       PROD_DESC: "평범하지 않은 단 한 장으로\r\n유니크한 당신을 알려보세요.",
-      IMAGE_LOCATION: img1,
+      IMAGE_LOCATION: "/asserts/products/product1.png",
       PROD_SID: 1,
     },
     {
       PROD_NM: "고급 명함",
       PROD_DESC:
         "한번 보면 빠져들 수밖에 없는 매력적인 명함\r\n직접 보고 느껴보세요!",
-      IMAGE_LOCATION: img2,
+      IMAGE_LOCATION: "/asserts/products/product2.png",
       PROD_SID: 2,
     },
     {

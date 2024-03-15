@@ -48,7 +48,7 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
         return false;
       }
       axios
-        .post("api/join", {
+        .post("/api/join", {
           userid: userid,
           userpw: userpw,
           usernm: usernm,
