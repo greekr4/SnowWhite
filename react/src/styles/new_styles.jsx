@@ -1394,7 +1394,7 @@ export const CartMidProdInfoBox = styled.div`
       border: 1px solid #777;
       border-radius: 15%;
       height: 24px;
-      line-height: 24px;
+      line-height: 22px;
       width: 48px;
       text-align: center;
       margin-right: 1rem;
@@ -3236,4 +3236,74 @@ export const SubwayText = styled.label`
   border-radius: 100%;
   padding: 0 8px 0 8px;
   color: #fff;
+`;
+
+/**
+ * 견적서 프린트 페이지
+ *
+ */
+
+export const PrintWrapper = styled.div`
+  position: relative;
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+`;
+
+export const PrintBox = styled.div`
+  position: absolute;
+  top: 1rem;
+  width: calc(1140px / 1.5);
+  padding: 1rem;
+  padding-bottom: 2rem;
+  background-color: #fff;
+  border: 1px solid #eee;
+  box-shadow: 2px 2px 8px #aaa;
+  @media print {
+    border: none;
+  }
+
+  & h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 520;
+    letter-spacing: 0.5rem;
+    padding: 1.75rem;
+  }
+
+  & table.top {
+    width: 100%;
+    text-align: center;
+    & td,
+    th {
+      vertical-align: middle;
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+    }
+
+    & th {
+      background-color: #f4f4f4;
+    }
+  }
+
+  & table.bottom {
+    width: 100%;
+    text-align: center;
+    & td,
+    th {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+    }
+    & th {
+      border-top: none;
+      background-color: #f4f4f4;
+    }
+
+    & tr.sum {
+      & td {
+        border-top: 2px solid #ccc;
+      }
+    }
+  }
 `;

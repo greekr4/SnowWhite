@@ -116,7 +116,7 @@ const Footer2 = () => {
             고객만족센터 1588-0000
           </S.FooterAboutText>
           <S.FooterAboutText>
-            Copyright ⓒ 2024. ㈜ 스노우화이트. All rights reserved. icons by
+            Copyright ⓒ 2024. ㈜ 스노우화이트. All rights reserved. icons by{" "}
             <S.FooterLicenseLink href="https://icons8.com/">
               Icons8
             </S.FooterLicenseLink>

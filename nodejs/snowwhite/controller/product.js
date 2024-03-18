@@ -131,7 +131,7 @@ left outer join (
 on
 	T4.PROD_SID = T3.PROD_SID
 where
-	USER_ID = ?
+	T1.USER_ID = ?
 `;
 
   const res_data = await getConnection(qry, [userid]);
@@ -169,7 +169,8 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
       ITEM_AMOUNT,
       ITEM_REGDATE,
       ITEM_MODIDATE,
-      ITEM_DESIGN
+      ITEM_DESIGN,
+      USER_ID
   ) VALUES (
       ?,
       ?,
@@ -178,8 +179,9 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
       ?,
       NOW(),
       NOW(),
+      ?,
       ?
-  );`;
+  )`;
     const qry2 = `
     INSERT INTO tb_cart (
       CART_SID,
@@ -205,6 +207,7 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
       ITEM_QUANTITY,
       ITEM_AMOUNT,
       ITEM_DESIGN,
+      USER_ID,
     ]);
     await conn.query(qry2, [CART_SID, ITEM_SID, USER_ID]);
 
@@ -225,4 +228,28 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
       conn.release();
     }
   }
+};
+
+/**
+ * 장바구니 삭제
+ * TB_CART만 삭제하고 TB_CUSTOM_PROD는 남김
+ */
+
+exports.delete_cart = async (req, res) => {
+  const { cart_sid } = req.body;
+  const qry = `
+  DELETE
+  FROM
+    TB_CART
+  WHERE
+    CART_SID IN (?)
+  `;
+  console.log(qry);
+  const res_delete = await getConnection(qry, [cart_sid]);
+  if (res_delete.state === false) return res.status(401).send("DB Error.");
+  if (res_delete.row.affectedRows == 0)
+    return res.status(401).send("삭제할 게 없음");
+  console.log(res_delete);
+
+  return res.status(200).send("OK");
 };

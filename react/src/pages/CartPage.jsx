@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import * as S from "../styles/new_styles";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { InfiniteQueryObserver, useQuery } from "react-query";
+import PrintEstimate from "../components/products/PrintEstimate";
 
 const CartPage = () => {
   const { data } = useQuery("userinfo", { enabled: false });
@@ -10,18 +11,11 @@ const CartPage = () => {
 
   const [cartData, setCartData] = useState();
   const [selectedItems, setSelectedItems] = useState();
+  const [totalQty, setTotalQty] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    axios
-      .post("/api/cart", { userid: USER_ID })
-      .then((res) => {
-        console.log(res);
-        setCartData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    getCart();
   }, [USER_ID]);
 
   useEffect(() => {
@@ -35,22 +29,82 @@ const CartPage = () => {
   }, [cartData]);
 
   useEffect(() => {
-    const hasTrue = selectedItems?.some((item) => item === true);
-
     let price = 0;
+    let qty = 0;
     selectedItems?.map((el, index) => {
       if (el) {
         price += cartData[index].ITEM_AMOUNT;
+        qty++;
       }
-      setTotalPrice(price);
     });
+    setTotalQty(qty);
+    setTotalPrice(price);
   }, [selectedItems]);
+
+  /**
+   * 선택 시 true / false를 selectedItems[] 배열로
+   * cartData[] 와 index 순서 동일
+   *
+   */
+
+  const getCart = () => {
+    axios
+      .post("/api/cart", { userid: USER_ID })
+      .then((res) => {
+        console.log(res);
+        setCartData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleSeleted = (index) => {
     const updated = [...selectedItems];
     updated[index] = !updated[index];
     setSelectedItems(updated);
     console.log(updated);
+  };
+
+  const handleAllSeleted = (e) => {
+    const updated = [...selectedItems];
+    updated.map((el, index) => {
+      el = updated[index] = e.target.checked;
+    });
+    console.log(updated);
+    setSelectedItems(updated);
+  };
+
+  const handelSelectedDel = () => {
+    const hasTrue = selectedItems.some((item) => item === true);
+
+    if (hasTrue) {
+      alert("삭제합니다.");
+    } else {
+      alert("선택해주세요.");
+      return false;
+    }
+
+    // delicode를 배열로 전송하면 IN 조건 삭제
+    const cart_sids = [];
+    selectedItems.map((el, index) => {
+      if (el) {
+        cart_sids.push(cartData[index].CART_SID);
+      }
+    });
+    axios
+      .post("/api/cart/del", {
+        cart_sid: cart_sids,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          getCart();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const formatDate = (dateString) => {
@@ -82,12 +136,17 @@ const CartPage = () => {
         <S.CartMidWrapper>
           <S.CartMidBtnBox>
             <div>
-              <S.Btn>선택 삭제</S.Btn>
+              <S.Btn onClick={handelSelectedDel}>선택 삭제</S.Btn>
               <S.Btn>선택 견적서</S.Btn>
+              <PrintEstimate />
             </div>
             <div>
-              <S.CartMidText>선택 상품 0개</S.CartMidText>
-              <S.CartMidText color="red">결제 예정 금액 0원</S.CartMidText>
+              <S.CartMidText>
+                선택 상품 {totalQty.toLocaleString("ko-KR")}개
+              </S.CartMidText>
+              <S.CartMidText color="red">
+                결제 예정 금액 {totalPrice.toLocaleString("ko-KR")}원
+              </S.CartMidText>
               <Link to="/order">
                 <S.Btn
                   btnBgc="#469cff"
@@ -105,7 +164,7 @@ const CartPage = () => {
               <thead>
                 <tr>
                   <th>
-                    <input type="checkbox" name="" id="" />
+                    <input type="checkbox" onClick={handleAllSeleted} />
                   </th>
                   <th></th>
                   <th>상품 정보</th>
@@ -129,7 +188,9 @@ const CartPage = () => {
                         />
                       </td>
                       <td>
-                        <S.CartMidThumbnail img={el.IMAGE_LOCATION} />
+                        <Link to={`/products/detail/${el.PROD_SID}`}>
+                          <S.CartMidThumbnail img={el.IMAGE_LOCATION} />
+                        </Link>
                       </td>
                       <td>
                         <S.CartMidProdInfoBox>
@@ -208,11 +269,31 @@ const CartPage = () => {
         <S.CartBotWrapper>
           <S.CartBotNotiBox>
             <h1>이용안내</h1>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
+            <p>
+              저장한 디자인과 상품은 영구적으로 보관할 수 있습니다. (휴면계정은
+              별도 정책에 따름)
+            </p>
+            <p>
+              효과나 칼선 옵션을 변경하면 편집화면을 확인 후 저장해야 주문
+              가능합니다.
+            </p>
+            <p>
+              [편집하기]를 클릭하여 언제든 디자인을 수정하고 재편집 할 수
+              있습니다.
+            </p>
+            <p>
+              상품의 옵션이나 디자인을 약간만 수정해서 유사한 상품을 주문하려면
+              [복사하기]를 사용해보세요.
+            </p>
+            <p>
+              삭제한 디자인은 복구할 수 없습니다. (단, 주문내역이 있는 경우
+              재주문 가능)
+            </p>
+            <p>
+              견적서는 선택한 상품의 결제 예정 금액으로 발급되며, 쿠폰/머니 등을
+              사용하실 경우 주문 후 주문/배송 내역에서 할인 적용된 금액으로 발급
+              받으실 수 있습니다.
+            </p>
           </S.CartBotNotiBox>
         </S.CartBotWrapper>
       </S.MainSection>

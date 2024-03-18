@@ -277,7 +277,7 @@ exports.delete_delivery = async (req, res) => {
   FROM
     TB_DELIVERY_ADDRESS
   WHERE
-    DELI_CODE = ?
+    DELI_CODE IN (?)
   `;
   console.log(qry);
   const res_delete = await getConnection(qry, [delicode]);

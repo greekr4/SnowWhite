@@ -33,6 +33,7 @@ import { Cookies } from "react-cookie";
 import { QueryClient } from "react-query";
 import useUserinfoQuery from "./hooks/User";
 import "./hooks/axiosConfig.jsx";
+import PrintEstimate from "./components/products/PrintEstimate.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -102,7 +103,7 @@ function App({ queryClient }) {
               element={<MyPage queryClient={queryClient} />}
             />
             <Route path="/intro0" element={<IntroPage0 />} />
-            <Route path="/test" element={<TestPage />} />
+            <Route path="/test" element={<PrintEstimate />} />
           </Route>
           <Route path="/editor" element={<EditorPage />} />
         </Routes>

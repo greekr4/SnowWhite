@@ -178,26 +178,27 @@ const MyPage = ({ queryClient }) => {
       alert("선택해주세요.");
       return false;
     }
-    console.log(seletedDelis);
+
+    // delicode를 배열로 전송하면 IN 조건 삭제
+    const delicodes = [];
     seletedDelis.map((el, index) => {
       if (el) {
-        console.log(index);
-        console.log(delis[index]);
-        axios
-          .post("/api/delivery/del", {
-            delicode: delis[index].DELI_CODE,
-          })
-          .then((res) => {
-            console.log(res);
-            if (res.status === 200) {
-              getDelis();
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        delicodes.push(delis[index].DELI_CODE);
       }
     });
+    axios
+      .post("/api/delivery/del", {
+        delicode: delicodes,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          getDelis();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleSeleted = (index) => {
