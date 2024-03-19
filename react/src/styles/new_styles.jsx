@@ -3243,25 +3243,29 @@ export const SubwayText = styled.label`
  *
  */
 
-export const PrintWrapper = styled.div`
-  position: relative;
+export const PrintWrapper = styled(animated.div)`
+  position: absolute;
+  overflow: hidden;
+  height: ${(props) => props.height};
+  width: calc(1140px / 1.5);
+  box-shadow: 2px 2px 8px #aaa;
+  border: 1px solid #eee;
+`;
+
+export const PrintBox = styled.div`
   @page {
     size: A4;
     margin: 20mm;
   }
-`;
-
-export const PrintBox = styled.div`
-  position: absolute;
   top: 1rem;
-  width: calc(1140px / 1.5);
+  width: 100%;
   padding: 1rem;
   padding-bottom: 2rem;
   background-color: #fff;
-  border: 1px solid #eee;
-  box-shadow: 2px 2px 8px #aaa;
+
   @media print {
     border: none;
+    font-size: 0.8rem;
   }
 
   & h1 {
@@ -3306,4 +3310,11 @@ export const PrintBox = styled.div`
       }
     }
   }
+`;
+
+export const PrintBtnBox = styled.div`
+  text-align: center;
+  background-color: #fff;
+  border-top: 2px solid #ccc;
+  padding: 1rem;
 `;

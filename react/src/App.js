@@ -34,6 +34,8 @@ import { QueryClient } from "react-query";
 import useUserinfoQuery from "./hooks/User";
 import "./hooks/axiosConfig.jsx";
 import PrintEstimate from "./components/products/PrintEstimate.jsx";
+import TestKonva from "./pages/TestKonva.jsx";
+import TestKonva2 from "./pages/TestKonva2.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -103,9 +105,10 @@ function App({ queryClient }) {
               element={<MyPage queryClient={queryClient} />}
             />
             <Route path="/intro0" element={<IntroPage0 />} />
-            <Route path="/test" element={<PrintEstimate />} />
           </Route>
           <Route path="/editor" element={<EditorPage />} />
+          <Route path="/test" element={<TestKonva />} />
+          <Route path="/test2" element={<TestKonva2 />} />
         </Routes>
       </BrowserRouter>
     </>

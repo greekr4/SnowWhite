@@ -13,6 +13,12 @@ const CartPage = () => {
   const [selectedItems, setSelectedItems] = useState();
   const [totalQty, setTotalQty] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [printVisible, SetPrintVisible] = useState(false);
+  const [estimateData, SetEstimateData] = useState([]);
+
+  const handlePrintVisible = () => {
+    SetPrintVisible(!printVisible);
+  };
 
   useEffect(() => {
     getCart();
@@ -39,6 +45,15 @@ const CartPage = () => {
     });
     setTotalQty(qty);
     setTotalPrice(price);
+
+    const updated = [];
+
+    selectedItems?.map((el, index) => {
+      if (el) {
+        updated.push(cartData[index]);
+      }
+    });
+    SetEstimateData(updated);
   }, [selectedItems]);
 
   /**
@@ -137,8 +152,12 @@ const CartPage = () => {
           <S.CartMidBtnBox>
             <div>
               <S.Btn onClick={handelSelectedDel}>선택 삭제</S.Btn>
-              <S.Btn>선택 견적서</S.Btn>
-              <PrintEstimate />
+              <S.Btn onClick={handlePrintVisible}>선택 견적서</S.Btn>
+              <PrintEstimate
+                printVisible={printVisible}
+                handlePrintVisible={handlePrintVisible}
+                estimateData={estimateData}
+              />
             </div>
             <div>
               <S.CartMidText>

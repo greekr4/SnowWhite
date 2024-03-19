@@ -1,21 +1,56 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import * as S from "../../styles/new_styles";
+import { useSpring } from "react-spring";
 
-const PrintEstimate = () => {
-  const ref = useRef();
+const PrintEstimate = ({ printVisible, handlePrintVisible, estimateData }) => {
+  const [maxHeight, setMaxHeight] = useState(0);
+  const [sumPrice, setSumPrice] = useState();
+  const [sumTax, setSumTax] = useState();
+
+  const Printref = useRef();
+  const Btnsref = useRef();
+
+  useEffect(() => {
+    if (Printref.current && Btnsref.current) {
+      setMaxHeight(
+        Printref.current.offsetHeight + Btnsref.current.offsetHeight
+      );
+    }
+    //소계 계산
+    let subtotal = 0;
+    let tax = 0;
+    estimateData.forEach((el) => {
+      const subtotalPerItem = Math.floor(
+        el.ITEM_AMOUNT - (el.ITEM_AMOUNT * 10) / 110
+      );
+      const taxPerItem = Math.floor((el.ITEM_AMOUNT * 10) / 110);
+      subtotal += subtotalPerItem;
+      tax += taxPerItem;
+    });
+    setSumPrice(subtotal);
+    setSumTax(tax);
+  }, [printVisible]);
 
   const handlePrint = useReactToPrint({
-    content: () => ref.current,
-    documentTitle: "파일 다운로드 시 저장되는 이름 작성",
-    onAfterPrint: () => alert("파일 다운로드 후 알림창 생성 가능"),
+    content: () => Printref.current,
+    documentTitle: "견적서",
+    // onAfterPrint: () => alert("파일 다운로드 후 알림창 생성 가능"),
+  });
+
+  const SlideDown = useSpring({
+    height: printVisible ? maxHeight + "px" : 0 + "px",
+    boxShadow: printVisible ? "2px 2px 8px #aaa" : "0px 0px 0px #aaa",
+    border: printVisible ? "1px solid #eee" : "0px solid #eee",
   });
 
   return (
     <>
-      <S.PrintWrapper>
-        <button onClick={handlePrint}>인쇄</button>
-        <S.PrintBox ref={ref}>
+      <S.PrintWrapper
+        style={SlideDown}
+        // height={Printref.current.offsetHeight + Btnsref.current.offsetHeight}
+      >
+        <S.PrintBox ref={Printref}>
           <h1>견적서</h1>
           <table className="top">
             <thead>
@@ -65,32 +100,35 @@ const PrintEstimate = () => {
               <th>세액</th>
               <th>비고</th>
             </tr>
-            <tr>
-              <td>1</td>
-              <td>명함</td>
-              <td>90*50</td>
-              <td>50</td>
-              <td></td>
-              <td>{4546 / 50}</td>
-              <td>4,546</td>
-              <td>454</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>명함</td>
-              <td>90*50</td>
-              <td>10,000</td>
-              <td></td>
-              <td>{2545455 / 10000}</td>
-              <td>2,545,455</td>
-              <td>254,545</td>
-              <td></td>
-            </tr>
+            {estimateData.map((el, index) => (
+              <tr>
+                <td>{index + 1}</td>
+                <td>{el.PROD_NM}</td>
+                <td>{el.PROD_STANDARD}</td>
+                <td>{el.ITEM_QUANTITY?.toLocaleString("ko-KR")}</td>
+                <td>{el.PROD_DO}</td>
+                <td>
+                  {((el.ITEM_AMOUNT * 0.9) / el.ITEM_QUANTITY)?.toLocaleString(
+                    "ko-KR"
+                  )}
+                </td>
+                <td>
+                  {Math.floor(
+                    el.ITEM_AMOUNT - (el.ITEM_AMOUNT * 10) / 110
+                  )?.toLocaleString("ko-KR")}
+                </td>
+                <td>
+                  {Math.floor((el.ITEM_AMOUNT * 10) / 110)?.toLocaleString(
+                    "ko-KR"
+                  )}
+                </td>
+                <td></td>
+              </tr>
+            ))}
             <tr className="sum">
               <td colSpan={6}>소계</td>
-              <td>{(4546 + 2545455).toLocaleString("ko-KR")}</td>
-              <td>{(454 + 254545).toLocaleString("ko-KR")}</td>
+              <td>{sumPrice?.toLocaleString("ko-KR")}</td>
+              <td>{sumTax?.toLocaleString("ko-KR")}</td>
               <td></td>
             </tr>
             <tr>
@@ -98,6 +136,19 @@ const PrintEstimate = () => {
             </tr>
           </table>
         </S.PrintBox>
+        <S.PrintBtnBox ref={Btnsref}>
+          <S.Btn
+            btnBgc="#469cff"
+            fontColor="#fff"
+            btnBgcHover="#7cb9ff"
+            borderCHover="none"
+            margin="0 0.5rem 0 0"
+            onClick={handlePrint}
+          >
+            인쇄하기
+          </S.Btn>
+          <S.Btn onClick={handlePrintVisible}>취소하기</S.Btn>
+        </S.PrintBtnBox>
       </S.PrintWrapper>
     </>
   );
