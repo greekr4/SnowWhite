@@ -36,6 +36,7 @@ import "./hooks/axiosConfig.jsx";
 import PrintEstimate from "./components/products/PrintEstimate.jsx";
 import TestKonva from "./pages/TestKonva.jsx";
 import TestKonva2 from "./pages/TestKonva2.jsx";
+import TestKonva3 from "./pages/TestKonva3.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -109,6 +110,7 @@ function App({ queryClient }) {
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/test" element={<TestKonva />} />
           <Route path="/test2" element={<TestKonva2 />} />
+          <Route path="/test3" element={<TestKonva3 />} />
         </Routes>
       </BrowserRouter>
     </>
