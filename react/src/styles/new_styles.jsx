@@ -2666,18 +2666,18 @@ export const OBFinalPymentBoxAdd = styled.div`
 export const EditorWrapper = styled.div`
   display: flex;
   width: 100%;
-  min-width: 1300px;
+  min-width: 1200px;
   height: 1024px;
-  background-color: #999;
+  background-color: #eee;
 `;
 
 export const CanvasBox = styled.div`
   // 에디터 사이즈
-  width: ${(props) => props.canvasWidth + "px"};
-  height: ${(props) => props.canvasHight + "px"};
+  /* width: ${(props) => props.canvasWidth + "px"};
+  height: ${(props) => props.canvasHight + "px"}; */
   margin: auto;
+  z-index: 1000;
   & canvas {
-    width: 100%;
     margin: auto;
   }
 `;
@@ -2920,25 +2920,21 @@ export const BgColorBtn_plus = styled.div`
 
 export const CanvasPopupBox = styled.div`
   position: relative;
-  background-color: red;
+  background-color: rgba(255, 255, 255, 0);
   left: -10%;
   width: 100px;
   height: 100px;
 `;
 export const CanvasPopup = styled.div`
-  position: relative;
+  position: absolute;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
   border: 1px solid rgb(204, 204, 204);
   box-sizing: border-box;
   width: 260px;
-  top: calc(${(props) => -props.canvasy + props.objy * props.objzoom + "px"});
-  left: calc(
-    ${(props) =>
-      (props.objx + props.objw) * props.objzoom + 30 * props.objzoom + "px"}
-  );
-
-  z-index: 1000;
+  top: ${(props) => -1100 + props.objy + "px"};
+  left: ${(props) => props.objx + 185 + "px"};
+  z-index: 1003;
 
   & div.line {
     width: 100%;

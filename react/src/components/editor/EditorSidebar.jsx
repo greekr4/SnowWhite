@@ -63,7 +63,7 @@ const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
             />
             <p>배경</p>
           </S.ESideBtnItem>
-          <S.ESideBtnItem onClick={functions.handleAddText}>
+          <S.ESideBtnItem>
             <S.Glob_Icon
               icon={imagesContext("./textbox.png")}
               width="30px"
@@ -95,7 +95,7 @@ const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
         </S.ESideBtnBox>
       </S.ESWrapper>
       {isAddVisible ? (
-        <EditorSideAddtion functions={functions} type={type} />
+        <EditorSideAddtion type={type} functions={functions} />
       ) : null}
     </>
   );

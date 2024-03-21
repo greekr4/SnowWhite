@@ -43,7 +43,6 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="25px"
               height="25px"
               cursor="pointer"
-              onClick={functions.addGridLayout}
             />
             <S.V_Bar />
             <S.Glob_Icon
@@ -83,9 +82,8 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="25px"
               height="25px"
               cursor="pointer"
-              onClick={functions.handleExport}
             />
-            <S.Btn onClick={functions.testSave}>save</S.Btn>
+            <S.Btn>save</S.Btn>
           </S.EHBtnBox>
         </S.EHBotBox>
       </S.EHWrapper>

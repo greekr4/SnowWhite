@@ -52,14 +52,14 @@ const EditorSideAddtion = ({ functions, type }) => {
   const handleBgcClick = (event) => {
     // console.log(event.currentTarget.getAttribute("color"));
     const color_val = event.currentTarget.getAttribute("color");
-    functions.setBackgroundColor(color_val);
+    console.log(color_val);
+    functions.createBackgorund(color_val);
   };
 
   const handleBgcPick = (color) => {
     setPickColor(
       `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`
     );
-    functions.setBackgroundColor(pickColor);
   };
 
   const handlePickerOpen = () => {
@@ -68,6 +68,7 @@ const EditorSideAddtion = ({ functions, type }) => {
 
   const handlePickerClose = () => {
     setIsPickerOpen(false);
+    functions.createBackgorund(pickColor);
   };
 
   const SlideDown1 = useSpring({
@@ -93,18 +94,20 @@ const EditorSideAddtion = ({ functions, type }) => {
         <S.ESideAddBox>
           <h1>도형</h1>
           <S.ESideAddShapesBox>
-            <S.ESideAddShapesItem onClick={functions.handleAddRectangle}>
+            <S.ESideAddShapesItem>
               <S.Glob_Icon
                 icon={imagesContext("./rectangle.png")}
                 width="75px"
                 height="75px"
+                onClick={functions.createRect}
               />
             </S.ESideAddShapesItem>
-            <S.ESideAddShapesItem onClick={functions.handleAddCircle}>
+            <S.ESideAddShapesItem>
               <S.Glob_Icon
                 icon={imagesContext("./cricle.png")}
                 width="75px"
                 height="75px"
+                onClick={functions.createCircle}
               />
             </S.ESideAddShapesItem>
           </S.ESideAddShapesBox>
@@ -114,7 +117,7 @@ const EditorSideAddtion = ({ functions, type }) => {
           <h1>배경</h1>
           <S.ESideAddBgBox>
             <S.ESideAddBgItem_first>
-              <p>직접추가</p>
+              <p>직접 선택</p>
               <S.ESideAddBgColors>
                 <S.BgColorBtn_plus onClick={handlePickerOpen}>
                   <S.Glob_Icon
@@ -154,7 +157,10 @@ const EditorSideAddtion = ({ functions, type }) => {
               </p>
               <S.ESideAddBgColorsBox style={SlideDown1}>
                 <S.ESideAddBgColors ref={ref_menu1}>
-                  <S.BgColorBtn onClick={handleBgcClick} color="#000" />
+                  <S.BgColorBtn
+                    onClick={() => functions.createBackgorund("#000")}
+                    color="#000"
+                  />
                   <S.BgColorBtn onClick={handleBgcClick} color="#333" />
                   <S.BgColorBtn onClick={handleBgcClick} color="#777" />
                   <S.BgColorBtn onClick={handleBgcClick} color="#ccc" />
@@ -214,7 +220,7 @@ const EditorSideAddtion = ({ functions, type }) => {
         <S.ESideAddBox>
           <h1>템플릿</h1>
           <S.ESTempateBox>
-            <S.ESTemplateItem onClick={functions.testTem}>
+            <S.ESTemplateItem>
               <S.Glob_Icon
                 icon={imagesContext("./tem1.png")}
                 width="100%"
@@ -227,14 +233,14 @@ const EditorSideAddtion = ({ functions, type }) => {
         <S.ESideAddBox>
           <h1>클립아트</h1>
           <S.ESideAddShapesBox>
-            <S.ESideAddShapesItem onClick={functions.handleAddImg}>
+            <S.ESideAddShapesItem>
               <S.Glob_Icon
                 icon={imagesContext("./clipart1.png")}
                 width="75px"
                 height="75px"
               />
             </S.ESideAddShapesItem>
-            <S.ESideAddShapesItem onClick={functions.handleAddImg}>
+            <S.ESideAddShapesItem>
               <S.Glob_Icon
                 icon={imagesContext("./clipart1.png")}
                 width="75px"
