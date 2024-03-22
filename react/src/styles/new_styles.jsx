@@ -2666,7 +2666,7 @@ export const OBFinalPymentBoxAdd = styled.div`
 export const EditorWrapper = styled.div`
   display: flex;
   width: 100%;
-  min-width: 1200px;
+  min-width: 1140px;
   height: 1024px;
   background-color: #eee;
 `;
@@ -2676,7 +2676,8 @@ export const CanvasBox = styled.div`
   /* width: ${(props) => props.canvasWidth + "px"};
   height: ${(props) => props.canvasHight + "px"}; */
   margin: auto;
-  z-index: 1000;
+  margin-top: 40px;
+  z-index: 998;
   & canvas {
     margin: auto;
   }
@@ -2694,6 +2695,8 @@ export const TextOption = styled.div`
 export const EHLayout = styled.div`
   height: 60px;
   background-color: #fff;
+  position: relative;
+  z-index: 999;
 `;
 
 export const EHWrapper = styled.div`
@@ -2722,7 +2725,7 @@ export const EHBotBox = styled.div`
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   left: 70px;
-  z-index: 1002;
+  z-index: 1000;
 
   &.side-open {
     left: 330px;
@@ -2750,6 +2753,7 @@ export const ESWrapper = styled.div`
   background-color: #fff;
   border-top: 1px solid #ddd;
   border-right: 1px solid #ddd;
+  z-index: 1000;
 `;
 
 export const ESideBtnBox = styled.div`
@@ -2782,6 +2786,7 @@ export const ESideAddWrapper = styled.div`
   height: 100%;
   background-color: #fbfbfb;
   border-right: 1px solid #ddd;
+  z-index: 1000;
 `;
 
 export const ESideAddBox = styled.div`
@@ -2799,6 +2804,7 @@ export const ESideAddShapesBox = styled.div`
   flex-wrap: wrap;
   overflow-y: scroll;
   height: 800px;
+  align-content: flex-start;
 `;
 
 export const ESTempateBox = styled.div`
@@ -2933,8 +2939,8 @@ export const CanvasPopup = styled.div`
   box-sizing: border-box;
   width: 260px;
   top: ${(props) => -1100 + props.objy + "px"};
-  left: ${(props) => props.objx + 185 + "px"};
-  z-index: 1003;
+  left: ${(props) => props.objx + 125 + "px"};
+  z-index: 999;
 
   & div.line {
     width: 100%;
@@ -3040,10 +3046,10 @@ export const CanvasPopup = styled.div`
 `;
 
 export const FontStyleBox = styled.div`
-  width: 50%;
+  width: 100%;
   display: inline-block;
   & select {
-    width: 90%;
+    width: 95%;
     height: 25px;
     line-height: 22px;
     border: 1px solid #ccc;

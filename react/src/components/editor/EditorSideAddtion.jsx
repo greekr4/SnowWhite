@@ -88,6 +88,11 @@ const EditorSideAddtion = ({ functions, type }) => {
   const imageNames = imagesContext.keys();
   //
 
+  const handleCreateImage = (e) => {
+    const url = e.currentTarget.getAttribute("icon");
+    functions.createImage(url);
+  };
+
   return (
     <S.ESideAddWrapper>
       {type === "shapes" ? (
@@ -235,14 +240,24 @@ const EditorSideAddtion = ({ functions, type }) => {
           <S.ESideAddShapesBox>
             <S.ESideAddShapesItem>
               <S.Glob_Icon
-                icon={imagesContext("./clipart1.png")}
+                onClick={handleCreateImage}
+                icon={"/asserts/editor/clipart/clipart1.png"}
                 width="75px"
                 height="75px"
               />
             </S.ESideAddShapesItem>
             <S.ESideAddShapesItem>
               <S.Glob_Icon
-                icon={imagesContext("./clipart1.png")}
+                onClick={handleCreateImage}
+                icon={"/asserts/editor/clipart/clipart2.png"}
+                width="75px"
+                height="75px"
+              />
+            </S.ESideAddShapesItem>
+            <S.ESideAddShapesItem>
+              <S.Glob_Icon
+                onClick={handleCreateImage}
+                icon={"/asserts/editor/clipart/clipart3.png"}
                 width="75px"
                 height="75px"
               />

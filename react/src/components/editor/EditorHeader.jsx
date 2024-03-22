@@ -43,6 +43,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="25px"
               height="25px"
               cursor="pointer"
+              onClick={functions.toggleSnapGrid}
             />
             <S.V_Bar />
             <S.Glob_Icon
@@ -50,18 +51,16 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="20px"
               height="20px"
               cursor="pointer"
-              onClick={() => {
-                if (zoom > 0.6) {
-                  setZoom(zoom - 0.1);
-                }
-              }}
+              onClick={functions.zoomOut}
             />
             <label
               style={{
                 fontSize: "0.75rem",
                 padding: "0 0.25rem 0.1rem 0.25rem",
                 width: "40px",
+                cursor: "pointer",
               }}
+              onClick={functions.zoomReset}
             >
               {Math.round(zoom * 100)}%
             </label>
@@ -70,11 +69,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="20px"
               height="20px"
               cursor="pointer"
-              onClick={() => {
-                if (zoom < 2) {
-                  setZoom(zoom + 0.1);
-                }
-              }}
+              onClick={functions.zoomIn}
             />
             <S.V_Bar />
             <S.Glob_Icon

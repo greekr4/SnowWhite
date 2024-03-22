@@ -18,9 +18,13 @@ export const EditorAddtion = ({
   objSelection,
   setIsPopVisible,
   editor,
+  popUpdate,
+  setPopUpdate,
+  groupIndex,
+  setGroupIndex,
 }) => {
   const [type, setType] = useState();
-  const [thisFontStyle, setThisFontStyle] = useState(null);
+  const [ThisFontFamily, setThisFontFamily] = useState(null);
   const [thisFontSize, setThisFontSize] = useState(null);
   const [thisFontHeight, setThisFontHeight] = useState(null);
   const [thisFontWeight, setThisFontWeight] = useState(null);
@@ -30,7 +34,6 @@ export const EditorAddtion = ({
   const [isOpenColor, setIsOpenColor] = useState(false);
   const [realWidth, setRealWidth] = useState(0);
   const [realHeight, setRealHeight] = useState(0);
-  const [groupIndex, setGroupIndex] = useState(0);
 
   const handleEditFontSize = () => {
     functions.setFontSize(obj, thisFontSize);
@@ -54,9 +57,19 @@ export const EditorAddtion = ({
     setThisColor(
       `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`
     );
-    objSelection.list[0].node.setAttrs({
-      fill: `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`,
-    });
+    console.log(objSelection.list[0].type);
+
+    console.log("loglog");
+    if (objSelection.list[0].type === "label") {
+      const textObj = objSelection.list[0].textNode;
+      textObj.setAttrs({
+        fill: `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`,
+      });
+    } else {
+      objSelection.list[0].node.setAttrs({
+        fill: `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`,
+      });
+    }
   };
 
   useEffect(() => {
@@ -73,16 +86,17 @@ export const EditorAddtion = ({
     //objnodes가 2개이상
 
     const typeActions = {
-      textbox: () => {
+      label: () => {
         console.log("텍박임");
+        console.log(objSelection.list[0].textNode);
+        const textObj = objSelection.list[0].textNode;
         setType("텍스트");
-        setThisFontSize(obj.fontSize);
-        setThisColor(obj.fill);
-        setRealWidth(Math.round(obj.width * obj.scaleX) / 10);
-        setRealHeight(Math.round(obj.height * obj.scaleY) / 10);
-        setThisFontStyle(obj.fontFamily);
-        setThisFontHeight(obj.lineHeight);
-        setThisFontWeight(obj.fontWeight);
+        setThisFontSize(textObj.getFontSize());
+        setThisColor(textObj.attrs.fill);
+        setRealWidth(Math.round(objSelection.transformer.getWidth()) / 10);
+        setRealHeight(Math.round(objSelection.transformer.getHeight()) / 10);
+        setThisFontFamily(textObj.getFontFamily());
+        setThisFontHeight(textObj.getLineHeight());
       },
       image: () => {
         console.log("이미지임");
@@ -110,14 +124,18 @@ export const EditorAddtion = ({
       },
       circle: () => {
         setType("도형");
-        setThisColor(obj.fill);
-        setThisOpacity(obj.opacity);
+        setThisColor(objSelection.list[0].node.attrs.fill);
+        setThisOpacity(
+          objSelection.list[0].node.attrs.opacity
+            ? objSelection.list[0].node.attrs.opacity
+            : 1
+        );
         setRealWidth(Math.round(objSelection.transformer.getWidth()) / 10);
         setRealHeight(Math.round(objSelection.transformer.getHeight()) / 10);
       },
       rect: () => {
         setType("도형");
-        // setThisColor(objnodes[0]?.node.attrs.fill);
+        setThisColor(objSelection.list[0].node.attrs.fill);
         setThisOpacity(
           objSelection.list[0].node.attrs.opacity
             ? objSelection.list[0].node.attrs.opacity
@@ -128,15 +146,32 @@ export const EditorAddtion = ({
       },
       group: () => {
         setType("그룹");
-        setRealWidth(Math.round(obj.width * obj.scaleX) / 10);
-        setRealHeight(Math.round(obj.height * obj.scaleY) / 10);
+        setRealWidth(Math.round(objSelection.transformer.getWidth()) / 10);
+        setRealHeight(Math.round(objSelection.transformer.getHeight()) / 10);
+      },
+      multy: () => {
+        setType("멀티");
+        setRealWidth(Math.round(objSelection.transformer.getWidth()) / 10);
+        setRealHeight(Math.round(objSelection.transformer.getHeight()) / 10);
       },
     };
 
     // const objectType = objnodes[0]?.node.attrs.type;
 
-    const objectType =
-      objSelection.list.length > 1 ? "group" : objSelection.list[0].type;
+    let objectType;
+    if (objSelection.list.length > 1) {
+      console.log("이거");
+      console.log(objSelection.list[objSelection.list.length - 1]);
+      console.log("이거");
+      if (objSelection.list[objSelection.list.length - 1].type === "group") {
+        objectType = "group";
+      } else {
+        objectType = "multy";
+      }
+    } else {
+      objectType = objSelection?.list[0].type;
+    }
+
     console.log(objSelection.list.length);
     console.log(objectType);
     console.log(objSelection.list[0].type); //타입확인
@@ -185,15 +220,45 @@ export const EditorAddtion = ({
       y: copy_attrs.y + 10,
     };
 
+    let new_obj;
     switch (copy_type) {
       case "rect":
-        editor?.shapes.rect.insert(modifiedAttrs);
+        new_obj = editor?.shapes.rect.insert(modifiedAttrs);
+        objSelection.deselectAll();
+        objSelection.add(new_obj);
         break;
       case "circle":
-        editor?.shapes.circle.insert(modifiedAttrs);
+        new_obj = editor?.shapes.circle.insert(modifiedAttrs);
+        objSelection.deselectAll();
+        objSelection.add(new_obj);
         break;
       case "triangle":
-        editor?.shapes.triangle.insert(modifiedAttrs);
+        new_obj = editor?.shapes.triangle.insert(modifiedAttrs);
+        objSelection.deselectAll();
+        objSelection.add(new_obj);
+        break;
+      case "label":
+        const copy_text = objSelection.list[0].textNode.attrs;
+        new_obj = editor?.shapes.label.insert({
+          container: {
+            x: modifiedAttrs.x,
+            y: modifiedAttrs.y,
+          },
+          text: {
+            ...copy_text,
+          },
+        });
+        objSelection.deselectAll();
+        objSelection.add(new_obj);
+        break;
+      case "image":
+        console.log(objSelection.list[0].node.attrs.image.src);
+        new_obj = editor?.shapes.image.insert(
+          objSelection.list[0].node.attrs.image.src,
+          {
+            ...modifiedAttrs,
+          }
+        );
         break;
       // Add cases for other shapes as needed
       default:
@@ -219,11 +284,12 @@ export const EditorAddtion = ({
               <S.FontStyleBox>
                 <select
                   onChange={(e) => {
-                    setThisFontStyle(e.target.value);
-                    functions.setFontStyle(obj, e.target.value);
+                    setThisFontFamily(e.target.value);
+                    const textObj = objSelection.list[0].textNode;
+                    textObj.setFontFamily(e.target.value);
                   }}
-                  value={thisFontStyle}
-                  style={{ fontFamily: thisFontStyle }}
+                  value={ThisFontFamily}
+                  style={{ fontFamily: ThisFontFamily }}
                 >
                   <option value="굴림" style={{ fontFamily: "굴림" }}>
                     굴림체
@@ -239,6 +305,8 @@ export const EditorAddtion = ({
                   </option>
                 </select>
               </S.FontStyleBox>
+              {/* 
+              // 굵기
               <S.FontStyleBox>
                 <select
                   onChange={(e) => {
@@ -270,7 +338,7 @@ export const EditorAddtion = ({
                     굵기
                   </option>
                 </select>
-              </S.FontStyleBox>
+              </S.FontStyleBox> */}
             </div>
             <div className="line option-text">
               <S.ColorBox color={thisColor}>
@@ -295,7 +363,9 @@ export const EditorAddtion = ({
                   value={thisFontSize}
                   onChange={(e) => {
                     setThisFontSize(e.target.value);
-                    functions.setFontSize(obj, e.target.value);
+                    const textObj = objSelection.list[0].textNode;
+                    textObj.setFontSize(e.target.value);
+                    objSelection.reselect();
                   }}
                 >
                   {FontSizes.map((value) => (
@@ -311,7 +381,9 @@ export const EditorAddtion = ({
                   value={thisFontHeight}
                   onChange={(e) => {
                     setThisFontHeight(e.target.value);
-                    functions.setFontHeight(obj, e.target.value);
+                    const textObj = objSelection.list[0].textNode;
+                    textObj.setLineHeight(e.target.value);
+                    objSelection.reselect();
                   }}
                 >
                   {FontHeights.map((value) => (
@@ -323,7 +395,8 @@ export const EditorAddtion = ({
             <div className="line option-text">
               <S.Glob_Icon
                 onClick={() => {
-                  functions.setTextAlign(obj, "left");
+                  const textObj = objSelection.list[0].textNode;
+                  textObj.setAlign("left");
                 }}
                 icon={imagesContext("./align_left.png")}
                 width="18px"
@@ -332,7 +405,8 @@ export const EditorAddtion = ({
               />
               <S.Glob_Icon
                 onClick={() => {
-                  functions.setTextAlign(obj, "center");
+                  const textObj = objSelection.list[0].textNode;
+                  textObj.setAlign("center");
                 }}
                 icon={imagesContext("./align_center.png")}
                 width="18px"
@@ -341,7 +415,8 @@ export const EditorAddtion = ({
               />
               <S.Glob_Icon
                 onClick={() => {
-                  functions.setTextAlign(obj, "right");
+                  const textObj = objSelection.list[0].textNode;
+                  textObj.setAlign("right");
                 }}
                 icon={imagesContext("./align_right.png")}
                 width="18px"
@@ -350,7 +425,12 @@ export const EditorAddtion = ({
               />
               <S.Glob_Icon
                 onClick={() => {
-                  functions.setTextItalic(obj);
+                  const textObj = objSelection.list[0].textNode;
+                  if (textObj.getFontStyle() === "italic") {
+                    textObj.setFontStyle();
+                  } else {
+                    textObj.setFontStyle("italic");
+                  }
                 }}
                 icon={imagesContext("./italic.png")}
                 width="18px"
@@ -359,7 +439,13 @@ export const EditorAddtion = ({
               />
               <S.Glob_Icon
                 onClick={() => {
-                  functions.setTextUnderline(obj);
+                  const textObj = objSelection.list[0].textNode;
+                  console.log(textObj.getTextDecoration());
+                  if (textObj.getTextDecoration() === "underline") {
+                    textObj.setTextDecoration();
+                  } else {
+                    textObj.setTextDecoration("underline");
+                  }
                 }}
                 icon={imagesContext("./underline.png")}
                 width="18px"
@@ -368,7 +454,7 @@ export const EditorAddtion = ({
               />
             </div>
           </>
-        ) : type != "그룹" ? (
+        ) : type != "그룹" && type != "멀티" ? (
           <>
             <div className="line option-default">
               {type === "도형" ? (
@@ -417,31 +503,41 @@ export const EditorAddtion = ({
         ) : (
           <>
             <div className="line option btnbox">
-              <S.Glob_Icon
-                onClick={() => {
-                  objSelection.group(groupIndex + "group");
-                  setGroupIndex(groupIndex + 1);
-                }}
-                icon={imagesContext("./group_obj.png")}
-                width="20px"
-                height="20px"
-                cursor="pointer"
-              />
-              <S.V_Bar />
-              <S.Glob_Icon
-                onClick={() => {
-                  const groupName = objSelection.list[0].group
-                    ? objSelection.list[0].group
-                    : objSelection.list[0].name;
-                  objSelection.board.groups.ungroup(groupName);
-                  objSelection.deselectAll();
-                  setIsPopVisible();
-                }}
-                icon={imagesContext("./ungroup_obj.png")}
-                width="20px"
-                height="20px"
-                cursor="pointer"
-              />
+              {type === "멀티" && (
+                <>
+                  <S.Glob_Icon
+                    onClick={() => {
+                      // 그룹 만들기
+                      objSelection.group(groupIndex + "group");
+                      objSelection.deselectAll();
+                      setIsPopVisible();
+                      setGroupIndex((groupIndex) => groupIndex + 1);
+                    }}
+                    icon={imagesContext("./group_obj.png")}
+                    width="20px"
+                    height="20px"
+                    cursor="pointer"
+                  />
+                </>
+              )}
+              {type === "그룹" && (
+                <>
+                  <S.Glob_Icon
+                    onClick={() => {
+                      const groupName = objSelection.list[0].group
+                        ? objSelection.list[0].group
+                        : objSelection.list[0].name;
+                      objSelection.board.groups.ungroup(groupName);
+                      objSelection.deselectAll();
+                      setIsPopVisible();
+                    }}
+                    icon={imagesContext("./ungroup_obj.png")}
+                    width="20px"
+                    height="20px"
+                    cursor="pointer"
+                  />
+                </>
+              )}
             </div>
           </>
         )}
@@ -450,14 +546,25 @@ export const EditorAddtion = ({
           <S.Glob_Icon
             //앞으로 가기
             onClick={() => {
+              console.log(objSelection.list);
               console.log(editor.board.layer.children);
-              const zindex =
-                objSelection.list[0].node.index <
-                editor.board.layer.children.length - 2
-                  ? objSelection.list[0].node.index + 1
-                  : objSelection.list[0].node.index;
-              console.log(zindex);
-              objSelection.list[0].node.setZIndex(zindex);
+
+              if (type === "멀티") {
+                objSelection.list.forEach((obj) => {
+                  const zindex =
+                    obj.node.index < editor.board.layer.children.length - 2
+                      ? obj.node.index + 1
+                      : obj.node.index;
+                  obj.node.setZIndex(zindex);
+                });
+              } else {
+                const zindex =
+                  objSelection.list[0].node.index <
+                  editor.board.layer.children.length - 2
+                    ? objSelection.list[0].node.index + 1
+                    : objSelection.list[0].node.index;
+                objSelection.list[0].node.setZIndex(zindex);
+              }
             }}
             icon={imagesContext("./forward.png")}
             width="20px"
@@ -468,11 +575,21 @@ export const EditorAddtion = ({
           <S.Glob_Icon
             //뒤로가기
             onClick={() => {
-              const zindex =
-                objSelection.list[0].node.index > 7 //가이드 라인 0~6까지
-                  ? objSelection.list[0].node.index - 1
-                  : objSelection.list[0].node.index;
-              objSelection.list[0].node.setZIndex(zindex);
+              if (type === "멀티") {
+                objSelection.list.forEach((obj) => {
+                  const zindex =
+                    obj.node.index > 7 //가이드 라인 0~6까지
+                      ? obj.node.index - 1
+                      : obj.node.index;
+                  obj.node.setZIndex(zindex);
+                });
+              } else {
+                const zindex =
+                  objSelection.list[0].node.index > 7 //가이드 라인 0~6까지
+                    ? objSelection.list[0].node.index - 1
+                    : objSelection.list[0].node.index;
+                objSelection.list[0].node.setZIndex(zindex);
+              }
             }}
             icon={imagesContext("./backward.png")}
             width="20px"
@@ -480,7 +597,7 @@ export const EditorAddtion = ({
             cursor="pointer"
           />
           <S.V_Bar />
-          {type != "그룹" && (
+          {type != "멀티" && type != "그룹" && (
             <>
               <S.Glob_Icon
                 //복사하기

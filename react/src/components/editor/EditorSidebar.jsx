@@ -63,7 +63,7 @@ const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
             />
             <p>배경</p>
           </S.ESideBtnItem>
-          <S.ESideBtnItem>
+          <S.ESideBtnItem onClick={functions.createText}>
             <S.Glob_Icon
               icon={imagesContext("./textbox.png")}
               width="30px"
