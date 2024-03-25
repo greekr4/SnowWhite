@@ -2665,9 +2665,9 @@ export const OBFinalPymentBoxAdd = styled.div`
 
 export const EditorWrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: 1300px;
   min-width: 1140px;
-  height: 1024px;
+  height: 100%;
   background-color: #eee;
 `;
 
@@ -2675,6 +2675,8 @@ export const CanvasBox = styled.div`
   // 에디터 사이즈
   /* width: ${(props) => props.canvasWidth + "px"};
   height: ${(props) => props.canvasHight + "px"}; */
+  width: 1300px;
+  height: 1024px;
   margin: auto;
   margin-top: 40px;
   z-index: 998;
@@ -2938,8 +2940,8 @@ export const CanvasPopup = styled.div`
   border: 1px solid rgb(204, 204, 204);
   box-sizing: border-box;
   width: 260px;
-  top: ${(props) => -1100 + props.objy + "px"};
-  left: ${(props) => props.objx + 125 + "px"};
+  top: ${(props) => props.objy - 190 + "px"};
+  left: ${(props) => props.objx + 425 + "px"};
   z-index: 999;
 
   & div.line {

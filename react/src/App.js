@@ -37,6 +37,7 @@ import PrintEstimate from "./components/products/PrintEstimate.jsx";
 import TestKonva from "./pages/TestKonva.jsx";
 import TestKonva2 from "./pages/TestKonva2.jsx";
 import TestKonva3 from "./pages/TestKonva3.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -98,7 +99,7 @@ function App({ queryClient }) {
               element={<ProductDetailPage />}
             />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/order" element={<OrderPage />} />
+            <Route path="/order/:item_sids" element={<OrderPage />} />
             <Route path="/orderlist" element={<OrderListPage />} />
             <Route path="/notice" element={<NoticePage />} />
             <Route
@@ -107,10 +108,11 @@ function App({ queryClient }) {
             />
             <Route path="/intro0" element={<IntroPage0 />} />
           </Route>
-          <Route path="/editor" element={<EditorPage />} />
+          <Route path="/editor" element={<TestKonva3 />} />
           <Route path="/test" element={<TestKonva />} />
           <Route path="/test2" element={<TestKonva2 />} />
           <Route path="/test3" element={<TestKonva3 />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </BrowserRouter>
     </>

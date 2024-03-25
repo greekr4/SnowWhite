@@ -73,7 +73,6 @@ const OrderListPage = () => {
               </S.RightInner>
               <S.RightInner>-</S.RightInner>
               <S.RightInner>
-                {" "}
                 <DatePicker
                   renderCustomHeader={CustomDatePickerHeader}
                   dateFormat="yyyy-MM-dd"

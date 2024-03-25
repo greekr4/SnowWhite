@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import * as S from "../../styles/new_styles";
 import EditorSideAddtion from "./EditorSideAddtion";
 
-const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
+const EditorSidebar = ({
+  functions,
+  isAddVisible,
+  setIsAddVisible,
+  editor,
+  myRef,
+}) => {
   const [type, setType] = useState();
 
   const handleClick = (value) => {
@@ -63,7 +69,7 @@ const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
             />
             <p>배경</p>
           </S.ESideBtnItem>
-          <S.ESideBtnItem onClick={functions.createText}>
+          <S.ESideBtnItem onClick={editor?.functions.createText}>
             <S.Glob_Icon
               icon={imagesContext("./textbox.png")}
               width="30px"
@@ -95,7 +101,12 @@ const EditorSidebar = ({ functions, isAddVisible, setIsAddVisible }) => {
         </S.ESideBtnBox>
       </S.ESWrapper>
       {isAddVisible ? (
-        <EditorSideAddtion type={type} functions={functions} />
+        <EditorSideAddtion
+          type={type}
+          functions={functions}
+          editor={editor}
+          myRef={myRef}
+        />
       ) : null}
     </>
   );

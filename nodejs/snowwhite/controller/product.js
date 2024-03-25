@@ -253,3 +253,40 @@ exports.delete_cart = async (req, res) => {
 
   return res.status(200).send("OK");
 };
+
+exports.select_order = async (req, res) => {
+  const { item_sid } = req.body;
+  // * 수정해야함
+  const qry = `
+select
+	T1.*,
+	T2.*,
+	T3.*,
+	T4.*
+from
+	TB_CART T1
+inner join TB_CUSTOM_PROD T2
+on
+	T1.ITEM_SID = T2.ITEM_SID
+left outer join TB_PRODUCT T3
+on
+	T2.PROD_SID = T3.PROD_SID
+left outer join (
+	select
+		PROD_SID,
+		IMAGE_LOCATION
+	from
+		TB_PRODUCT_IMAGE
+	where
+		IMAGE_CATE = 'THUMBNAIL') T4
+on
+	T4.PROD_SID = T3.PROD_SID
+where
+	T1.ITEM_SID IN (?)
+`;
+
+  const res_data = await getConnection(qry, [item_sid]);
+
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};

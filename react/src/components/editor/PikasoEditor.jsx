@@ -11,6 +11,7 @@ const PikasoEditor = forwardRef(
     {
       setPopUpdate,
       popUpdate,
+      objSelection,
       setObjSelection,
       setObjx,
       setObjy,
@@ -28,45 +29,16 @@ const PikasoEditor = forwardRef(
       functions,
     }));
 
-    const [ref, editor] = usePikaso({
-      selection: {
-        interactive: true, // 셀렉트 사용 여부
-        keyboard: {
-          enabled: true, // 키보드 단축키 사용
-          movingSpaces: 20, // 속도
-          map: {
-            // 단축키 설정
-            delete: ["Backsapce", "Delete"],
-            deselect: ["Escape"],
-          },
-        },
-        transformer: {
-          // 스타일링
-          borderStroke: "#A5E6F3",
-          borderStrokeWidth: 1.5,
-          borderDash: [4, 4],
-          anchorSize: 7, // 원 사이즈
-          anchorFill: "#90E0EF",
-          anchorStroke: "#00B4D8",
-          anchorStrokeWidth: 1,
-        },
-        zone: {
-          //드래그
-          fill: "rgba(165, 230, 243,0.5)",
-          stroke: "rgba(165, 230, 243,0.5)",
-        },
-      },
-    });
+    const initSetting = () => {
+      editor?.reset();
+      editor?.snapGrid.setOptions({
+        strokeWidth: 1,
+        stroke: "#777",
+        dash: [3, 3],
+        width: 100,
+      });
+      editor?.snapGrid.setOffset(10); // default is
 
-    editor?.snapGrid.setOptions({
-      strokeWidth: 1,
-      stroke: "#777",
-      dash: [3, 3],
-      width: 100,
-    });
-    editor?.snapGrid.setOffset(10); // default is
-
-    useEffect(() => {
       // 배경 설정
       editor?.board.background.setImageFromUrl(
         "/asserts/editor/backgorund1.png"
@@ -160,6 +132,40 @@ const PikasoEditor = forwardRef(
       });
 
       setHistoryStep(editor?.history.step + 4);
+    };
+
+    const [ref, editor] = usePikaso({
+      selection: {
+        interactive: true, // 셀렉트 사용 여부
+        keyboard: {
+          enabled: true, // 키보드 단축키 사용
+          movingSpaces: 10, // 속도
+          map: {
+            // 단축키 설정
+            delete: ["Backsapce", "Delete"],
+            deselect: ["Escape"],
+          },
+        },
+        transformer: {
+          // 스타일링
+          borderStroke: "#A5E6F3",
+          borderStrokeWidth: 1.5,
+          borderDash: [4, 4],
+          anchorSize: 7, // 원 사이즈
+          anchorFill: "#90E0EF",
+          anchorStroke: "#00B4D8",
+          anchorStrokeWidth: 1,
+        },
+        zone: {
+          //드래그
+          fill: "rgba(165, 230, 243,0.5)",
+          stroke: "rgba(165, 230, 243,0.5)",
+        },
+      },
+    });
+
+    useEffect(() => {
+      initSetting();
     }, [editor]);
 
     const functions = {
@@ -187,11 +193,11 @@ const PikasoEditor = forwardRef(
       createText: () => {
         editor?.shapes.label.insert({
           container: {
-            x: editor?.board.stage.attrs.width / 2 - 20,
+            x: editor?.board.stage.attrs.width / 2 - 40,
             y: editor?.board.stage.attrs.height / 2 - 20,
           },
           text: {
-            text: "TK",
+            text: "TEXT",
             fill: "#000",
             fontSize: 40,
             fontFamily: "굴림체",
@@ -207,8 +213,10 @@ const PikasoEditor = forwardRef(
         });
       },
       createBackgorund: (color) => {
-        editor?.board.getNodes().forEach((obj) => {
-          if (obj.attrs.name === "bgc") {
+        console.log(editor?.board.shapes.node);
+        editor?.board.shapes.forEach((obj) => {
+          if (obj.node.attrs.name === "bgc") {
+            console.log(obj);
             obj.destroy();
           }
         });
@@ -252,30 +260,169 @@ const PikasoEditor = forwardRef(
       test: () => {
         console.log(editor);
       },
+      handleCopy: () => {
+        const copy_type = objSelection?.list[0]?.type;
+        const copy_attrs = objSelection?.list[0]?.node.attrs;
+
+        const modifiedAttrs = {
+          ...copy_attrs,
+          x: copy_attrs.x + 10,
+          y: copy_attrs.y + 10,
+        };
+
+        let new_obj;
+
+        switch (copy_type) {
+          case "rect":
+            new_obj = editor?.shapes.rect.insert(modifiedAttrs);
+            objSelection.deselectAll();
+            objSelection.add(new_obj);
+            break;
+          case "circle":
+            new_obj = editor?.shapes.circle.insert(modifiedAttrs);
+            objSelection.deselectAll();
+            objSelection.add(new_obj);
+            break;
+          case "triangle":
+            new_obj = editor?.shapes.triangle.insert(modifiedAttrs);
+            objSelection.deselectAll();
+            objSelection.add(new_obj);
+            break;
+          case "label":
+            console.log(editor);
+            const copy_text = objSelection?.list[0].textNode.attrs;
+            console.log(objSelection?.list[0].textNode.attrs);
+            console.log(copy_text);
+            new_obj = editor?.shapes.label.insert({
+              container: {
+                x: modifiedAttrs.x,
+                y: modifiedAttrs.y,
+              },
+              text: {
+                ...copy_text,
+              },
+            });
+            objSelection.deselectAll();
+            objSelection.add(new_obj);
+            break;
+          case "image":
+            console.log(objSelection.list[0].node.attrs.image.src);
+            new_obj = editor?.shapes.image.insert(
+              objSelection.list[0].node.attrs.image.src,
+              {
+                ...modifiedAttrs,
+              }
+            );
+            break;
+          // Add cases for other shapes as needed
+          default:
+            console.error("Unsupported shape type:", copy_type);
+        }
+      },
+      handleFile: () => {
+        editor.export.toImage({
+          /* export config */
+        });
+        console.log(
+          editor.export.toImage({
+            x: 200,
+            y: 200,
+            width: 900,
+            height: 500,
+            callback: () => {
+              alert("d");
+            },
+          })
+        );
+      },
+
+      handleSave: () => {
+        console.log(editor?.export.toJson());
+      },
+      handleLoad: (templet) => {
+        const loadjson = templet;
+
+        initSetting();
+
+        const filltedJson = loadjson.shapes.filter(
+          (obj) => obj.attrs.name != "guide" && obj.attrs.name != "bgc"
+        );
+
+        const bgcColor = loadjson.shapes.filter(
+          (obj) => obj.attrs.name === "bgc"
+        )[0].attrs.fill;
+
+        console.log(bgcColor);
+
+        functions.createBackgorund(bgcColor);
+
+        filltedJson.forEach((e, index) => {
+          console.log(e);
+          switch (e.className) {
+            case "Rect":
+              editor?.shapes.rect.insert({
+                ...e?.attrs,
+              });
+              break;
+
+            case "Image":
+              editor?.shapes.image.insert(e.attrs.url, {
+                ...e?.attrs,
+              });
+              break;
+
+            case "Label":
+              editor?.shapes.label.insert({
+                container: {
+                  ...e?.attrs,
+                },
+                text: {
+                  ...e?.children.filter((obj) => obj.className === "Text")[0]
+                    .attrs,
+                },
+              });
+              break;
+            case "Circle":
+              editor?.shapes.circle.insert({
+                ...e?.attrs,
+              });
+              break;
+            default:
+              alert(e.className);
+              break;
+          }
+        });
+      },
     };
 
     useEffect(() => {
       functions.zoomSet();
     }, [zoom]);
 
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState();
     useEffect(() => {
-      if (editorIndex != selectedEditor) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+      setIsVisible(selectedEditor !== editorIndex ? false : true);
     }, [selectedEditor]);
+
     return (
       <div
-        ref={ref}
         style={{
-          background: "#eee",
           width: "100%",
-          height: "100vh",
+          height: "100%",
           opacity: isVisible ? "1" : "0",
+          zIndex: isVisible ? "998" : "-1",
+          position: "absolute",
         }}
-      />
+      >
+        <div
+          ref={ref}
+          style={{
+            background: "#eee",
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      </div>
     );
   }
 );

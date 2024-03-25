@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring } from "react-spring";
 import { SketchPicker } from "react-color";
+import { tem1_1, tem1_2 } from "./tem";
 
-const EditorSideAddtion = ({ functions, type }) => {
+const EditorSideAddtion = ({ functions, type, editor, myRef }) => {
   const [subMenu, setSubMenu] = useState({
     menu1: true,
     menu2: false,
@@ -53,7 +54,7 @@ const EditorSideAddtion = ({ functions, type }) => {
     // console.log(event.currentTarget.getAttribute("color"));
     const color_val = event.currentTarget.getAttribute("color");
     console.log(color_val);
-    functions.createBackgorund(color_val);
+    editor.functions.createBackgorund(color_val);
   };
 
   const handleBgcPick = (color) => {
@@ -68,7 +69,7 @@ const EditorSideAddtion = ({ functions, type }) => {
 
   const handlePickerClose = () => {
     setIsPickerOpen(false);
-    functions.createBackgorund(pickColor);
+    editor.functions.createBackgorund(pickColor);
   };
 
   const SlideDown1 = useSpring({
@@ -90,7 +91,7 @@ const EditorSideAddtion = ({ functions, type }) => {
 
   const handleCreateImage = (e) => {
     const url = e.currentTarget.getAttribute("icon");
-    functions.createImage(url);
+    editor.functions.createImage(url);
   };
 
   return (
@@ -104,7 +105,7 @@ const EditorSideAddtion = ({ functions, type }) => {
                 icon={imagesContext("./rectangle.png")}
                 width="75px"
                 height="75px"
-                onClick={functions.createRect}
+                onClick={editor.functions.createRect}
               />
             </S.ESideAddShapesItem>
             <S.ESideAddShapesItem>
@@ -112,7 +113,7 @@ const EditorSideAddtion = ({ functions, type }) => {
                 icon={imagesContext("./cricle.png")}
                 width="75px"
                 height="75px"
-                onClick={functions.createCircle}
+                onClick={editor.functions.createCircle}
               />
             </S.ESideAddShapesItem>
           </S.ESideAddShapesBox>
@@ -162,10 +163,7 @@ const EditorSideAddtion = ({ functions, type }) => {
               </p>
               <S.ESideAddBgColorsBox style={SlideDown1}>
                 <S.ESideAddBgColors ref={ref_menu1}>
-                  <S.BgColorBtn
-                    onClick={() => functions.createBackgorund("#000")}
-                    color="#000"
-                  />
+                  <S.BgColorBtn onClick={handleBgcClick} color="#000" />
                   <S.BgColorBtn onClick={handleBgcClick} color="#333" />
                   <S.BgColorBtn onClick={handleBgcClick} color="#777" />
                   <S.BgColorBtn onClick={handleBgcClick} color="#ccc" />
@@ -227,6 +225,10 @@ const EditorSideAddtion = ({ functions, type }) => {
           <S.ESTempateBox>
             <S.ESTemplateItem>
               <S.Glob_Icon
+                onClick={() => {
+                  myRef[0]?.functions.handleLoad(tem1_1);
+                  myRef[1]?.functions.handleLoad(tem1_2);
+                }}
                 icon={imagesContext("./tem1.png")}
                 width="100%"
                 height="100%"

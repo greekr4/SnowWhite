@@ -6,7 +6,6 @@ import EditorHeader from "../components/editor/EditorHeader";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { EditorAddtion } from "../components/editor/EditorAddtion";
 import testlogo from "../assets/testlogo.png";
-import { tem1 } from "../components/editor/tem";
 import background1 from "../assets/editor/background1.png";
 import background2 from "../assets/editor/background2.png";
 import "fabric-history";
@@ -453,7 +452,6 @@ const EditorPage = () => {
       });
     },
     testTem: () => {
-      fabricCanvas.loadFromJSON(tem1);
       fabricCanvas.renderAll();
     },
 

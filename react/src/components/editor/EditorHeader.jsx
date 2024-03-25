@@ -11,7 +11,7 @@ const imagesContext = require.context(
 const imageNames = imagesContext.keys();
 //
 
-const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
+const EditorHeader = ({ functions, zoom, setZoom, isAddVisible, editor }) => {
   return (
     <S.EHLayout>
       <S.EHWrapper>
@@ -27,7 +27,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               height="25px"
               margin="0 0 0 1rem"
               cursor="pointer"
-              onClick={functions.undo}
+              onClick={editor?.functions.undo}
             />
             <S.Glob_Icon
               icon={imagesContext("./redo.png")}
@@ -35,7 +35,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               height="25px"
               margin="0 0 0 1rem"
               cursor="pointer"
-              onClick={functions.redo}
+              onClick={editor?.functions.redo}
             />
             <S.V_Bar />
             <S.Glob_Icon
@@ -43,7 +43,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="25px"
               height="25px"
               cursor="pointer"
-              onClick={functions.toggleSnapGrid}
+              onClick={editor?.functions.toggleSnapGrid}
             />
             <S.V_Bar />
             <S.Glob_Icon
@@ -51,7 +51,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="20px"
               height="20px"
               cursor="pointer"
-              onClick={functions.zoomOut}
+              onClick={editor?.functions.zoomOut}
             />
             <label
               style={{
@@ -60,7 +60,7 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
                 width: "40px",
                 cursor: "pointer",
               }}
-              onClick={functions.zoomReset}
+              onClick={editor?.functions.zoomReset}
             >
               {Math.round(zoom * 100)}%
             </label>
@@ -69,16 +69,23 @@ const EditorHeader = ({ functions, zoom, setZoom, isAddVisible }) => {
               width="20px"
               height="20px"
               cursor="pointer"
-              onClick={functions.zoomIn}
+              onClick={editor?.functions.zoomIn}
             />
             <S.V_Bar />
             <S.Glob_Icon
+              onClick={editor?.functions.handleSave}
               icon={imagesContext("./file.png")}
               width="25px"
               height="25px"
               cursor="pointer"
             />
-            <S.Btn>save</S.Btn>
+            <S.Glob_Icon
+              onClick={editor?.functions.handleFile}
+              icon={imagesContext("./file.png")}
+              width="25px"
+              height="25px"
+              cursor="pointer"
+            />
           </S.EHBtnBox>
         </S.EHBotBox>
       </S.EHWrapper>

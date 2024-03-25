@@ -1,13 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "../styles/new_styles";
 import expand_arrow from "../assets/icons/expand-arrow.png";
 import collapse_arrow from "../assets/icons/collapse-arrow.png";
 import { useSpring } from "react-spring";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import { useQuery } from "react-query";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 const OrderPage = () => {
+  const { data } = useQuery("userinfo", { enabled: false });
   const [radioValue, SetRadioValue] = useState();
   const [ViewStep, SetViewStep] = useState(0);
+  const { item_sids } = useParams();
+  const [orderItem, setOrderItem] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
+  // 배송 정보 - 주문자
+  const [userNm, setUserNm] = useState();
+  const [userTel, setUserTel] = useState();
+  const [userEmail, setUserEmail] = useState();
+
+  // 배송 정보 - 배송지 정보
+  const [orderReceiver, setOrderReceiver] = useState();
+  const [orderTel, setOrderTel] = useState();
+  const [orderPostcode, setOrderPostcode] = useState();
+  const [orderAddress, setOrderAddress] = useState();
+  const [orderAddAddress, setOrderAddAddress] = useState();
+  const [orderEtc, setOrderEtc] = useState();
+
+  const [addressVisible, setAddressVisible] = useState(false);
+
+  useEffect(() => {
+    let params = [];
+    item_sids.split(",").forEach((el) => {
+      params.push(el);
+    });
+
+    axios
+      .post("/api/order", {
+        item_sid: params,
+      })
+      .then((res) => {
+        console.log(res);
+        setOrderItem(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    setUserNm(data?.USER_NM);
+    setUserTel(data?.USER_TEL0);
+    setUserEmail(data?.USER_ID);
+  }, []);
+
+  const handleSameBtn = () => {
+    setOrderReceiver(data?.USER_NM);
+    setOrderTel(data?.USER_TEL0);
+    setOrderPostcode(data?.DELI_POSTCODE);
+    setOrderAddress(data?.DELI_ADDRESS);
+    setOrderAddAddress(data?.DELI_ADD_ADDRESS);
+  };
+
+  useEffect(() => {
+    setTotalPrice(orderItem.reduce((sum, item) => sum + item.ITEM_AMOUNT, 0));
+  }, [orderItem]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  console.log(item_sids.split());
   const handleRadioValue = (e) => {
     console.log(e.target.id);
     SetRadioValue(e.target.id);
@@ -53,22 +120,34 @@ const OrderPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <S.CartMidThumbnail></S.CartMidThumbnail>
-                    </td>
-                    <td>
-                      <S.OrderMidProdInfoBox>
-                        <h1>일반 명함</h1>
-                        <p>90 x 50 / 스노우(비코팅) 250g</p>
-                        <p>2024-02-15</p>
-                      </S.OrderMidProdInfoBox>
-                    </td>
-                    <td>500</td>
-                    <td>3,400</td>
-                    <td>0</td>
-                    <td>3,400</td>
-                  </tr>
+                  {orderItem.map((el, index) => (
+                    <tr>
+                      <td>
+                        <Link to={`/products/detail/${el.PROD_SID}`}>
+                          <S.CartMidThumbnail img={el.IMAGE_LOCATION} />
+                        </Link>
+                      </td>
+                      <td>
+                        <S.CartMidProdInfoBox>
+                          <h1>{el.PROD_NM}</h1>
+                          <p>
+                            {el.ITEM_OPTION
+                              ? el.ITEM_OPTION.map((option, index) =>
+                                  index === el.ITEM_OPTION.length - 1
+                                    ? `${option.OPTION_CATE}-${option.OPTION_NM}`
+                                    : `${option.OPTION_CATE}-${option.OPTION_NM} / `
+                                )
+                              : "기본 옵션"}
+                          </p>
+                          <p>{formatDate(el.CART_REGDATE)}</p>
+                        </S.CartMidProdInfoBox>
+                      </td>
+                      <td>{el.ITEM_QUANTITY.toLocaleString("ko-KR")}</td>
+                      <td>{el.ITEM_AMOUNT.toLocaleString("ko-KR")}</td>
+                      <td>0</td>
+                      <td>{el.ITEM_AMOUNT.toLocaleString("ko-KR")}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </S.OrderMidProdBox>
@@ -90,54 +169,84 @@ const OrderPage = () => {
                     <tr>
                       <th>이름</th>
                       <td>
-                        <input type="text" width="1000px" />
+                        <input type="text" width="1000px" value={userNm} />
                       </td>
                     </tr>
                     <tr>
                       <th>연락처</th>
                       <td>
-                        <input className="tel" value="010"></input>
-                        <input className="tel" value="1234"></input>
-                        <input className="tel" value="5678"></input>
+                        <input className="text" value={userTel}></input>
                       </td>
                     </tr>
                     <tr>
                       <th>이메일</th>
                       <td>
-                        <input type="text" />
+                        <input type="text" value={userEmail} />
                       </td>
                     </tr>
                   </table>
                   <S.OBTextAndBtnBox>
                     <h1>배송지 정보</h1>
-                    <S.Btn>주문자와 동일</S.Btn>
+                    <S.Btn onClick={handleSameBtn}>주문자와 동일</S.Btn>
                   </S.OBTextAndBtnBox>
+
                   <table>
                     <tr>
                       <th>받으시는 분</th>
                       <td>
-                        <input type="text" />
+                        <input type="text" value={orderReceiver} />
                       </td>
                     </tr>
                     <tr>
                       <th>연락처</th>
                       <td>
-                        <input className="tel" value=""></input>
-                        <input className="tel" value=""></input>
-                        <input className="tel" value=""></input>
+                        <input className="text" value={orderTel}></input>
                       </td>
                     </tr>
                     <tr>
                       <th>주소</th>
                       <td>
-                        <input type="text" />
-                        <S.Btn margin="0 0 0 0.5rem">우편번호 조회</S.Btn>
+                        <input type="text" value={orderPostcode} />
+                        <S.Btn
+                          onClick={() => {
+                            setAddressVisible(true);
+                          }}
+                          margin="0 0 0 0.5rem"
+                        >
+                          우편번호 조회
+                        </S.Btn>
+
+                        {addressVisible && (
+                          <div
+                            className="postWrapper"
+                            style={{
+                              position: "absolute",
+                              width: "550px",
+                              left: "440px",
+                              border: "1px solid #ccc",
+                            }}
+                          >
+                            <DaumPostcodeEmbed
+                              onComplete={(data) => {
+                                setOrderAddress(data.address);
+                                setOrderPostcode(data.zonecode);
+                                setAddressVisible(false);
+                              }}
+                            />
+                          </div>
+                        )}
+
                         <br />
-                        <input type="text" className="deli" />
+                        <input
+                          type="text"
+                          className="deli"
+                          value={orderAddress}
+                        />
                         <input
                           type="text"
                           className="deli"
                           placeholder="상세 주소를 입력해주세요."
+                          value={orderAddAddress}
                         />
                       </td>
                     </tr>
@@ -148,6 +257,7 @@ const OrderPage = () => {
                           type="text"
                           className="message"
                           placeholder="배송 요청 사항을 입력해주세요."
+                          value={orderEtc}
                         />
                       </td>
                     </tr>
@@ -272,7 +382,9 @@ const OrderPage = () => {
               <S.OBFinalPaymentBox>
                 <S.OBFinalRowBox>
                   <div className="left">합계</div>
-                  <div className="right">6,400</div>
+                  <div className="right">
+                    {(totalPrice + 3000).toLocaleString("ko-kr")}
+                  </div>
                 </S.OBFinalRowBox>
                 <S.OBFinalRowBox>
                   <div className="left">상품 금액</div>

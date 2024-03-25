@@ -106,14 +106,6 @@ export const EditorAddtion = ({
         setRealHeight(Math.round(obj.height * obj.scaleY) / 10);
         setThisOpacity(obj.opacity);
       },
-      undefined: () => {
-        console.log("드래그 그룹임");
-        setType("그룹");
-        console.log(canvas.getActiveObject());
-        const group_obj = canvas.getActiveObject();
-        setRealWidth(Math.round(group_obj.width * group_obj.scaleX) / 10);
-        setRealHeight(Math.round(group_obj.height * group_obj.scaleY) / 10);
-      },
       activeSelection: () => {
         console.log("쉬프트클릭 그룹임");
         setType("그룹");
@@ -169,12 +161,12 @@ export const EditorAddtion = ({
         objectType = "multy";
       }
     } else {
-      objectType = objSelection?.list[0].type;
+      objectType = objSelection?.list[0]?.type;
     }
 
-    console.log(objSelection.list.length);
+    console.log(objSelection?.list?.length);
     console.log(objectType);
-    console.log(objSelection.list[0].type); //타입확인
+    console.log(objSelection?.list[0]?.type); //타입확인
 
     // const objectType = "shape";
 
@@ -211,59 +203,7 @@ export const EditorAddtion = ({
   );
 
   const handleCopy = () => {
-    const copy_type = objSelection.list[0].type;
-    const copy_attrs = objSelection.list[0].node.attrs;
-
-    const modifiedAttrs = {
-      ...copy_attrs,
-      x: copy_attrs.x + 10,
-      y: copy_attrs.y + 10,
-    };
-
-    let new_obj;
-    switch (copy_type) {
-      case "rect":
-        new_obj = editor?.shapes.rect.insert(modifiedAttrs);
-        objSelection.deselectAll();
-        objSelection.add(new_obj);
-        break;
-      case "circle":
-        new_obj = editor?.shapes.circle.insert(modifiedAttrs);
-        objSelection.deselectAll();
-        objSelection.add(new_obj);
-        break;
-      case "triangle":
-        new_obj = editor?.shapes.triangle.insert(modifiedAttrs);
-        objSelection.deselectAll();
-        objSelection.add(new_obj);
-        break;
-      case "label":
-        const copy_text = objSelection.list[0].textNode.attrs;
-        new_obj = editor?.shapes.label.insert({
-          container: {
-            x: modifiedAttrs.x,
-            y: modifiedAttrs.y,
-          },
-          text: {
-            ...copy_text,
-          },
-        });
-        objSelection.deselectAll();
-        objSelection.add(new_obj);
-        break;
-      case "image":
-        console.log(objSelection.list[0].node.attrs.image.src);
-        new_obj = editor?.shapes.image.insert(
-          objSelection.list[0].node.attrs.image.src,
-          {
-            ...modifiedAttrs,
-          }
-        );
-        break;
-      // Add cases for other shapes as needed
-      default:
-        console.error("Unsupported shape type:", copy_type);
-    }
+    editor?.functions.handleCopy();
   };
 
   return (
@@ -546,13 +486,14 @@ export const EditorAddtion = ({
           <S.Glob_Icon
             //앞으로 가기
             onClick={() => {
-              console.log(objSelection.list);
-              console.log(editor.board.layer.children);
+              // console.log(objSelection.list);
+              // console.log(editor.board.layer.children);
 
               if (type === "멀티") {
                 objSelection.list.forEach((obj) => {
                   const zindex =
-                    obj.node.index < editor.board.layer.children.length - 2
+                    obj.node.index <
+                    objSelection?.board?.layer?.children.length - 2
                       ? obj.node.index + 1
                       : obj.node.index;
                   obj.node.setZIndex(zindex);
@@ -560,7 +501,7 @@ export const EditorAddtion = ({
               } else {
                 const zindex =
                   objSelection.list[0].node.index <
-                  editor.board.layer.children.length - 2
+                  objSelection?.board?.layer?.children.length - 2
                     ? objSelection.list[0].node.index + 1
                     : objSelection.list[0].node.index;
                 objSelection.list[0].node.setZIndex(zindex);

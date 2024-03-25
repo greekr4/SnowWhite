@@ -90,7 +90,7 @@ const Header3 = ({ openPopup, queryClient }) => {
 
   useEffect(() => {
     const maxheight = document.body.offsetHeight;
-    if (maxheight > 1300 && scrollPositon > 70) {
+    if (maxheight > 1100 && scrollPositon > 70) {
       setIsFixed(true);
     } else {
       setIsFixed(false);

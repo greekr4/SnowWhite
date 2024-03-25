@@ -20,10 +20,16 @@ const TestKonva3 = () => {
   const [historyStep, setHistoryStep] = useState(); //초기 히스토리 설정
   const [zoom, setZoom] = useState(1);
   const [groupIndex, setGroupIndex] = useState(0);
-
   const myRef = useRef([]);
   const [selectedEditor, setSelectedEditor] = useState(0);
   const [editors, setEditors] = useState(["one", "two"]);
+
+  const handleCopy = () => {
+    myRef[selectedEditor].functions.handleCopy();
+  };
+  const handleBehind = () => {
+    myRef[selectedEditor].functions.handleBehind();
+  };
 
   return (
     <>
@@ -54,6 +60,7 @@ const TestKonva3 = () => {
         functions={{ z: "z" }}
         isAddVisible={isAddVisible}
         zoom={zoom}
+        editor={myRef[selectedEditor]}
       />
       <S.MainLayout>
         <S.EditorWrapper>
@@ -61,15 +68,17 @@ const TestKonva3 = () => {
             isAddVisible={isAddVisible}
             setIsAddVisible={setIsAddVisible}
             functions={{ z: "z" }}
+            editor={myRef[selectedEditor]}
+            myRef={myRef}
           />
-
-          {editors.map((editor, index) => (
-            <S.CanvasBox>
+          <div style={{}}>
+            {editors.map((editor, index) => (
               <PikasoEditor
                 ref={(el) => (myRef[index] = el)}
                 functions={{ z: "z" }}
                 setPopUpdate={setPopUpdate}
                 popUpdate={popUpdate}
+                objSelection={objSelection}
                 setObjSelection={setObjSelection}
                 setObjx={setObjx}
                 setObjy={setObjy}
@@ -81,9 +90,8 @@ const TestKonva3 = () => {
                 selectedEditor={selectedEditor}
                 editorIndex={index}
               />
-            </S.CanvasBox>
-          ))}
-
+            ))}
+          </div>
           <S.CanvasPopupBox>
             {isPopVisible && (
               <EditorAddtion
@@ -93,11 +101,13 @@ const TestKonva3 = () => {
                 objy={objy + (100 - 100 * zoom)}
                 objSelection={objSelection}
                 setIsPopVisible={setIsPopVisible}
-                // editor={editor}
+                editor={myRef[selectedEditor]}
                 popUpdate={popUpdate}
                 setPopUpdate={setPopUpdate}
                 groupIndex={groupIndex}
                 setGroupIndex={setGroupIndex}
+                handleCopy={handleCopy}
+                handleBehind={handleBehind}
               />
             )}
           </S.CanvasPopupBox>

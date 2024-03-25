@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as S from "../styles/new_styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { InfiniteQueryObserver, useQuery } from "react-query";
 import PrintEstimate from "../components/products/PrintEstimate";
@@ -8,7 +8,6 @@ import PrintEstimate from "../components/products/PrintEstimate";
 const CartPage = () => {
   const { data } = useQuery("userinfo", { enabled: false });
   const USER_ID = data?.USER_ID;
-
   const [cartData, setCartData] = useState();
   const [selectedItems, setSelectedItems] = useState();
   const [totalQty, setTotalQty] = useState(0);
@@ -130,8 +129,25 @@ const CartPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const test = () => {
-    console.log(cartData[0]);
+  const navigate = useNavigate();
+  const handleSeletedOrder = () => {
+    const hasTrue = selectedItems.some((item) => item === true);
+
+    if (!hasTrue) {
+      alert("선택해주세요.");
+      return false;
+    }
+
+    let item_sids = [];
+    selectedItems.map((el, index) => {
+      if (el) {
+        item_sids.push(cartData[index].ITEM_SID);
+      }
+    });
+
+    console.log(item_sids);
+
+    navigate(`/order/${item_sids}`);
   };
 
   return (
@@ -166,16 +182,16 @@ const CartPage = () => {
               <S.CartMidText color="red">
                 결제 예정 금액 {totalPrice.toLocaleString("ko-KR")}원
               </S.CartMidText>
-              <Link to="/order">
-                <S.Btn
-                  btnBgc="#469cff"
-                  fontColor="#fff"
-                  btnBgcHover="#7cb9ff"
-                  borderCHover="none"
-                >
-                  선택 주문하기
-                </S.Btn>
-              </Link>
+
+              <S.Btn
+                onClick={handleSeletedOrder}
+                btnBgc="#469cff"
+                fontColor="#fff"
+                btnBgcHover="#7cb9ff"
+                borderCHover="none"
+              >
+                선택 주문하기
+              </S.Btn>
             </div>
           </S.CartMidBtnBox>
           <S.CartMidProdBox>
@@ -230,7 +246,7 @@ const CartPage = () => {
                       <td>{el.ITEM_AMOUNT.toLocaleString("ko-KR")}</td>
                       <td>{formatDate(el.ITEM_MODIDATE)}</td>
                       <td>
-                        <Link to="/order">
+                        <Link to={`/order/${el.ITEM_SID}`}>
                           <S.Btn
                             btnBgc="#469cff"
                             fontColor="#fff"
