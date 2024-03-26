@@ -40,6 +40,13 @@ const {
   delete_cart,
   select_order,
 } = require("./snowwhite/controller/product");
+const {
+  select_admin_prods,
+  select_admin_prod_detail,
+  select_admin_options,
+  select_admin_prod_options,
+  select_admin_prod_detail_images,
+} = require("./snowwhite/controller/admin");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -114,6 +121,17 @@ app.post("/api/cart/del", auth, delete_cart);
 app.post("/api/order", auth, select_order);
 
 app.post("/api/banner", select_banner);
+
+app.post("/api/admin/prods", auth, select_admin_prods);
+
+app.post("/api/admin/prods/detail", auth, select_admin_prod_detail);
+
+app.post("/api/admin/options", auth, select_admin_options);
+
+app.post("/api/admin/prodoptions", auth, select_admin_prod_options);
+
+app.post("/api/admin/prodimages", auth, select_admin_prod_detail_images);
+
 app.get("/api", () => {
   refreshVerify("123123", "a");
 });

@@ -3322,3 +3322,84 @@ export const PrintBtnBox = styled.div`
   border-top: 2px solid #ccc;
   padding: 1rem;
 `;
+
+/**
+ * 어드민
+ *
+ */
+
+export const AdminWrapper = styled.div`
+  width: 1140px;
+  margin: 2rem auto;
+`;
+
+export const AdminTable = styled.table`
+  width: 100%;
+  font-size: 0.9rem;
+  & img {
+    width: 72px;
+    height: 72px;
+    margin: 0.5rem auto 0.5rem auto;
+  }
+
+  & textarea {
+    resize: none;
+    border: 1px solid #eee;
+    width: 90%;
+    height: 50px;
+    margin: 1rem;
+  }
+
+  & thead {
+    height: 72px;
+    background-color: #f7f7f7;
+  }
+  & th {
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    white-space: pre-line;
+  }
+`;
+
+export const AdminProdDetailHeader = styled.div`
+  height: 40px;
+
+  & .left {
+    display: inline;
+    float: left;
+  }
+
+  & .right {
+    display: inline;
+    float: right;
+  }
+`;
+
+export const AdminSection = styled.section`
+  & select {
+    width: 200px;
+    border: 1px solid #ccc;
+  }
+
+  & img {
+    width: 170px;
+    height: 140px;
+  }
+  & table {
+    width: 100%;
+    white-space: pre-line;
+    & th {
+      background-color: #f7f7f7;
+      border: 1px solid #ccc;
+      width: 20%;
+      height: 50px;
+      vertical-align: middle;
+    }
+    & td {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      vertical-align: middle;
+    }
+  }
+`;

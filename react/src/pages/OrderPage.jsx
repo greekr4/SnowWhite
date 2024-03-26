@@ -388,7 +388,9 @@ const OrderPage = () => {
                 </S.OBFinalRowBox>
                 <S.OBFinalRowBox>
                   <div className="left">상품 금액</div>
-                  <div className="right">3,400</div>
+                  <div className="right">
+                    {totalPrice.toLocaleString("ko-kr")}
+                  </div>
                 </S.OBFinalRowBox>
                 <S.OBFinalRowBox>
                   <div className="left">할인 금액</div>

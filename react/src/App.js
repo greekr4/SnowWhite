@@ -38,6 +38,7 @@ import TestKonva from "./pages/TestKonva.jsx";
 import TestKonva2 from "./pages/TestKonva2.jsx";
 import TestKonva3 from "./pages/TestKonva3.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import AdminProdDetail from "./components/admin/AdminProdDetail.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -113,6 +114,7 @@ function App({ queryClient }) {
           <Route path="/test2" element={<TestKonva2 />} />
           <Route path="/test3" element={<TestKonva3 />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/prod/:prod_sid" element={<AdminProdDetail />} />
         </Routes>
       </BrowserRouter>
     </>
