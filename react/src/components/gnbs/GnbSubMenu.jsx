@@ -25,14 +25,14 @@ const GnbSubMenu = ({ isVisible, submenus }) => {
       ></S.HeaderSubMenuIcon>
       <S.HeaderSubMenuBox style={slideAnimation}>
         <S.HeaderSubMenuCols>
-          {submenus.map((item) => (
-            <>
+          {submenus.map((item, index) => (
+            <div key={index}>
               <S.HeaderSubMenuItem>
                 <Link to={item.CATE_LINK}>
                   <S.HeaderSubMenuText>{item.CATE_NM}</S.HeaderSubMenuText>
                 </Link>
               </S.HeaderSubMenuItem>
-            </>
+            </div>
           ))}
         </S.HeaderSubMenuCols>
       </S.HeaderSubMenuBox>

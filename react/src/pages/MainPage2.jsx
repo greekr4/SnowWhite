@@ -81,7 +81,7 @@ const MainPage2 = () => {
         <S.GlobProdWrapper>
           <S.GlobProdList>
             {test_products.map((item, index) => (
-              <GlobProdItem item={item} />
+              <GlobProdItem item={item} key={index} />
             ))}
           </S.GlobProdList>
         </S.GlobProdWrapper>
@@ -93,7 +93,7 @@ const MainPage2 = () => {
           </S.PortfolioTextBox>
           <S.PortfolioList>
             {test_pf.map((item, index) => (
-              <PortfolioItem item={item} />
+              <PortfolioItem item={item} key={index} />
             ))}
           </S.PortfolioList>
         </S.MainPortfolioWrapper>

@@ -6,6 +6,9 @@ const app = express();
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
+const busboy = require("connect-busboy");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+
 const jwt = require("jsonwebtoken"); // JWT 모듈 연결
 const {
   auth,
@@ -46,11 +49,15 @@ const {
   select_admin_options,
   select_admin_prod_options,
   select_admin_prod_detail_images,
+  insert_products_images_detail,
+  delete_products_images,
 } = require("./snowwhite/controller/admin");
+const { upload } = require("./snowwhite/controller/upload");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(busboy());
 
 process.on("uncaughtException", (error) => {
   console.log(error);
@@ -131,6 +138,12 @@ app.post("/api/admin/options", auth, select_admin_options);
 app.post("/api/admin/prodoptions", auth, select_admin_prod_options);
 
 app.post("/api/admin/prodimages", auth, select_admin_prod_detail_images);
+
+app.post("/api/admin/prodimages/add", auth, insert_products_images_detail);
+
+app.post("/api/admin/prodimages/delete", auth, delete_products_images);
+
+app.post("/api/upload", upload);
 
 app.get("/api", () => {
   refreshVerify("123123", "a");

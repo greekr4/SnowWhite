@@ -47,7 +47,7 @@ const Header3 = ({ openPopup, queryClient }) => {
         }, []);
 
       // 결과 출력
-      console.log(groupedCategories);
+      // console.log(groupedCategories);
       SetCate(groupedCategories);
 
       //메뉴
@@ -119,7 +119,7 @@ const Header3 = ({ openPopup, queryClient }) => {
           <S.HeaderMenuList>
             {Cate &&
               Cate.map((el, index) => (
-                <Link to={`/products/${el.CATE_SID}`}>
+                <Link to={`/products/${el.CATE_SID}`} key={index}>
                   <S.HeaderMenuItem
                     onMouseOver={() => {
                       handleOverMenu(el.CATE_SID);

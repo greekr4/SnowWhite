@@ -127,7 +127,8 @@ export const HeaderMenuList = styled.ul`
 `;
 
 export const HeaderMenuItem = styled.li`
-  width: 70px;
+  width: 80px;
+  /* padding: 1rem; */
   text-align: center;
 `;
 
@@ -199,7 +200,7 @@ export const HeaderSubMenuText = styled.span`
 export const HeaderSubMenuIcon = styled(animated.div)`
   display: block;
   position: absolute;
-  left: 18px;
+  left: 23px;
   top: 0px;
   width: 32px;
   height: 32px;
@@ -3382,7 +3383,7 @@ export const AdminSection = styled.section`
     border: 1px solid #ccc;
   }
 
-  & img {
+  & img.small {
     width: 170px;
     height: 140px;
   }
@@ -3401,5 +3402,41 @@ export const AdminSection = styled.section`
       border: 1px solid #ccc;
       vertical-align: middle;
     }
+  }
+`;
+
+export const AdminProdImgBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  & div.item {
+    flex-basis: 24%;
+    height: 150px;
+    padding: 0.25rem;
+    margin: 0.25rem;
+    border: 1px solid #ccc;
+
+    & img {
+      display: block;
+      width: 100%;
+      height: 140px;
+    }
+  }
+
+  & div.btnbox {
+    position: relative;
+    float: right;
+  }
+
+  & div.plus {
+    background-image: url("/asserts/admin/plus.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+  }
+
+  & button {
+    position: absolute;
+    left: -50px;
+    top: 10px;
   }
 `;

@@ -53,14 +53,13 @@ const imageContext = require.context(
   false,
   /\.(jpg)$/
 );
-const imagePaths = imageContext.keys().map(imageContext);
 
 ////////////////////////////////////////
 
 const ProductDetailPage = () => {
   const [qty, setQty] = useState();
   const [scrollPositon, setScrollPosition] = useState(0);
-  const [imgPath, SetImgPath] = useState(imagePaths[0]);
+  const [imgPath, SetImgPath] = useState();
   const [SliderIndex, SetSliderIndex] = useState(0);
   const DtailBox = useRef(null);
   const DropDown = useRef(null);
@@ -192,12 +191,12 @@ const ProductDetailPage = () => {
     if (SliderIndex != 0) {
       SetSliderIndex(SliderIndex - 1);
     } else {
-      SetSliderIndex(imagePaths.length - 1);
+      SetSliderIndex(prodImages.length - 1);
     }
   };
 
   const handleNextClick = () => {
-    if (SliderIndex < imagePaths.length - 1) {
+    if (SliderIndex < prodImages.length - 1) {
       SetSliderIndex(SliderIndex + 1);
     } else {
       SetSliderIndex(0);

@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as S from "../../styles/new_styles";
 import GlobProdItem from "../products/GlobProdItem";
+import CustomQuill from "../global/CustomQuill";
 
 const AdminProdDetail = () => {
   const { prod_sid } = useParams();
@@ -10,6 +11,9 @@ const AdminProdDetail = () => {
   const [cate, setCate] = useState([]);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
+  const [content, setContent] = useState();
+  const [images, setImages] = useState([]);
+  const quillRef = useRef(null);
 
   const findChildCate = (CATE_SID) => {
     console.log(cate.filter((el) => el.CATE_PID === CATE_SID));
@@ -41,7 +45,7 @@ const AdminProdDetail = () => {
     return -1; // 찾지 못한 경우
   };
 
-  useEffect(() => {
+  const initdb = () => {
     axios
       .post("/api/admin/prods/detail", {
         prod_sid: prod_sid,
@@ -67,11 +71,24 @@ const AdminProdDetail = () => {
       .post("/api/admin/options")
       .then((res) => {
         setOptions(res.data);
-        console.log(res.data);
       })
       .catch((e) => {
         console.log(e);
       });
+
+    axios
+      .post("/api/product/images", { prod_sid: prod_sid })
+      .then((res) => {
+        setImages(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    initdb();
+    initState();
   }, []);
 
   useEffect(() => {
@@ -85,11 +102,9 @@ const AdminProdDetail = () => {
     axios
       .post("/api/admin/prodoptions", { prod_sid: prod_sid })
       .then((res) => {
-        console.log(res.data);
         const initChecked = [...selectedOption];
 
         options.forEach((e) => {
-          console.log(findIndexByOptionSid(res.data, e.OPTION_SID));
           initChecked[findIndexByOptionSid(res.data, e.OPTION_SID)] = true;
           setSelectedOption(initChecked);
         });
@@ -106,6 +121,26 @@ const AdminProdDetail = () => {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  //////////////함수들
+
+  const [inputCate, setInputCate] = useState();
+
+  const initState = () => {
+    // State초기화
+    setInputCate(prod?.CATE_SID);
+  };
+
+  const handleSetCate = async () => {
+    try {
+      const res = await axios.post("/api/cart");
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  ///////////////////////
 
   return (
     <S.MainLayout>
@@ -126,14 +161,23 @@ const AdminProdDetail = () => {
               <tr>
                 <th>카테고리</th>
                 <td>
-                  <select>
+                  <select
+                    value={inputCate}
+                    onChange={(e) => {
+                      setInputCate(e.target.value);
+                    }}
+                  >
                     {cate
                       .filter((el) => el.CATE_PID === null)
                       .map((el, index) => (
-                        <option value={el.CATE_SID}>{el.CATE_NM}</option>
+                        <option value={el.CATE_SID} key={index}>
+                          {el.CATE_NM}
+                        </option>
                       ))}
                   </select>
-                  <S.Btn margin="0.25rem">설정</S.Btn>
+                  <S.Btn margin="0.25rem" onClick={handleSetCate}>
+                    설정
+                  </S.Btn>
                 </td>
               </tr>
               <tr>
@@ -161,7 +205,11 @@ const AdminProdDetail = () => {
               <tr>
                 <th>썸네일</th>
                 <td>
-                  <img src={prod?.IMAGE_LOCATION} alt="썸네일" />
+                  <img
+                    className="small"
+                    src={prod?.IMAGE_LOCATION}
+                    alt="썸네일"
+                  />
                 </td>
               </tr>
               <tr>
@@ -289,11 +337,80 @@ const AdminProdDetail = () => {
             <table>
               <tr>
                 <th>이미지</th>
-                <td></td>
+                <td>
+                  <S.AdminProdImgBox>
+                    {images.map((el, index) => (
+                      <div className="item">
+                        <div className="btnbox">
+                          <S.Btn
+                            onClick={() => {
+                              axios
+                                .post("/api/admin/prodimages/delete", {
+                                  prod_sid: prod_sid,
+                                  image_location: el.IMAGE_LOCATION,
+                                  image_priority: el.IMAGE_PRIORITY,
+                                  image_cate: "detail",
+                                })
+                                .then((res) => {
+                                  alert("삭제 완료");
+                                  initdb();
+                                })
+                                .catch((e) => {
+                                  console.log(e);
+                                });
+                            }}
+                          >
+                            삭제
+                          </S.Btn>
+                        </div>
+                        <img src={el.IMAGE_LOCATION} alt="이미지" key={index} />
+                      </div>
+                    ))}
+                    <div
+                      className="item plus"
+                      onClick={() => {
+                        const input = document.createElement("input");
+                        input.setAttribute("type", "file");
+                        input.setAttribute("accept", "image/*");
+                        input.click();
+                        input.addEventListener("change", async () => {
+                          const file = input.files[0];
+                          const formData = new FormData();
+                          formData.append("img", file);
+                          try {
+                            const result = await axios.post(
+                              "/api/upload",
+                              formData
+                            );
+                            const IMG_URL = result.data;
+
+                            axios
+                              .post("/api/admin/prodimages/add", {
+                                prod_sid: prod_sid,
+                                image_location: IMG_URL,
+                              })
+                              .then((res) => {
+                                console.log(res);
+                                alert("업로드 완료");
+                                initdb();
+                              })
+                              .catch((e) => {
+                                console.log(e);
+                              });
+                          } catch (error) {
+                            console.log("실패");
+                          }
+                        });
+                      }}
+                    />
+                  </S.AdminProdImgBox>
+                </td>
               </tr>
               <tr>
                 <th>상세설명</th>
-                <td></td>
+                <td>
+                  <CustomQuill setContent={setContent} />
+                </td>
               </tr>
             </table>
           </div>
