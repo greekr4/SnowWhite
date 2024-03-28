@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as S from "../../styles/new_styles";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const AdminProd = () => {
   const [prods, setProds] = useState([]);
@@ -53,7 +54,9 @@ const AdminProd = () => {
               <th>{el.PROD_PRICE}</th>
               <th>
                 <S.Btn margin="0.25rem">간편 수정</S.Btn>
-                <S.Btn>상세보기</S.Btn>
+                <Link to={`/admin/prod/${el.PROD_SID}`}>
+                  <S.Btn>상세보기</S.Btn>
+                </Link>
               </th>
             </tr>
           ))}

@@ -88,8 +88,11 @@ const AdminProdDetail = () => {
 
   useEffect(() => {
     initdb();
-    initState();
   }, []);
+
+  useEffect(() => {
+    initState();
+  }, [prod]);
 
   useEffect(() => {
     const initialSelectedOptions = Array.from(
@@ -125,16 +128,129 @@ const AdminProdDetail = () => {
   //////////////함수들
 
   const [inputCate, setInputCate] = useState();
+  const [inputPriority, setInputPriorty] = useState();
+  const [inputProdNm, setInputProdNm] = useState();
+  const [inputProdDesc, setInputProdDesc] = useState();
+  const [inputProdPrice, setInputProdPrice] = useState();
+  const [inputProdUnit, setInputProdUnit] = useState();
+  const [inputProdStandard, setInputProdStandard] = useState();
+  const [inputProdQuantity, setInputProdQuantity] = useState();
+  const [inputProdDetail, setInputProdDetail] = useState("");
+  const ProdDetailRefs = useRef([null]);
+  const [inputProdNoti, setInputProdNoti] = useState("");
+  const ProdNotiRefs = useRef([null]);
 
   const initState = () => {
     // State초기화
     setInputCate(prod?.CATE_SID);
+    setInputPriorty(prod?.PROD_PRIORITY);
+    setInputProdNm(prod?.PROD_NM);
+    setInputProdDesc(prod?.PROD_DESC);
+    setInputProdPrice(prod?.PROD_PRICE);
+    setInputProdUnit(prod?.PROD_UNIT);
+    setInputProdStandard(prod?.PROD_STANDARD);
+    setInputProdQuantity(prod?.PROD_QUANTITY);
+    setInputProdDetail(prod?.PROD_DETAIL);
+    setInputProdNoti(prod?.PROD_NOTI);
   };
 
   const handleSetCate = async () => {
     try {
-      const res = await axios.post("/api/cart");
-      console.log(res);
+      const res = await axios.post("/api/admin/prod/update_cate", {
+        prod_sid: prod?.PROD_SID,
+        prod_catecode: parseInt(inputCate),
+      });
+      alert(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSetPriority = async () => {
+    try {
+      const res = await axios.post("/api/admin/prod/update_priority", {
+        prod_sid: prod?.PROD_SID,
+        prod_priority: parseInt(inputPriority),
+      });
+      alert(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSetProdNm = async () => {
+    try {
+      const res = await axios.post("/api/admin/prod/update_nm", {
+        prod_sid: prod?.PROD_SID,
+        prod_nm: inputProdNm,
+      });
+      alert(res.data);
+      initdb();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSetThumbnail = async () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("img", file);
+      try {
+        const result = await axios.post("/api/upload", formData);
+        const IMG_URL = result.data;
+
+        const res = await axios.post("/api/admin/prod/update_thumnail", {
+          prod_sid: prod_sid,
+          image_location: IMG_URL,
+        });
+
+        alert(res.data);
+        initdb();
+      } catch (error) {
+        console.log("실패");
+      }
+    });
+  };
+
+  const handleSetProdDesc = async () => {
+    try {
+      const res = await axios.post("/api/admin/prod/update_desc", {
+        prod_sid: prod?.PROD_SID,
+        prod_desc: inputProdDesc,
+      });
+      alert(res.data);
+      initdb();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSetProdDetail = async () => {
+    try {
+      const res = await axios.post("/api/admin/prod/update_detail", {
+        prod_sid: prod?.PROD_SID,
+        prod_detail: inputProdDetail,
+      });
+      alert(res.data);
+      initdb();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSetProdNoti = async () => {
+    try {
+      const res = await axios.post("/api/admin/prod/update_noti", {
+        prod_sid: prod?.PROD_SID,
+        prod_noti: inputProdNoti,
+      });
+      alert(res.data);
+      initdb();
     } catch (e) {
       console.log(e);
     }
@@ -182,7 +298,17 @@ const AdminProdDetail = () => {
               </tr>
               <tr>
                 <th>상품 순서</th>
-                <td>{prod?.PROD_PRIORITY}</td>
+                <td>
+                  <input
+                    value={inputPriority}
+                    onChange={(e) => {
+                      setInputPriorty(e.target.value);
+                    }}
+                  />
+                  <S.Btn margin="0.25rem" onClick={handleSetPriority}>
+                    설정
+                  </S.Btn>
+                </td>
               </tr>
               <tr>
                 <th>메인 화면</th>
@@ -200,7 +326,15 @@ const AdminProdDetail = () => {
             <table>
               <tr>
                 <th>상품명</th>
-                <td>{prod?.PROD_NM}</td>
+                <td>
+                  <input
+                    value={inputProdNm}
+                    onChange={(e) => setInputProdNm(e.target.value)}
+                  />
+                  <S.Btn margin="0.25rem" onClick={handleSetProdNm}>
+                    설정
+                  </S.Btn>
+                </td>
               </tr>
               <tr>
                 <th>썸네일</th>
@@ -209,12 +343,31 @@ const AdminProdDetail = () => {
                     className="small"
                     src={prod?.IMAGE_LOCATION}
                     alt="썸네일"
+                    style={{ cursor: "pointer" }}
+                    onClick={handleSetThumbnail}
                   />
                 </td>
               </tr>
               <tr>
-                <th>썸네일 설명</th>
-                <td>{prod?.PROD_DESC}</td>
+                <th>
+                  썸네일 설명
+                  <br />
+                  (줄 수를 통일하는게 좋습니다.)
+                </th>
+                <td>
+                  <textarea
+                    cols="50"
+                    rows="3"
+                    value={inputProdDesc}
+                    onChange={(e) => {
+                      setInputProdDesc(e.target.value);
+                    }}
+                  />
+                  <br />
+                  <S.Btn margin="0.25rem" onClick={handleSetProdDesc}>
+                    설정
+                  </S.Btn>
+                </td>
               </tr>
               <tr>
                 <th>미리보기</th>
@@ -233,15 +386,36 @@ const AdminProdDetail = () => {
             <table>
               <tr>
                 <th>상품가격</th>
-                <td>{prod?.PROD_PRICE}</td>
+                <td>
+                  <input
+                    value={inputProdPrice}
+                    onChange={(e) => {
+                      setInputProdPrice(e.target.value);
+                    }}
+                  />
+                </td>
               </tr>
               <tr>
                 <th>판매 단위</th>
-                <td>{prod?.PROD_UNIT}</td>
+                <td>
+                  <input
+                    value={inputProdUnit}
+                    onChange={(e) => {
+                      setInputProdUnit(e.target.value);
+                    }}
+                  />
+                </td>
               </tr>
               <tr>
                 <th>상품 규격</th>
-                <td>{prod?.PROD_STANDARD}</td>
+                <td>
+                  <input
+                    value={inputProdStandard}
+                    onChange={(e) => {
+                      setInputProdStandard(e.target.value);
+                    }}
+                  />
+                </td>
               </tr>
               <tr>
                 <th>
@@ -249,32 +423,208 @@ const AdminProdDetail = () => {
                   <br />
                   (, 로 구분)
                 </th>
-                <td>{prod?.PROD_QUANTITY}</td>
+                <td>
+                  <input
+                    value={inputProdQuantity}
+                    onChange={(e) => {
+                      setInputProdQuantity(e.target.value);
+                    }}
+                  />
+                </td>
               </tr>
               <tr>
                 <th>상품 기본 설명</th>
                 <td>
-                  {prod?.PROD_DETAIL?.split("|")?.map((el, index) => (
+                  {inputProdDetail?.split("|")?.map((el, index) => (
                     <>
-                      - {el}
-                      {index !== prod.PROD_DETAIL?.split("|")?.length - 1 && (
-                        <br />
-                      )}
+                      <input
+                        key={index}
+                        ref={(el) => (ProdDetailRefs.current[index] = el)}
+                        value={inputProdDetail?.split("|")[index]}
+                        onChange={(e) => {
+                          const filteredRefs = ProdDetailRefs.current.filter(
+                            (ref) => ref !== null
+                          );
+                          let updated = [];
+                          let final_str = "";
+                          console.log(filteredRefs);
+                          filteredRefs.forEach((el, elindex) => {
+                            if (index === elindex) {
+                              updated.push(filteredRefs[index].value);
+                            } else {
+                              updated.push(filteredRefs[elindex].value);
+                            }
+                          });
+
+                          console.log(updated);
+                          updated.forEach((el, index) => {
+                            if (index != updated.length - 1) {
+                              final_str += el + "|";
+                            } else {
+                              final_str += el;
+                            }
+                          });
+                          console.log(final_str);
+
+                          setInputProdDetail(final_str);
+                        }}
+                      />
+                      <S.Btn
+                        margin="0.25rem"
+                        onClick={() => {
+                          let updated = inputProdDetail;
+                          let first = "";
+                          let last = "";
+                          if (inputProdDetail?.split("|")?.length === 1) {
+                            setInputProdDetail("");
+                            return false;
+                          }
+                          if (
+                            index ===
+                            inputProdDetail?.split("|")?.length - 1
+                          ) {
+                            console.log("zz");
+                            const lastindex = inputProdDetail.indexOf(
+                              ProdDetailRefs.current[index].value
+                            );
+                            console.log(updated);
+                            console.log(lastindex);
+                            updated = updated.slice(0, lastindex - 1);
+                          } else {
+                            first = updated.slice(
+                              0,
+                              inputProdDetail.indexOf(
+                                ProdDetailRefs.current[index].value
+                              )
+                            );
+                            last = updated.slice(
+                              inputProdDetail.indexOf(
+                                ProdDetailRefs.current[index].value
+                              ) +
+                                ProdDetailRefs.current[index].value.length +
+                                1
+                            );
+                            updated = first + last;
+                          }
+
+                          setInputProdDetail(updated);
+                        }}
+                      >
+                        삭제
+                      </S.Btn>
+                      <br />
                     </>
                   ))}
+                  <S.Btn
+                    margin="0.25rem"
+                    onClick={() => {
+                      if (inputProdDetail === null) {
+                        setInputProdDetail("");
+                      } else {
+                        setInputProdDetail(inputProdDetail + "|");
+                      }
+                    }}
+                  >
+                    추가
+                  </S.Btn>
+                  <S.Btn margin="0.25rem" onClick={handleSetProdDetail}>
+                    적용
+                  </S.Btn>
                 </td>
               </tr>
               <tr>
                 <th>상품 주의사항</th>
                 <td>
-                  {prod?.PROD_NOTI?.split("|")?.map((el, index) => (
+                  {inputProdNoti?.split("|")?.map((el, index) => (
                     <>
-                      - {el}
-                      {index !== prod.PROD_DETAIL?.split("|")?.length - 1 && (
-                        <br />
-                      )}
+                      <input
+                        key={index}
+                        ref={(el) => (ProdNotiRefs.current[index] = el)}
+                        value={inputProdNoti?.split("|")[index]}
+                        onChange={(e) => {
+                          const filteredRefs = ProdNotiRefs.current.filter(
+                            (ref) => ref !== null
+                          );
+                          let updated = [];
+                          let final_str = "";
+                          console.log(filteredRefs);
+                          filteredRefs.forEach((el, elindex) => {
+                            if (index === elindex) {
+                              updated.push(filteredRefs[index].value);
+                            } else {
+                              updated.push(filteredRefs[elindex].value);
+                            }
+                          });
+
+                          updated.forEach((el, index) => {
+                            if (index != updated.length - 1) {
+                              final_str += el + "|";
+                            } else {
+                              final_str += el;
+                            }
+                          });
+                          console.log(final_str);
+
+                          setInputProdNoti(final_str);
+                        }}
+                      />
+                      <S.Btn
+                        margin="0.25rem"
+                        onClick={() => {
+                          let updated = inputProdNoti;
+                          let first = "";
+                          let last = "";
+                          if (inputProdNoti?.split("|")?.length === 1) {
+                            setInputProdNoti("");
+                            return false;
+                          }
+                          if (index === inputProdNoti?.split("|")?.length - 1) {
+                            console.log("zz");
+                            const lastindex = inputProdNoti.indexOf(
+                              ProdNotiRefs.current[index].value
+                            );
+
+                            updated = updated.slice(0, lastindex - 1);
+                          } else {
+                            first = updated.slice(
+                              0,
+                              inputProdNoti.indexOf(
+                                ProdNotiRefs.current[index].value
+                              )
+                            );
+                            last = updated.slice(
+                              inputProdNoti.indexOf(
+                                ProdNotiRefs.current[index].value
+                              ) +
+                                ProdNotiRefs.current[index].value.length +
+                                1
+                            );
+                            updated = first + last;
+                          }
+
+                          setInputProdNoti(updated);
+                        }}
+                      >
+                        삭제
+                      </S.Btn>
+                      <br />
                     </>
                   ))}
+                  <S.Btn
+                    margin="0.25rem"
+                    onClick={() => {
+                      if (inputProdNoti === null) {
+                        setInputProdNoti("");
+                      } else {
+                        setInputProdNoti(inputProdNoti + "|");
+                      }
+                    }}
+                  >
+                    추가
+                  </S.Btn>
+                  <S.Btn margin="0.25rem" onClick={handleSetProdNoti}>
+                    적용
+                  </S.Btn>
                 </td>
               </tr>
             </table>
@@ -287,7 +637,22 @@ const AdminProdDetail = () => {
               <tr>
                 <th>옵션</th>
                 <td>
-                  <S.Btn>적용</S.Btn>
+                  <S.Btn
+                    onClick={() => {
+                      console.log(selectedOption);
+
+                      let options_ary = [];
+                      selectedOption.forEach((el, index) => {
+                        if (el) {
+                          console.log(options[index]);
+                          options_ary.push(options[index].OPTION_SID);
+                        }
+                      });
+                      console.log(options_ary);
+                    }}
+                  >
+                    적용
+                  </S.Btn>
                   <table
                     style={{
                       textAlign: "center",

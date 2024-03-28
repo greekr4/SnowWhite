@@ -3401,6 +3401,14 @@ export const AdminSection = styled.section`
       padding: 0.5rem 1rem;
       border: 1px solid #ccc;
       vertical-align: middle;
+
+      & textarea {
+        resize: none;
+        border: 1px solid #eee;
+        width: 40%;
+        height: 50px;
+        margin: 1rem;
+      }
     }
   }
 `;

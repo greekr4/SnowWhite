@@ -169,3 +169,121 @@ where
   if (res_delete.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
+
+exports.update_products_cate = async (req, res) => {
+  const { prod_sid, prod_catecode } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_CATECODE = ?
+where
+	PROD_SID = ?
+`;
+
+  const res_update = await getConnection(qry, [prod_catecode, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_priority = async (req, res) => {
+  const { prod_sid, prod_priority } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_PRIORITY = ?
+where
+	PROD_SID = ?
+  `;
+  const res_update = await getConnection(qry, [prod_priority, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_nm = async (req, res) => {
+  const { prod_sid, prod_nm } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_NM = ?
+where
+	PROD_SID = ?
+  `;
+  const res_update = await getConnection(qry, [prod_nm, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_thumnail = async (req, res) => {
+  const { prod_sid, image_location } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT_IMAGE
+set
+	IMAGE_LOCATION = ?
+where
+	PROD_SID = ?
+	and IMAGE_CATE = 'THUMBNAIL'
+  `;
+
+  const res_update = await getConnection(qry, [image_location, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_desc = async (req, res) => {
+  const { prod_sid, prod_desc } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_DESC = ?
+where
+	PROD_SID = ?
+  `;
+
+  const res_update = await getConnection(qry, [prod_desc, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_detail = async (req, res) => {
+  const { prod_sid, prod_detail } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_DETAIL = ?
+where
+	PROD_SID = ?
+  `;
+
+  const res_update = await getConnection(qry, [prod_detail, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_noti = async (req, res) => {
+  const { prod_sid, prod_noti } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_NOTI = ?
+where
+	PROD_SID = ?
+  `;
+
+  const res_update = await getConnection(qry, [prod_noti, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};

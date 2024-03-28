@@ -51,6 +51,13 @@ const {
   select_admin_prod_detail_images,
   insert_products_images_detail,
   delete_products_images,
+  update_products_cate,
+  update_products_priority,
+  update_products_nm,
+  update_products_thumnail,
+  update_products_desc,
+  update_products_detail,
+  update_products_noti,
 } = require("./snowwhite/controller/admin");
 const { upload } = require("./snowwhite/controller/upload");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
@@ -142,6 +149,20 @@ app.post("/api/admin/prodimages", auth, select_admin_prod_detail_images);
 app.post("/api/admin/prodimages/add", auth, insert_products_images_detail);
 
 app.post("/api/admin/prodimages/delete", auth, delete_products_images);
+
+app.post("/api/admin/prod/update_cate", auth, update_products_cate);
+
+app.post("/api/admin/prod/update_priority", auth, update_products_priority);
+
+app.post("/api/admin/prod/update_nm", auth, update_products_nm);
+
+app.post("/api/admin/prod/update_thumnail", auth, update_products_thumnail);
+
+app.post("/api/admin/prod/update_desc", auth, update_products_desc);
+
+app.post("/api/admin/prod/update_detail", auth, update_products_detail);
+
+app.post("/api/admin/prod/update_noti", auth, update_products_noti);
 
 app.post("/api/upload", upload);
 
