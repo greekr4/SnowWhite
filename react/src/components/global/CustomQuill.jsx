@@ -4,7 +4,7 @@ import ReactQuill, { Quill } from "react-quill";
 import ImageResize from "quill-image-resize-module-react";
 Quill.register("modules/imageResize", ImageResize);
 
-const CustomQuill = ({ content, setContent }) => {
+const CustomQuill = ({ initContent, setContent }) => {
   const quillRef = useRef(null);
 
   // 이미지 처리를 하는 핸들러
@@ -73,12 +73,14 @@ const CustomQuill = ({ content, setContent }) => {
     };
   }, []);
 
+  const handleOnchange = () => {};
   return (
     <ReactQuill
       ref={quillRef}
       modules={modules}
       formats={formats}
       onChange={setContent}
+      value={initContent}
     />
   );
 };

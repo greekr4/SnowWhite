@@ -11,6 +11,7 @@ import { FaAngleDown } from "react-icons/fa";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
+import ReactQuill, { Quill } from "react-quill";
 
 const TestOptions = [
   { OptionName: "규격", OptionValue: ["90x50", "86x52"] },
@@ -204,158 +205,166 @@ const ProductDetailPage = () => {
   };
 
   return (
-    <S.MainLayout>
-      <S.MainSection>
-        <S.ProdDetailWrapper>
-          <S.ProdDetailBox ref={DtailBox}>
-            <S.ProdDetailLeft>
-              <S.ProdDetailSliderBox topValue={scrollPositon + 30}>
-                <S.ProdDetailMainSlider>
-                  <S.ProdDetailMainSliderView
-                    img={prodImages[SliderIndex]?.IMAGE_LOCATION}
-                  >
-                    <S.ProdDetailSliderPrev onClick={handlePrevClick} />
-                    <S.ProdDetailSliderNext onClick={handleNextClick} />
-                  </S.ProdDetailMainSliderView>
-                </S.ProdDetailMainSlider>
-                <S.ProdDetailSubSlider>
-                  {prodImages?.map((item, index) => (
-                    <S.ProdDetailSubSliderView
-                      className={index === SliderIndex ? "selected" : null}
-                      onClick={() => {
-                        handleSlideClick(index);
-                      }}
-                      img={item.IMAGE_LOCATION}
+    <>
+      <S.MainLayout>
+        <S.MainSection>
+          <S.ProdDetailWrapper>
+            <S.ProdDetailBox ref={DtailBox}>
+              <S.ProdDetailLeft>
+                <S.ProdDetailSliderBox topValue={scrollPositon + 30}>
+                  <S.ProdDetailMainSlider>
+                    <S.ProdDetailMainSliderView
+                      img={prodImages[SliderIndex]?.IMAGE_LOCATION}
+                    >
+                      <S.ProdDetailSliderPrev onClick={handlePrevClick} />
+                      <S.ProdDetailSliderNext onClick={handleNextClick} />
+                    </S.ProdDetailMainSliderView>
+                  </S.ProdDetailMainSlider>
+                  <S.ProdDetailSubSlider>
+                    {prodImages?.map((item, index) => (
+                      <S.ProdDetailSubSliderView
+                        className={index === SliderIndex ? "selected" : null}
+                        onClick={() => {
+                          handleSlideClick(index);
+                        }}
+                        img={item.IMAGE_LOCATION}
+                      />
+                    ))}
+                  </S.ProdDetailSubSlider>
+                </S.ProdDetailSliderBox>
+              </S.ProdDetailLeft>
+              <S.ProdDetailRight>
+                <S.ProdDetailTitle>{prodDetail?.PROD_NM}</S.ProdDetailTitle>
+                {prodDetail?.PROD_DETAIL?.split("|").map((el, index) => (
+                  <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
+                ))}
+                <S.Product_Detail_Option_ItemWrapper>
+                  {prodOptions?.map((options, index) => (
+                    <OptionItem
+                      Options={options}
+                      seletedOptions={seletedOptions}
+                      setSeletedOptions={setSeletedOptions}
+                      calcPrice={calcPrice}
                     />
                   ))}
-                </S.ProdDetailSubSlider>
-              </S.ProdDetailSliderBox>
-            </S.ProdDetailLeft>
-            <S.ProdDetailRight>
-              <S.ProdDetailTitle>{prodDetail?.PROD_NM}</S.ProdDetailTitle>
-              {prodDetail?.PROD_DETAIL?.split("|").map((el, index) => (
-                <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
-              ))}
-              <S.Product_Detail_Option_ItemWrapper>
-                {prodOptions?.map((options, index) => (
-                  <OptionItem
-                    Options={options}
-                    seletedOptions={seletedOptions}
-                    setSeletedOptions={setSeletedOptions}
-                    calcPrice={calcPrice}
-                  />
-                ))}
-                {/* 수량 */}
-                <S.Product_Detail_Option_ItemBox>
-                  <S.Product_Detail_Option_ItemText>
-                    수량
-                  </S.Product_Detail_Option_ItemText>
-                  <S.Product_Detail_Option_ButtonBox>
-                    <div className="container">
-                      <input id="dropdown" type="checkbox" ref={DropDown} />
-                      <label className="dropdownLabel" for="dropdown">
-                        <div>{qty}</div>
-                        <FaAngleDown className="caretIcon" />
-                      </label>
-                      <div className="content">
-                        <ul>
-                          {prodDetail?.PROD_QUANTITY?.split(",").map(
-                            (el, index) => (
-                              <li
-                                onClick={() => {
-                                  handleDropdown(el);
-                                }}
-                              >
-                                {el}
-                              </li>
-                            )
-                          )}
-                        </ul>
+                  {/* 수량 */}
+                  <S.Product_Detail_Option_ItemBox>
+                    <S.Product_Detail_Option_ItemText>
+                      수량
+                    </S.Product_Detail_Option_ItemText>
+                    <S.Product_Detail_Option_ButtonBox>
+                      <div className="container">
+                        <input id="dropdown" type="checkbox" ref={DropDown} />
+                        <label className="dropdownLabel" for="dropdown">
+                          <div>{qty}</div>
+                          <FaAngleDown className="caretIcon" />
+                        </label>
+                        <div className="content">
+                          <ul>
+                            {prodDetail?.PROD_QUANTITY?.split(",").map(
+                              (el, index) => (
+                                <li
+                                  onClick={() => {
+                                    handleDropdown(el);
+                                  }}
+                                >
+                                  {el}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                  </S.Product_Detail_Option_ButtonBox>
-                </S.Product_Detail_Option_ItemBox>
-              </S.Product_Detail_Option_ItemWrapper>
-              {prodDetail?.PROD_NOTI?.split("|").map((el, index) => (
-                <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
-              ))}
+                    </S.Product_Detail_Option_ButtonBox>
+                  </S.Product_Detail_Option_ItemBox>
+                </S.Product_Detail_Option_ItemWrapper>
+                {prodDetail?.PROD_NOTI?.split("|").map((el, index) => (
+                  <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
+                ))}
 
-              <S.ProdDetailDesignBtns>
-                <S.Btn
-                  width="45%"
+                <S.ProdDetailDesignBtns>
+                  <S.Btn
+                    width="45%"
+                    onClick={() => {
+                      navigate("/editor");
+                    }}
+                  >
+                    직접 디자인하기
+                  </S.Btn>
+                  <S.Btn
+                    width="45%"
+                    onClick={() => {
+                      alert("준비 중입니다.");
+                    }}
+                  >
+                    파일 업로드
+                  </S.Btn>
+                </S.ProdDetailDesignBtns>
+                <S.ProdDetailPayBox>
+                  <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
+                  <S.ProdDetailPriceValue>
+                    {Math.round(prodPrice).toLocaleString("ko-KR")}원
+                  </S.ProdDetailPriceValue>
+                </S.ProdDetailPayBox>
+                {/* <Link to="/order"> */}
+                <S.ProdDetailPayButton
                   onClick={() => {
-                    navigate("/editor");
+                    // PROD_SID,
+                    // ITEM_OPTION,
+                    // ITEM_QUANTITY,
+                    // ITEM_AMOUNT,
+                    // ITEM_DESIGN,
+                    // USER_ID,
+                    const PROD_SID = prodDetail.PROD_SID;
+                    const ITEM_OPTION = JSON.stringify(seletedOptions);
+                    const ITEM_QUANTITY = qty;
+                    const ITEM_AMOUNT = prodPrice;
+                    const ITEM_DESIGN = JSON.stringify([]);
+
+                    axios
+                      .post("/api/cart/add", {
+                        PROD_SID: PROD_SID,
+                        ITEM_OPTION: ITEM_OPTION,
+                        ITEM_QUANTITY: ITEM_QUANTITY,
+                        ITEM_AMOUNT: ITEM_AMOUNT,
+                        ITEM_DESIGN: ITEM_DESIGN,
+                        USER_ID: USER_ID,
+                      })
+                      .then((res) => {
+                        console.log(res);
+                        alert("장바구니에 추가되었습니다.");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
                   }}
                 >
-                  직접 디자인하기
-                </S.Btn>
-                <S.Btn
-                  width="45%"
-                  onClick={() => {
-                    alert("준비 중입니다.");
-                  }}
-                >
-                  파일 업로드
-                </S.Btn>
-              </S.ProdDetailDesignBtns>
-              <S.ProdDetailPayBox>
-                <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
-                <S.ProdDetailPriceValue>
-                  {Math.round(prodPrice).toLocaleString("ko-KR")}원
-                </S.ProdDetailPriceValue>
-              </S.ProdDetailPayBox>
-              {/* <Link to="/order"> */}
-              <S.ProdDetailPayButton
-                onClick={() => {
-                  // PROD_SID,
-                  // ITEM_OPTION,
-                  // ITEM_QUANTITY,
-                  // ITEM_AMOUNT,
-                  // ITEM_DESIGN,
-                  // USER_ID,
-                  const PROD_SID = prodDetail.PROD_SID;
-                  const ITEM_OPTION = JSON.stringify(seletedOptions);
-                  const ITEM_QUANTITY = qty;
-                  const ITEM_AMOUNT = prodPrice;
-                  const ITEM_DESIGN = JSON.stringify([]);
-
-                  axios
-                    .post("/api/cart/add", {
-                      PROD_SID: PROD_SID,
-                      ITEM_OPTION: ITEM_OPTION,
-                      ITEM_QUANTITY: ITEM_QUANTITY,
-                      ITEM_AMOUNT: ITEM_AMOUNT,
-                      ITEM_DESIGN: ITEM_DESIGN,
-                      USER_ID: USER_ID,
-                    })
-                    .then((res) => {
-                      console.log(res);
-                      alert("장바구니에 추가되었습니다.");
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                }}
-              >
-                장바구니에 담기
-              </S.ProdDetailPayButton>
-              {/* </Link> */}
-            </S.ProdDetailRight>
-          </S.ProdDetailBox>
-        </S.ProdDetailWrapper>
-      </S.MainSection>
-      <S.MainSection bgc="#f9fafc">
-        <S.ProdDetailContentWrapper>
-          <TabBar />
-        </S.ProdDetailContentWrapper>
-      </S.MainSection>
-      <S.MainSection>
-        <S.ProductReviewWrapper>
-          <h1>고객 리뷰</h1>
-          <ReviewBoard></ReviewBoard>
-        </S.ProductReviewWrapper>
-      </S.MainSection>
-    </S.MainLayout>
+                  장바구니에 담기
+                </S.ProdDetailPayButton>
+                {/* </Link> */}
+              </S.ProdDetailRight>
+            </S.ProdDetailBox>
+          </S.ProdDetailWrapper>
+        </S.MainSection>
+        <S.MainSection bgc="#f9fafc">
+          <S.ProdDetailContentWrapper>
+            <div className="ql-snow">
+              <div className="ql-editor">
+                <div
+                  dangerouslySetInnerHTML={{ __html: prodDetail?.PROD_CONTENT }}
+                />
+              </div>
+            </div>
+          </S.ProdDetailContentWrapper>
+        </S.MainSection>
+        <S.MainSection>
+          <S.ProductReviewWrapper>
+            <h1>고객 리뷰</h1>
+            <ReviewBoard></ReviewBoard>
+          </S.ProductReviewWrapper>
+        </S.MainSection>
+      </S.MainLayout>
+    </>
   );
 };
 

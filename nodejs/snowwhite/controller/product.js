@@ -38,6 +38,8 @@ where
   T2.IMAGE_CATE = 'thumbnail'
   and
   T1.PROD_CATECODE = ?
+  and
+  T1.PROD_DELCODE = 0
 `;
 
   const res_data = await getConnection(qry, [cateid]);

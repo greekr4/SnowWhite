@@ -136,7 +136,7 @@ export const HeaderMenuText = styled.a`
   cursor: pointer;
   font-family: "Gothic A1", sans-serif;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1em;
   color: #333;
   &:hover {
     color: #7070ff;
@@ -316,7 +316,8 @@ export const MainSection = styled.section`
 export const MainBannerBox = styled.div`
   width: 100%;
   height: 500px;
-  background-color: #abc;
+  /* background-color: #abc; */
+  background-image: url("/asserts/banner/main_banner1.png");
 `;
 
 /**
@@ -524,7 +525,7 @@ export const Pop_Input = styled.input`
   }
 
   &::placeholder {
-    font-size: 1rem;
+    font-size: 1em;
     color: #acacac;
   }
 `;
@@ -618,7 +619,7 @@ export const Pop_Info_Wrap = styled.div`
 `;
 
 export const Pop_Info_Title = styled.div`
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: 600;
   margin-bottom: 0.5rem;
 `;
@@ -1168,7 +1169,11 @@ export const ProdDetailPayButton = styled.div`
   margin: 0 auto;
 `;
 
-export const ProdDetailContentWrapper = styled.div``;
+export const ProdDetailContentWrapper = styled.div`
+  width: 1140px;
+  margin: 0 auto;
+  padding: 2rem 0;
+`;
 
 /**
  * 글로벌 카드 (3 x N)
@@ -1350,7 +1355,7 @@ export const CartMidProdBox = styled.div`
     font-size: 0.85rem;
   }
   & td:nth-child(5) {
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 520;
     color: red;
     &::after {
@@ -1438,7 +1443,7 @@ export const CartMidPriceBox = styled.div`
     line-height: 15px;
     width: 20px;
     color: #333;
-    font-size: 1rem;
+    font-size: 1em;
   }
 
   & td:nth-child(3)::before {
@@ -1453,7 +1458,7 @@ export const CartMidPriceBox = styled.div`
     padding-left: 1px;
     width: 20px;
     color: #333;
-    font-size: 1rem;
+    font-size: 1em;
   }
 
   & td:nth-child(4)::before {
@@ -1467,7 +1472,7 @@ export const CartMidPriceBox = styled.div`
     line-height: 17px;
     width: 20px;
     color: #333;
-    font-size: 1rem;
+    font-size: 1em;
   } */
 
   & td:nth-child(7) {
@@ -1481,7 +1486,7 @@ export const CartMidPriceBox = styled.div`
     border: 1px solid #ddd;
     border-radius: 100%;
     color: #333;
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 550;
     width: 25px;
     height: 25px;
@@ -1553,7 +1558,7 @@ export const MyPageUserInfoTextBox = styled.div`
   width: 70%;
   & h1 {
     padding-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 520;
   }
   & h2 {
@@ -1563,7 +1568,7 @@ export const MyPageUserInfoTextBox = styled.div`
     &::after {
       content: "님";
       font-weight: 500;
-      font-size: 1rem;
+      font-size: 1em;
       margin-left: 0.25rem;
     }
   }
@@ -1688,7 +1693,7 @@ export const MyPageStateCellItem = styled.div`
   border-right: 1px solid #ccc;
 
   & h1 {
-    font-size: 1rem;
+    font-size: 1em;
     color: #777;
     &::after {
       position: relative;
@@ -1724,7 +1729,7 @@ export const MyPageStateCardItem = styled.div`
   padding: 1.5rem;
 
   & h1 {
-    font-size: 1rem;
+    font-size: 1em;
     padding-bottom: 2.5rem;
   }
 
@@ -2091,7 +2096,7 @@ export const OrderListMidProdBox = styled.div`
     font-size: 0.85rem;
   }
   & td:nth-child(4) {
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 520;
     color: red;
     &::after {
@@ -2654,7 +2659,7 @@ export const OBFinalPymentBoxAdd = styled.div`
   & button {
     width: 100%;
     margin-top: 1rem;
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 550;
   }
 `;

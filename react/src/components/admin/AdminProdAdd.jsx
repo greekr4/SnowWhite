@@ -5,7 +5,7 @@ import * as S from "../../styles/new_styles";
 import GlobProdItem from "../products/GlobProdItem";
 import CustomQuill from "../global/CustomQuill";
 
-const AdminProdDetail = () => {
+const AdminProdAdd = () => {
   const { prod_sid } = useParams();
   const [prod, setProd] = useState();
   const [cate, setCate] = useState([]);
@@ -143,17 +143,17 @@ const AdminProdDetail = () => {
 
   const initState = () => {
     // State초기화
-    setInputCate(prod?.CATE_SID);
-    setInputPriorty(prod?.PROD_PRIORITY);
-    setInputProdNm(prod?.PROD_NM);
-    setInputProdDesc(prod?.PROD_DESC);
-    setInputProdPrice(prod?.PROD_PRICE);
-    setInputProdUnit(prod?.PROD_UNIT);
-    setInputProdStandard(prod?.PROD_STANDARD);
-    setInputProdQuantity(prod?.PROD_QUANTITY);
-    setInputProdDetail(prod?.PROD_DETAIL);
-    setInputProdNoti(prod?.PROD_NOTI);
-    setProdContent(prod?.PROD_CONTENT);
+    // setInputCate(prod?.CATE_SID);
+    // setInputPriorty(prod?.PROD_PRIORITY);
+    // setInputProdNm(prod?.PROD_NM);
+    // setInputProdDesc(prod?.PROD_DESC);
+    // setInputProdPrice(prod?.PROD_PRICE);
+    // setInputProdUnit(prod?.PROD_UNIT);
+    // setInputProdStandard(prod?.PROD_STANDARD);
+    // setInputProdQuantity(prod?.PROD_QUANTITY);
+    // setInputProdDetail(prod?.PROD_DETAIL);
+    // setInputProdNoti(prod?.PROD_NOTI);
+    // setProdContent(prod?.PROD_CONTENT);
   };
 
   const handleSetCate = async () => {
@@ -294,13 +294,7 @@ const AdminProdDetail = () => {
     <S.MainLayout>
       <S.AdminWrapper>
         <S.AdminProdDetailHeader>
-          <div className="left">
-            {prod?.PROD_NM} (상품코드 : {prod?.PROD_SID})
-          </div>
-          <div className="right">
-            등록일 : {formatDate(prod?.PROD_REGDATE)} 수정일 :{" "}
-            {formatDate(prod?.PROD_MODIDATE)}
-          </div>
+          <div>상품 추가하기</div>
         </S.AdminProdDetailHeader>
         <S.AdminSection>
           <div className="title">진열</div>
@@ -323,9 +317,6 @@ const AdminProdDetail = () => {
                         </option>
                       ))}
                   </select>
-                  <S.Btn margin="0.25rem" onClick={handleSetCate}>
-                    설정
-                  </S.Btn>
                 </td>
               </tr>
               <tr>
@@ -336,10 +327,8 @@ const AdminProdDetail = () => {
                     onChange={(e) => {
                       setInputPriorty(e.target.value);
                     }}
+                    placeholder="카테고리별 순서 입니다."
                   />
-                  <S.Btn margin="0.25rem" onClick={handleSetPriority}>
-                    설정
-                  </S.Btn>
                 </td>
               </tr>
               <tr>
@@ -362,10 +351,8 @@ const AdminProdDetail = () => {
                   <input
                     value={inputProdNm}
                     onChange={(e) => setInputProdNm(e.target.value)}
+                    placeholder="ex) 홍보물"
                   />
-                  <S.Btn margin="0.25rem" onClick={handleSetProdNm}>
-                    설정
-                  </S.Btn>
                 </td>
               </tr>
               <tr>
@@ -394,21 +381,20 @@ const AdminProdDetail = () => {
                     onChange={(e) => {
                       setInputProdDesc(e.target.value);
                     }}
+                    placeholder="ex) 평범하지 않은 단 한 장으로
+                    유니크한 당신을 알려보세요."
                   />
                   <br />
-                  <S.Btn margin="0.25rem" onClick={handleSetProdDesc}>
-                    설정
-                  </S.Btn>
                 </td>
               </tr>
-              <tr>
+              {/* <tr>
                 <th>미리보기</th>
                 <td>
                   <S.GlobProdList>
                     <GlobProdItem item={prod} />
                   </S.GlobProdList>
                 </td>
-              </tr>
+              </tr> */}
             </table>
           </div>
         </S.AdminSection>
@@ -424,6 +410,7 @@ const AdminProdDetail = () => {
                     onChange={(e) => {
                       setInputProdPrice(e.target.value);
                     }}
+                    placeholder="ex) 5000"
                   />
                 </td>
               </tr>
@@ -435,6 +422,7 @@ const AdminProdDetail = () => {
                     onChange={(e) => {
                       setInputProdUnit(e.target.value);
                     }}
+                    placeholder="ex) 50"
                   />
                 </td>
               </tr>
@@ -450,11 +438,8 @@ const AdminProdDetail = () => {
                     onChange={(e) => {
                       setInputProdQuantity(e.target.value);
                     }}
+                    placeholder="ex) 50,100,150,200,400,1000"
                   />
-                  <br />
-                  <S.Btn margin="0.5rem 0" onClick={handleSetPrice}>
-                    가격 설정
-                  </S.Btn>
                 </td>
               </tr>
               <tr>
@@ -465,6 +450,7 @@ const AdminProdDetail = () => {
                     onChange={(e) => {
                       setInputProdStandard(e.target.value);
                     }}
+                    placeholder="ex) 90*50 (mm)"
                   />
                 </td>
               </tr>
@@ -563,9 +549,6 @@ const AdminProdDetail = () => {
                   >
                     추가
                   </S.Btn>
-                  <S.Btn margin="0.25rem" onClick={handleSetProdDetail}>
-                    적용
-                  </S.Btn>
                 </td>
               </tr>
               <tr>
@@ -658,9 +641,6 @@ const AdminProdDetail = () => {
                   >
                     추가
                   </S.Btn>
-                  <S.Btn margin="0.25rem" onClick={handleSetProdNoti}>
-                    적용
-                  </S.Btn>
                 </td>
               </tr>
             </table>
@@ -673,7 +653,7 @@ const AdminProdDetail = () => {
               <tr>
                 <th>옵션</th>
                 <td>
-                  <S.Btn
+                  {/* <S.Btn
                     onClick={async () => {
                       console.log(selectedOption);
 
@@ -700,7 +680,7 @@ const AdminProdDetail = () => {
                     }}
                   >
                     적용
-                  </S.Btn>
+                  </S.Btn> */}
                   <table
                     style={{
                       textAlign: "center",
@@ -751,7 +731,7 @@ const AdminProdDetail = () => {
               <tr>
                 <th>이미지</th>
                 <td>
-                  <S.AdminProdImgBox>
+                  {/* <S.AdminProdImgBox>
                     {images.map((el, index) => (
                       <div className="item">
                         <div className="btnbox">
@@ -816,7 +796,9 @@ const AdminProdDetail = () => {
                         });
                       }}
                     />
-                  </S.AdminProdImgBox>
+                  </S.AdminProdImgBox> */}
+
+                  <p> 상품 추가 후 추가해주세요. </p>
                 </td>
               </tr>
               <tr>
@@ -826,9 +808,6 @@ const AdminProdDetail = () => {
                     setContent={setProdContent}
                     initContent={prodContent}
                   />
-                  <S.Btn margin="0.5rem 0" onClick={handleSetContent}>
-                    저장
-                  </S.Btn>
                 </td>
               </tr>
             </table>
@@ -839,4 +818,4 @@ const AdminProdDetail = () => {
   );
 };
 
-export default AdminProdDetail;
+export default AdminProdAdd;

@@ -1,4 +1,4 @@
-const { getConnection } = require("../utils/dbUtils");
+const { getConnection, Connection } = require("../utils/dbUtils");
 
 exports.select_admin_prods = async (req, res) => {
   const qry = `
@@ -16,9 +16,10 @@ on
   T1.PROD_CATECODE  = T3.CATE_SID 
 where
   T2.IMAGE_CATE = 'THUMBNAIL'
+  AND
+  T1.PROD_DELCODE = '0'
 order by
   T1.PROD_SID desc
- 
     `;
 
   const res_qry = await getConnection(qry);
@@ -284,6 +285,221 @@ where
   `;
 
   const res_update = await getConnection(qry, [prod_noti, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_price = async (req, res) => {
+  const { prod_sid, prod_price, prod_unit, prod_quantity } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_PRICE = ?,
+  PROD_UNIT = ?,
+  PROD_QUANTITY = ?
+
+where
+	PROD_SID = ?
+  `;
+
+  const res_update = await getConnection(qry, [
+    prod_price,
+    prod_unit,
+    prod_quantity,
+    prod_sid,
+  ]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_options = async (req, res) => {
+  const { prod_sid, options } = req.body;
+  let conn;
+
+  try {
+    conn = await Connection();
+
+    await conn.beginTransaction();
+    const qry1 = `
+  delete
+    from
+      TB_PRODUCT_OPTION
+    where
+      PROD_SID = ?
+  `;
+    const qry2 = `
+  insert
+    into
+    TB_PRODUCT_OPTION
+  (
+  OPTION_SID,
+    PROD_SID
+  )
+  values(
+    ?,
+    ?
+  )
+  `;
+
+    await conn.query(qry1, [prod_sid]);
+
+    for (const option of options) {
+      await conn.query(qry2, [option, prod_sid]);
+    }
+
+    // 모든 쿼리가 성공했으므로 트랜잭션 커밋
+    await conn.commit();
+
+    console.log("All queries executed successfully");
+    res.status(200).send("All queries executed successfully");
+  } catch (error) {
+    if (conn) {
+      await conn.rollback();
+    }
+    console.error("Error executing queries:", error);
+    res.status(500).send("Error executing queries");
+  } finally {
+    // 커넥션 반환
+    if (conn) {
+      conn.release();
+    }
+  }
+};
+
+exports.update_products_content = async (req, res) => {
+  const { prod_sid, prod_content } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+  PROD_CONTENT = ?
+where
+	PROD_SID = ?
+  `;
+
+  const res_update = await getConnection(qry, [prod_content, prod_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.insert_products_dummy = async (req, res) => {
+  let conn;
+
+  try {
+    conn = await Connection();
+
+    await conn.beginTransaction();
+    const qry1 = `
+    insert
+    into
+    SNOWDB.TB_PRODUCT
+  (
+    PROD_CATECODE,
+    PROD_NM,
+    PROD_PRICE,
+    PROD_HIT,
+    PROD_SALES,
+    PROD_DESC,
+    PROD_SHOW,
+    PROD_REGDATE,
+    PROD_MODIDATE,
+    PROD_DETAIL,
+    PROD_NOTI,
+    PROD_QUANTITY,
+    PROD_DESIGN,
+    PROD_UNIT,
+    PROD_STANDARD,
+    PROD_DO,
+    PROD_PRIORITY,
+    PROD_CONTENT,
+    PROD_DELCODE
+    )
+  values(
+  '99999',
+  '더미데이터',
+  null,
+  0,
+  0,
+  null,
+  0,
+  Now(),
+  Now(),
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  0
+  )
+  `;
+    const qry2 = `
+    insert
+    into
+    TB_PRODUCT_IMAGE (PROD_SID,
+    IMAGE_LOCATION,
+    IMAGE_PRIORITY,
+    IMAGE_CATE)
+  select
+    PROD_SID,
+    '/ASSERTS/PRODUCTS/NOIMG.PNG',
+    0,
+    'THUMBNAIL'
+  from
+    TB_PRODUCT
+  where
+    PROD_SID not in (
+    select
+      PROD_SID
+    from
+      TB_PRODUCT_IMAGE
+    where
+      IMAGE_CATE = 'THUMBNAIL'
+      )
+  `;
+
+    await conn.query(qry1);
+
+    await conn.query(qry2);
+
+    // 모든 쿼리가 성공했으므로 트랜잭션 커밋
+    await conn.commit();
+
+    console.log("All queries executed successfully");
+    res.status(200).send("All queries executed successfully");
+  } catch (error) {
+    if (conn) {
+      await conn.rollback();
+    }
+    console.error("Error executing queries:", error);
+    res.status(500).send("Error executing queries");
+  } finally {
+    // 커넥션 반환
+    if (conn) {
+      conn.release();
+    }
+  }
+};
+
+exports.update_products_delcode = async (req, res) => {
+  const { prod_sids } = req.body;
+
+  const qry = `
+UPDATE
+	TB_PRODUCT
+SET
+	PROD_DELCODE = 1
+WHERE
+	PROD_SID IN (?)
+  `;
+
+  const res_update = await getConnection(qry, [prod_sids]);
   if (res_update.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
