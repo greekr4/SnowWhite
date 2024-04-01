@@ -288,6 +288,8 @@ const AdminProdDetail = () => {
     }
   };
 
+  
+
   ///////////////////////
 
   return (

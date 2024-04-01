@@ -31,6 +31,7 @@ export const Btn = styled.button`
   border: 1px solid ${(props) => (props.borderC ? props.borderC : "#ccc")};
   width: ${(props) => (props.width ? props.width : "")};
   margin: ${(props) => props.margin};
+  transition: all 0.2s;
   &:hover {
     background-color: ${(props) =>
       props.btnBgcHover ? props.btnBgcHover : "#fff"};
@@ -318,6 +319,9 @@ export const MainBannerBox = styled.div`
   height: 500px;
   /* background-color: #abc; */
   background-image: url("/asserts/banner/main_banner1.png");
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position: center;
 `;
 
 /**
@@ -3363,7 +3367,7 @@ export const AdminTable = styled.table`
   & th {
     text-align: center;
     vertical-align: middle;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     white-space: pre-line;
   }
 `;
@@ -3451,5 +3455,36 @@ export const AdminProdImgBox = styled.div`
     position: absolute;
     left: -50px;
     top: 10px;
+  }
+`;
+
+export const AdminCateBox = styled.div`
+  width: 800px;
+  margin: 0 auto;
+`;
+
+export const AdminCateItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  & div {
+    display: flex;
+    width: 200px;
+    height: 50px;
+    border-bottom: 1px solid #ccc;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+  & input {
+    border: 1px solid #eee;
+    background: none;
+  }
+
+  & .header {
+    background-color: #f7f7f7;
   }
 `;

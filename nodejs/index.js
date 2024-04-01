@@ -30,7 +30,7 @@ const {
   auth_pw,
   update_user,
 } = require("./snowwhite/controller/user");
-const { cate } = require("./snowwhite/controller/menu");
+const { cate, subcate } = require("./snowwhite/controller/menu");
 const {
   select_products_main,
   select_products_thumbnail,
@@ -63,6 +63,11 @@ const {
   update_products_content,
   insert_products_dummy,
   update_products_delcode,
+  update_category_priority,
+  update_category_show,
+  insert_category,
+  delete_category,
+  cate_modify,
 } = require("./snowwhite/controller/admin");
 const { upload } = require("./snowwhite/controller/upload");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
@@ -100,6 +105,8 @@ app.listen("3030", () => {
 });
 
 app.post("/api/cate", cate);
+
+app.post("/api/subcate", subcate);
 
 app.post("/api/login", login);
 
@@ -178,6 +185,16 @@ app.post("/api/admin/prod/update_content", auth, update_products_content);
 app.post("/api/admin/prod/add", auth, insert_products_dummy);
 
 app.post("/api/admin/prod/del", auth, update_products_delcode);
+
+app.post("/api/admin/cate/update_prioirty", auth, update_category_priority);
+
+app.post("/api/admin/cate/update_show", auth, update_category_show);
+
+app.post("/api/admin/cate/add", auth, insert_category);
+
+app.post("/api/admin/cate/del", auth, delete_category);
+
+app.patch("/api/admin/cate", auth, cate_modify);
 
 app.post("/api/upload", upload);
 

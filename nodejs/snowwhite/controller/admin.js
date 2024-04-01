@@ -503,3 +503,117 @@ WHERE
   if (res_update.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
+
+exports.update_category_priority = async (req, res) => {
+  const { cate_priority, cate_sid } = req.body;
+
+  const qry = `
+update
+	TB_CATEGORY
+set
+	CATE_PRIORITY = ?
+where
+	CATE_SID = ?
+  `;
+
+  for (let index = 0; index < cate_priority.length; index++) {
+    const res_update = await getConnection(qry, [
+      cate_priority[index],
+      cate_sid[index],
+    ]);
+    if (res_update.state === false) return res.status(401).send("DB Error.");
+  }
+
+  return res.status(200).send("OK");
+};
+
+exports.update_category_show = async (req, res) => {
+  const { cate_show, cate_sid } = req.body;
+  const qry = `
+update
+	TB_CATEGORY
+set
+	CATE_SHOW = ?
+where
+	CATE_SID = ?
+  `;
+  const res_update = await getConnection(qry, [cate_show, cate_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.insert_category = async (req, res) => {
+  const select_qry = `
+select
+	MAX(CATE_PRIORITY) as LAST_CATE_PRIORITY ,
+	MAX(CATE_SID) as LAST_CATE_SID
+from
+	TB_CATEGORY TC
+where
+  CATE_SID != 99999
+`;
+
+  const res_select = await getConnection(select_qry);
+  const priority = res_select.row[0].LAST_CATE_PRIORITY + 1;
+  const sid = parseInt(res_select.row[0].LAST_CATE_SID) + 100;
+  const insert_qry = `
+insert
+	into
+	TB_CATEGORY
+(CATE_SID,
+	CATE_NM,
+	CATE_PID,
+	CATE_LINK,
+	CATE_SHOW,
+	CATE_PRIORITY)
+values(
+?,
+'더미',
+null,
+null,
+0,
+?
+)
+`;
+
+  const res_insert = await getConnection(insert_qry, [sid, priority]);
+  if (res_insert.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.delete_category = async (req, res) => {
+  const { cate_sid } = req.body;
+  const qry = `
+delete
+  from
+    TB_CATEGORY
+  where
+    CATE_SID = ?
+  `;
+
+  console.log(qry);
+  const res_delete = await getConnection(qry, [cate_sid]);
+  if (res_delete.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.cate_modify = async (req, res) => {
+  const { cate_sid, cate_nm } = req.body;
+  const updateField = [];
+  if (cate_nm) {
+    updateField.push(`CATE_NM = '${cate_nm}'`);
+  }
+
+  const qry = `
+update
+	TB_CATEGORY
+set
+	${updateField.join(",")}
+where
+  CATE_SID = ${cate_sid}
+`;
+  console.log(qry);
+  const res_update = await getConnection(qry);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};

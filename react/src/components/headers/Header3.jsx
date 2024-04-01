@@ -22,44 +22,70 @@ const Header3 = ({ openPopup, queryClient }) => {
 
   const { data } = useQuery("userinfo", { enabled: false });
   const userNm = data?.USER_NM;
+  const userGrade = data?.USER_GRADE;
 
   useEffect(() => {
-    axios.post("/api/cate").then((res) => {
-      const groupedCategories =
-        res.data &&
-        res.data.reduce((result, category) => {
-          if (category.CATE_PID === null) {
-            // 대카테고리인 경우
-            result.push({
-              ...category,
-              subCate: [],
-            });
-          } else {
-            // 하위 카테고리인 경우
-            const parentCategory = result.find(
-              (parent) => parent.CATE_SID === category.CATE_PID
-            );
-            if (parentCategory) {
-              parentCategory.subCate.push(category);
-            }
-          }
-          return result;
-        }, []);
-
-      // 결과 출력
-      // console.log(groupedCategories);
-      SetCate(groupedCategories);
-
-      //메뉴
-      const resultObj = {};
-      res.data
-        .filter((el) => el.CATE_PID === null)
-        .map((el, index) => {
-          resultObj[el.CATE_SID] = false;
-        });
-      setMenuShow({ ...menuShow, ...resultObj });
-    });
+    // axios.post("/api/cate").then((res) => {
+    //   const groupedCategories =
+    //     res.data &&
+    //     res.data.reduce((result, category) => {
+    //       if (category.CATE_PID === null) {
+    //         // 대카테고리인 경우
+    //         result.push({
+    //           ...category,
+    //           subCate: [],
+    //         });
+    //       } else {
+    //         // 하위 카테고리인 경우
+    //         const parentCategory = result.find(
+    //           (parent) => parent.CATE_SID === category.CATE_PID
+    //         );
+    //         if (parentCategory) {
+    //           parentCategory.subCate.push(category);
+    //         }
+    //       }
+    //       return result;
+    //     }, []);
+    //   // 결과 출력
+    //   console.log(groupedCategories);
+    //   SetCate(groupedCategories);
+    //   //메뉴
+    //   const resultObj = {};
+    //   res.data
+    //     .filter((el) => el.CATE_PID === null)
+    //     .map((el, index) => {
+    //       resultObj[el.CATE_SID] = false;
+    //     });
+    //   setMenuShow({ ...menuShow, ...resultObj });
+    // });
+    getCate();
   }, []);
+
+  const getCate = async () => {
+    const cateData = (await axios.post("/api/cate")).data;
+    const subcateData = (await axios.post("/api/subcate")).data;
+    const groupCate = [];
+    cateData.forEach((el) => {
+      groupCate.push({ ...el, subCate: [] });
+    });
+
+    subcateData.forEach((subel) => {
+      groupCate.forEach((groupel, index) => {
+        if (groupel.CATE_SID === subel.PROD_CATECODE) {
+          groupCate[index].subCate.push({
+            CATE_NM: subel.PROD_NM,
+            CATE_LINK: `/products/detail/${subel.PROD_SID}`,
+          });
+        }
+      });
+    });
+
+    SetCate(groupCate);
+
+    console.log(cateData);
+    console.log(subcateData);
+    console.log(groupCate);
+  };
 
   const handleOverMenu = (menu) => {
     setMenuShow({
@@ -152,11 +178,20 @@ const Header3 = ({ openPopup, queryClient }) => {
                     <S.HeaderMenuText>{userNm}님</S.HeaderMenuText>
                     <GnbSubMenu
                       isVisible={menuShow.mymenu}
-                      submenus={[
-                        { CATE_NM: "마이페이지", CATE_LINK: "/mypage" },
-                        { CATE_NM: "장바구니", CATE_LINK: "/cart" },
-                        { CATE_NM: "주문 내역", CATE_LINK: "/orderlist" },
-                      ]}
+                      submenus={
+                        userGrade === 9
+                          ? [
+                              { CATE_NM: "마이페이지", CATE_LINK: "/mypage" },
+                              { CATE_NM: "장바구니", CATE_LINK: "/cart" },
+                              { CATE_NM: "주문 내역", CATE_LINK: "/orderlist" },
+                              { CATE_NM: "어드민", CATE_LINK: "/admin" },
+                            ]
+                          : [
+                              { CATE_NM: "마이페이지", CATE_LINK: "/mypage" },
+                              { CATE_NM: "장바구니", CATE_LINK: "/cart" },
+                              { CATE_NM: "주문 내역", CATE_LINK: "/orderlist" },
+                            ]
+                      }
                     />
                   </Link>
                 </S.HeaderMenuItem>

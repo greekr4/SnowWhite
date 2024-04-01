@@ -13,42 +13,43 @@ import img6 from "../assets/products/product-test6.png";
 const MainPage2 = () => {
   const test_products = [
     {
-      PROD_NM: "일반 명함",
+      PROD_NM: "일반지",
       PROD_DESC: "평범하지 않은 단 한 장으로\r\n유니크한 당신을 알려보세요.",
-      IMAGE_LOCATION: "/asserts/products/product1.png",
+      IMAGE_LOCATION: "/upload/145d7da0-f008-11ee-9b34-efd46fbb721a.jpg",
       PROD_SID: 1,
     },
     {
-      PROD_NM: "고급 명함",
+      PROD_NM: "스크래치복권",
       PROD_DESC:
         "한번 보면 빠져들 수밖에 없는 매력적인 명함\r\n직접 보고 느껴보세요!",
-      IMAGE_LOCATION: "/asserts/products/product2.png",
-      PROD_SID: 2,
-    },
-    {
-      PROD_NM: "포스터",
-      PROD_DESC: "모두의 시선을 주목시켜\r\n톡톡한 홍보 효과를 경험하세요.",
-      IMAGE_LOCATION: img3,
-      PROD_SID: 3,
-    },
-    {
-      PROD_NM: "원목 사인",
-      PROD_DESC: "원목의 나뭇결로 깔끔하고\r\n고급스러운 벽면을 연출해보세요.",
-      IMAGE_LOCATION: img4,
-      PROD_SID: 4,
-    },
-    {
-      PROD_NM: "스탠다드 배너",
-      PROD_DESC: "어떤 공간에서도 간편하게 설치하여\r\n홍보할 수 있어요.",
-      IMAGE_LOCATION: img5,
-      PROD_SID: 5,
+      IMAGE_LOCATION: "/upload/65ffba00-edac-11ee-b4de-bda933c02a20.jpg",
+      PROD_SID: 39,
     },
     {
       PROD_NM: "스티커",
       PROD_DESC:
-        "직접 만든 이미지 모양 그대로 하나씩\r\n잘라주는 스티커를 만들어 보세요.",
-      IMAGE_LOCATION: img6,
-      PROD_SID: 6,
+        "직접 만든 이미지 모양 그대로\n하나씩 낱장으로 잘라주는 스티커",
+      IMAGE_LOCATION: "/upload/335c5100-eff8-11ee-b1ae-0718e194d4f1.jpg",
+      PROD_SID: 38,
+    },
+    {
+      PROD_NM: "박스",
+      PROD_DESC: "박스를 커스텀할 수 있어요\r\n나만의 박스를 만들어보세요.",
+      IMAGE_LOCATION: "/upload/ded06af0-edad-11ee-b4de-bda933c02a20.png",
+      PROD_SID: 42,
+    },
+    {
+      PROD_NM: "아크릴키링",
+      PROD_DESC:
+        "내가 찾던 그 디자인을 아크릴 안에 쏙!\r\n다양한 종류와 고리 모양으로 키링을 만들어 보세요.",
+      IMAGE_LOCATION: "/upload/131f39d0-edae-11ee-b4de-bda933c02a20.jpg",
+      PROD_SID: 43,
+    },
+    {
+      PROD_NM: "스티커",
+      PROD_DESC: "언제 어디서든 나만의\r\n현수막으로 홍보해보세요.",
+      IMAGE_LOCATION: "/upload/5e2835d0-edae-11ee-b4de-bda933c02a20.jpg",
+      PROD_SID: 44,
     },
   ];
 
