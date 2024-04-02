@@ -10,61 +10,25 @@ import close from "../assets/icons/close.png";
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [bannerImg, setBannerImg] = useState();
+  const [reviewDatas, setReviewDatas] = useState([]);
   const { cateid } = useParams();
 
   useEffect(() => {
-    axios
-      .post("/api/product/thumbnail", { cateid: cateid })
-      .then((res) => {
-        if (res.status === 200) {
-          setProducts(res.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    axios
-      .post("/api/banner", { cate: "CATE", code: cateid })
-      .then((res) => {
-        if (res.status === 200) {
-          setBannerImg(res.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    initdb();
   }, [cateid]);
 
-  const test_products = [
-    {
-      prodNM: "일반 명함",
-      prodDESC: "평범하지 않은 단 한 장으로\r\n유니크한 당신을 알려보세요.",
-      prodIMG: "/asserts/products/product1.png",
-    },
-    {
-      prodNM: "고급 명함",
-      prodDESC:
-        "한번 보면 빠져들 수밖에 없는 매력적인 명함\r\n직접 보고 느껴보세요!",
-    },
-    {
-      prodNM: "포스터",
-      prodDESC: "모두의 시선을 주목시켜\r\n톡톡한 홍보 효과를 경험하세요.",
-    },
-    {
-      prodNM: "원목 사인",
-      prodDESC: "원목의 나뭇결로 깔끔하고\r\n고급스러운 벽면을 연출해보세요.",
-    },
-    {
-      prodNM: "스탠다드 배너",
-      prodDESC: "어떤 공간에서도 간편하게 설치하여\r\n홍보할 수 있어요.",
-    },
-    {
-      prodNM: "스티커",
-      prodDESC:
-        "직접 만든 이미지 모양 그대로 하나씩\r\n잘라주는 스티커를 만들어 보세요.",
-    },
-  ];
+  const initdb = async () => {
+    setProducts(
+      (await axios.post("/api/product/thumbnail", { cateid: cateid })).data
+    );
+    setBannerImg(
+      (await axios.post("/api/banner", { cate: "CATE", code: cateid })).data
+    );
+    setReviewDatas(
+      (await axios.post("/api/review", { cate_sid: cateid })).data
+    );
+  };
+
   return (
     <S.MainLayout>
       <S.MainSection>
@@ -91,7 +55,7 @@ const ProductsPage = () => {
       <S.MainSection bgc="#f9fafc">
         <S.ProductReviewWrapper>
           <h1>고객 리뷰</h1>
-          <ReviewBoard></ReviewBoard>
+          <ReviewBoard reviewDatas={reviewDatas}></ReviewBoard>
         </S.ProductReviewWrapper>
       </S.MainSection>
     </S.MainLayout>

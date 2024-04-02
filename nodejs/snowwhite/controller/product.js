@@ -134,6 +134,7 @@ on
 	T4.PROD_SID = T3.PROD_SID
 where
 	T1.USER_ID = ?
+  AND T1.CART_STATUS = 1
 `;
 
   const res_data = await getConnection(qry, [userid]);
@@ -285,6 +286,7 @@ on
 	T4.PROD_SID = T3.PROD_SID
 where
 	T1.ITEM_SID IN (?)
+  AND T1.CART_STATUS = 1
 `;
 
   const res_data = await getConnection(qry, [item_sid]);

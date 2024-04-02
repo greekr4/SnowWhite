@@ -3,6 +3,9 @@ import * as S from "../styles/new_styles";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
+import { useQuery } from "react-query";
+import axios from "axios";
+import { formatDate } from "../hooks/Utill";
 
 const CustomDatePickerHeader = ({
   date,
@@ -31,6 +34,21 @@ const CustomDatePickerHeader = ({
 const OrderListPage = () => {
   const [selectedDateStart, setSelectedDateStart] = useState(new Date());
   const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
+  const { data } = useQuery("userinfo", { enabled: false });
+  const [orderlist, setOrderlist] = useState([]);
+
+  useEffect(() => {
+    initdb();
+  }, [data]);
+
+  const initdb = async () => {
+    setOrderlist(
+      (await axios.post("/api/orderlist", { userid: data?.USER_ID })).data
+    );
+
+    console.log(orderlist);
+    console.log(orderlist);
+  };
 
   useEffect(() => {
     if (selectedDateEnd < selectedDateStart) {
@@ -43,6 +61,24 @@ const OrderListPage = () => {
       setSelectedDateEnd(selectedDateStart);
     }
   }, [selectedDateStart]);
+
+  const renderStatus = (status) => {
+    switch (status) {
+      case 1:
+        return "결제 대기";
+      case 2:
+        return "결제 완료";
+      case 3:
+        return "배송 준비 중";
+      case 4:
+        return "배송 중";
+      case 5:
+        return "배송 완료";
+      default:
+        return "error";
+    }
+  };
+
   return (
     <S.MainLayout>
       <S.MainSection>
@@ -96,42 +132,37 @@ const OrderListPage = () => {
             <table>
               <thead>
                 <tr>
-                  <th>주문 번호</th>
-                  <th colSpan="2">상품 정보</th>
-                  <th>수량</th>
+                  <th>주문번호</th>
+                  <th>주문일</th>
+                  <th>상품정보</th>
                   <th>가격</th>
-                  <th>진행 상태</th>
+                  <th>진행상태</th>
                   <th>비고</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>0001</td>
-                  <td>
-                    <S.CartMidThumbnail></S.CartMidThumbnail>
-                  </td>
-                  <td>
-                    <S.OrderListMidProdInfoBox>
-                      <h1>일반 명함</h1>
-                      <p>90 x 50 / 스노우(비코팅) 250g</p>
-                      <p>2024-02-15</p>
-                    </S.OrderListMidProdInfoBox>
-                  </td>
-                  <td>500</td>
-                  <td>3,400</td>
-                  <td>배송 완료</td>
-                  <td>
-                    <S.Btn
-                      btnBgc="#469cff"
-                      fontColor="#fff"
-                      btnBgcHover="#7cb9ff"
-                      borderCHover="none"
-                    >
-                      리뷰쓰기
-                    </S.Btn>
-                    <S.Btn>취소요청</S.Btn>
-                  </td>
-                </tr>
+                {orderlist.map((el, index) => (
+                  <tr>
+                    <td>{el.ORDER_SID}</td>
+                    <td>{formatDate(el.ORDER_DATE)}</td>
+                    <td>
+                      <S.Btn>자세히 보기</S.Btn>
+                    </td>
+                    <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
+                    <td>{renderStatus(el.ORDER_STATUS)}</td>
+                    <td>
+                      <S.Btn
+                        btnBgc="#469cff"
+                        fontColor="#fff"
+                        btnBgcHover="#7cb9ff"
+                        borderCHover="none"
+                      >
+                        리뷰쓰기
+                      </S.Btn>
+                      <S.Btn>취소요청</S.Btn>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </S.OrderListMidProdBox>

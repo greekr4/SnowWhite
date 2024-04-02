@@ -5,7 +5,7 @@ const {
   refreshVerify,
   verify,
 } = require("../utils/authMiddleware");
-const { getConnection } = require("../utils/dbUtils");
+const { getConnection, Connection } = require("../utils/dbUtils");
 
 /**
  * 로그인
@@ -118,6 +118,8 @@ exports.userinfo = async (req, res) => {
 	T1.USER_GRADE,
 	T2.DELI_ADDRESS,
 	T2.DELI_POSTCODE,
+  T2.DELI_TEL0,
+  T2.DELI_REC,
   CASE WHEN T2.DELI_ADD_ADDRESS IS NULL THEN '' ELSE T2.DELI_ADD_ADDRESS END AS DELI_ADD_ADDRESS
 from
 	TB_USER T1
@@ -352,4 +354,114 @@ where
     return res.status(401).send("DB Error.");
   console.log(res_update);
   res.status(200).send("OK");
+};
+
+exports.insert_order = async (req, res) => {
+  const {
+    userId,
+    userTel,
+    userEmail,
+    item_sids,
+    orderAmount,
+    orderReceiver,
+    orderTel,
+    orderPostcode,
+    orderAddress,
+    orderAddAddress,
+    orderReq,
+    radioValue,
+  } = req.body;
+
+  const item_sids_array = item_sids.split(",");
+  const order_sid = `ordertest${Date.now()}`;
+
+  const insert_order_qry = `
+  insert
+	into
+	TB_ORDER
+(
+  ORDER_SID,
+	USER_ID,
+	ITEM_SIDS,
+	ORDER_DATE,
+	ORDER_AMOUNT,
+	ORDER_STATUS,
+	ORDER_INVOICE,
+	ORDER_REC,
+	ORDER_TEL0,
+	ORDER_POSTCODE,
+	ORDER_ADDRESS,
+	ORDER_ADD_ADDRESS,
+	ORDER_REQ,
+	ORDER_PAYMENT_TYPE
+  )
+values(
+'${order_sid}',
+'${userId}',
+'${item_sids}',
+NOW(),
+${orderAmount},
+1,
+null,
+'${orderReceiver}',
+'${orderTel}',
+'${orderPostcode}',
+'${orderAddress}',
+'${orderAddAddress}',
+'${orderReq}',
+'${radioValue}'
+)
+  `;
+
+  const update_cart_qry = `
+update
+	TB_CART
+set
+	CART_STATUS = 2,
+  CART_MODIDATE = NOW()
+where
+	ITEM_SID IN (?)
+  `;
+
+  let conn;
+
+  try {
+    conn = await Connection();
+
+    await conn.beginTransaction();
+
+    await conn.query(update_cart_qry, [item_sids_array]);
+    await conn.query(insert_order_qry);
+    await conn.commit();
+    res.status(200).send("All queries executed successfully");
+  } catch (error) {
+    if (conn) {
+      await conn.rollback();
+    }
+    console.error("Error executing queries:", error);
+    res.status(500).send("Error executing queries");
+  } finally {
+    // 커넥션 반환
+    if (conn) {
+      conn.release();
+    }
+  }
+};
+
+exports.select_orderlist = async (req, res) => {
+  const { userid } = req.body;
+  const qry = `
+select
+	*
+from
+	TB_ORDER
+where
+	USER_ID = '${userid}'
+  `;
+
+  console.log(qry);
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
 };

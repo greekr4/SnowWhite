@@ -27,36 +27,28 @@ const OrderPage = () => {
   const [orderPostcode, setOrderPostcode] = useState();
   const [orderAddress, setOrderAddress] = useState();
   const [orderAddAddress, setOrderAddAddress] = useState();
-  const [orderEtc, setOrderEtc] = useState();
+  const [orderReq, setOrderReq] = useState();
 
   const [addressVisible, setAddressVisible] = useState(false);
 
   useEffect(() => {
-    let params = [];
+    initdb();
+  }, [data]);
+
+  const initdb = async () => {
+    const params = [];
     item_sids.split(",").forEach((el) => {
       params.push(el);
     });
-
-    axios
-      .post("/api/order", {
-        item_sid: params,
-      })
-      .then((res) => {
-        console.log(res);
-        setOrderItem(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    setOrderItem((await axios.post("/api/order", { item_sid: params })).data);
     setUserNm(data?.USER_NM);
     setUserTel(data?.USER_TEL0);
     setUserEmail(data?.USER_ID);
-  }, []);
+  };
 
   const handleSameBtn = () => {
-    setOrderReceiver(data?.USER_NM);
-    setOrderTel(data?.USER_TEL0);
+    setOrderReceiver(data?.DELI_REC);
+    setOrderTel(data?.DELI_TEL0);
     setOrderPostcode(data?.DELI_POSTCODE);
     setOrderAddress(data?.DELI_ADDRESS);
     setOrderAddAddress(data?.DELI_ADD_ADDRESS);
@@ -74,7 +66,6 @@ const OrderPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  console.log(item_sids.split());
   const handleRadioValue = (e) => {
     console.log(e.target.id);
     SetRadioValue(e.target.id);
@@ -92,6 +83,37 @@ const OrderPage = () => {
   const StepSlideDown3 = useSpring({
     height: ViewStep === 2 ? 200 + "px" : 0 + "px",
   });
+
+  const handleOrderBtn = async () => {
+    console.log(
+      userNm,
+      userTel,
+      userEmail,
+      orderReceiver,
+      orderTel,
+      orderPostcode,
+      orderAddress,
+      orderAddAddress,
+      orderReq,
+      radioValue
+    );
+
+    const res = await axios.put("/api/order", {
+      userId: data?.USER_ID,
+      userTel: userTel,
+      userEmail: userEmail,
+      item_sids: item_sids,
+      orderAmount: totalPrice + 3000,
+      orderReceiver: orderReceiver,
+      orderTel: orderTel,
+      orderPostcode: orderPostcode,
+      orderAddress: orderAddress,
+      orderAddAddress: orderAddAddress,
+      orderReq: orderReq,
+      radioValue: radioValue,
+    });
+    alert(res.data);
+  };
 
   return (
     <S.MainLayout>
@@ -187,20 +209,28 @@ const OrderPage = () => {
                   </table>
                   <S.OBTextAndBtnBox>
                     <h1>배송지 정보</h1>
-                    <S.Btn onClick={handleSameBtn}>주문자와 동일</S.Btn>
+                    <S.Btn onClick={handleSameBtn}>기본 배송지로</S.Btn>
                   </S.OBTextAndBtnBox>
 
                   <table>
                     <tr>
                       <th>받으시는 분</th>
                       <td>
-                        <input type="text" value={orderReceiver} />
+                        <input
+                          type="text"
+                          value={orderReceiver}
+                          onChange={(e) => setOrderReceiver(e.target.value)}
+                        />
                       </td>
                     </tr>
                     <tr>
                       <th>연락처</th>
                       <td>
-                        <input className="text" value={orderTel}></input>
+                        <input
+                          className="text"
+                          value={orderTel}
+                          onChange={(e) => setOrderTel(e.target.value)}
+                        />
                       </td>
                     </tr>
                     <tr>
@@ -230,6 +260,7 @@ const OrderPage = () => {
                               onComplete={(data) => {
                                 setOrderAddress(data.address);
                                 setOrderPostcode(data.zonecode);
+                                setOrderAddAddress("");
                                 setAddressVisible(false);
                               }}
                             />
@@ -247,6 +278,7 @@ const OrderPage = () => {
                           className="deli"
                           placeholder="상세 주소를 입력해주세요."
                           value={orderAddAddress}
+                          onChange={(e) => setOrderAddAddress(e.target.value)}
                         />
                       </td>
                     </tr>
@@ -257,7 +289,8 @@ const OrderPage = () => {
                           type="text"
                           className="message"
                           placeholder="배송 요청 사항을 입력해주세요."
-                          value={orderEtc}
+                          value={orderReq}
+                          onChange={(e) => setOrderReq(e.target.value)}
                         />
                       </td>
                     </tr>
@@ -415,12 +448,10 @@ const OrderPage = () => {
                     </p>
                     <p>
                       <input type="checkbox" name="ck1" id="ck1" />
-                      <label htmlFor="ck1">
-                        개인정보 수집 동의 (필수)
-                      </label>{" "}
+                      <label htmlFor="ck1">개인정보 수집 동의 (필수)</label>
                       <span>약관보기</span>
                     </p>
-                    <S.Btn>결제하기</S.Btn>
+                    <S.Btn onClick={handleOrderBtn}>결제하기</S.Btn>
                   </S.OBFinalPymentBoxAdd>
                 </S.OBFinalPymentBoxAddWrapper>
               </S.OBFinalPaymentBox>

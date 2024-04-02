@@ -2069,10 +2069,10 @@ export const OrderListMidProdBox = styled.div`
   & th:nth-child(1) {
     width: 130px;
   }
-  & th:nth-child(2) {
+  & th:nth-child(3) {
     width: 620px;
   }
-  & th:nth-child(3) {
+  & th:nth-child(2) {
     width: 130px;
   }
   & th:nth-child(4) {
@@ -2091,13 +2091,6 @@ export const OrderListMidProdBox = styled.div`
     text-align: center;
   }
   & td:nth-child(1) {
-  }
-
-  & td:nth-child(3) {
-    text-align: left;
-  }
-  & td:nth-child(3) {
-    font-size: 0.85rem;
   }
   & td:nth-child(4) {
     font-size: 1em;
