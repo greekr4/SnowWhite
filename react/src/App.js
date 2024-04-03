@@ -46,14 +46,17 @@ function App({ queryClient }) {
   const [isPopupOpen2, setIsPopupOpen2] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
   const [popupIndex2, setPopupIndex2] = useState(0);
-
+  const [popupData, setPopupData] = useState();
   const cookies = new Cookies();
   const token = cookies.get("token");
   useUserinfoQuery();
 
-  const openPopup = (index) => {
+  const openPopup = (index, data) => {
     setIsPopupOpen(true);
     setPopupIndex(index);
+    if (data) {
+      setPopupData(data);
+    }
   };
 
   const openPopup2 = (index) => {
@@ -81,6 +84,7 @@ function App({ queryClient }) {
           openPopup2={openPopup2}
           closePopup2={closePopup2}
           popupIndex={popupIndex}
+          popupData={popupData}
         ></Potals.ModalPortal>
         <Potals.ModalPortal2
           isOpen2={isPopupOpen2}
@@ -102,7 +106,10 @@ function App({ queryClient }) {
             />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/order/:item_sids" element={<OrderPage />} />
-            <Route path="/orderlist" element={<OrderListPage />} />
+            <Route
+              path="/orderlist"
+              element={<OrderListPage openPopup={openPopup} />}
+            />
             <Route path="/notice" element={<NoticePage />} />
             <Route
               path="/mypage"
@@ -114,7 +121,7 @@ function App({ queryClient }) {
           <Route path="/test" element={<TestKonva />} />
           <Route path="/test2" element={<TestKonva2 />} />
           <Route path="/test3" element={<TestKonva3 />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin" element={<AdminPage openPopup={openPopup} />} />
           <Route path="/admin/prod/:prod_sid" element={<AdminProdDetail />} />
           {/* <Route path="/admin/prod/add" element={<AdminProdAdd />} /> */}
         </Routes>

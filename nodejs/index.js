@@ -31,6 +31,7 @@ const {
   update_user,
   insert_order,
   select_orderlist,
+  select_order_item,
 } = require("./snowwhite/controller/user");
 const { cate, subcate } = require("./snowwhite/controller/menu");
 const {
@@ -70,6 +71,7 @@ const {
   insert_category,
   delete_category,
   cate_modify,
+  select_admin_orderlist,
 } = require("./snowwhite/controller/admin");
 const { upload } = require("./snowwhite/controller/upload");
 const { select_review } = require("./snowwhite/controller/review");
@@ -202,11 +204,15 @@ app.post("/api/admin/cate/del", auth, delete_category);
 
 app.patch("/api/admin/cate", auth, cate_modify);
 
+app.post("/api/admin/orderlist", auth, select_admin_orderlist);
+
 app.post("/api/upload", upload);
 
 app.post("/api/review", select_review);
 
 app.post("/api/orderlist", auth, select_orderlist);
+
+app.post("/api/orderlist/item", auth, select_order_item);
 
 app.get("/api", () => {
   refreshVerify("123123", "a");

@@ -373,7 +373,29 @@ exports.insert_order = async (req, res) => {
   } = req.body;
 
   const item_sids_array = item_sids.split(",");
-  const order_sid = `ordertest${Date.now()}`;
+
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  const select_cnt_qry = `
+select
+	COUNT(1) as CNT
+from 
+	TB_ORDER
+where
+	ORDER_DATE like '${year}-${month}-${day}%'
+`;
+
+  console.log(select_cnt_qry);
+  const cnt = await getConnection(select_cnt_qry);
+  if (cnt.state === false) return res.status(401).send("DB Error.");
+
+  console.log(cnt.row[0].CNT);
+  const seq = (parseInt(cnt.row[0].CNT) + 1).toString().padStart(8, "0");
+  console.log(seq);
+  const order_sid = `${year}${month}${day}-${seq}`;
 
   const insert_order_qry = `
   insert
@@ -463,5 +485,33 @@ where
 
   const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};
+
+exports.select_order_item = async (req, res) => {
+  const { item_sids } = req.body;
+
+  const qry = `
+select
+  T2.PROD_SID,
+  PROD_NM,
+  PROD_CATECODE,
+  ITEM_OPTION,
+  ITEM_DESIGN,
+  ITEM_AMOUNT,
+  ITEM_QUANTITY
+from
+	TB_CUSTOM_PROD T1
+left outer join TB_PRODUCT T2
+	on
+	T1.PROD_SID = T2.PROD_SID
+where
+	T1.ITEM_SID in (?)
+  `;
+
+  const res_data = await getConnection(qry, [item_sids]);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  console.log(res_data);
+  console.log(qry);
   return res.status(200).send(res_data.row);
 };

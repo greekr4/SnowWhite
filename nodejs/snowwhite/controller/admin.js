@@ -617,3 +617,16 @@ where
   if (res_update.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
+
+exports.select_admin_orderlist = async (req, res) => {
+  const qry = `
+select
+	*
+from
+	TB_ORDER
+  `;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};

@@ -534,6 +534,26 @@ export const Pop_Input = styled.input`
   }
 `;
 
+export const Pop_Textarea = styled.textarea`
+  width: 100%;
+  height: 80px;
+  padding: 0;
+  font-size: 14px;
+  margin-top: 1em;
+  border: 1px solid #eee;
+  resize: none;
+  &:focus-visible {
+    outline: none;
+  }
+  &:focus {
+    border-bottom: 1px solid #191919;
+  }
+  &::placeholder {
+    font-size: 1em;
+    color: #acacac;
+  }
+`;
+
 export const Pop_Remeber = styled.div`
   display: flex;
   align-items: center;
@@ -860,6 +880,17 @@ export const StarEmpty = styled.span`
   width: 24px;
   height: 24px;
   background-image: url(${star_empty});
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+`;
+
+export const StarChanging = styled.span`
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-image: url(${(props) =>
+    props.star === "on" ? star : star_empty});
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -2070,7 +2101,7 @@ export const OrderListMidProdBox = styled.div`
     width: 130px;
   }
   & th:nth-child(3) {
-    width: 620px;
+    width: 500px;
   }
   & th:nth-child(2) {
     width: 130px;

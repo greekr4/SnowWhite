@@ -3,7 +3,7 @@ import * as S from "../styles/new_styles";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import { formatDate } from "../hooks/Utill";
 
@@ -31,24 +31,46 @@ const CustomDatePickerHeader = ({
   </S.DatePickerHeader>
 );
 
-const OrderListPage = () => {
+const OrderListPage = ({ openPopup }) => {
   const [selectedDateStart, setSelectedDateStart] = useState(new Date());
   const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
   const { data } = useQuery("userinfo", { enabled: false });
   const [orderlist, setOrderlist] = useState([]);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     initdb();
   }, [data]);
 
   const initdb = async () => {
-    setOrderlist(
-      (await axios.post("/api/orderlist", { userid: data?.USER_ID })).data
-    );
+    if (data?.USER_ID) {
+      const updated = (
+        await axios.post("/api/orderlist", {
+          userid: data?.USER_ID,
+        })
+      ).data;
 
-    console.log(orderlist);
-    console.log(orderlist);
+      await Promise.all(
+        updated.map(async (el, index) => {
+          const item_ary = el.ITEM_SIDS.split(",");
+
+          updated[index].ITEMS = (
+            await axios.post("/api/orderlist/item", {
+              item_sids: item_ary,
+            })
+          ).data;
+        })
+      );
+
+      console.log(updated);
+
+      setOrderlist(updated);
+    }
   };
+
+  useEffect(() => {
+    console.log("오더리스트", orderlist);
+  }, [orderlist]);
 
   useEffect(() => {
     if (selectedDateEnd < selectedDateStart) {
@@ -141,13 +163,11 @@ const OrderListPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {orderlist.map((el, index) => (
-                  <tr>
+                {/* {orderlist?.map((el, index) => (
+                  <tr key={index}>
                     <td>{el.ORDER_SID}</td>
                     <td>{formatDate(el.ORDER_DATE)}</td>
-                    <td>
-                      <S.Btn>자세히 보기</S.Btn>
-                    </td>
+                    <td>{el.ITEMS?.toString()}</td>
                     <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
                     <td>{renderStatus(el.ORDER_STATUS)}</td>
                     <td>
@@ -160,6 +180,78 @@ const OrderListPage = () => {
                         리뷰쓰기
                       </S.Btn>
                       <S.Btn>취소요청</S.Btn>
+                    </td>
+                  </tr>
+                ))} */}
+                {orderlist?.map((el, index) => (
+                  <tr key={index}>
+                    <td>{el.ORDER_SID}</td>
+                    <td>{formatDate(el.ORDER_DATE)}</td>
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "space-around",
+                          height: "150px",
+                          overflowY: "scroll",
+                        }}
+                      >
+                        {el.ITEMS.map((item, index) => (
+                          <div
+                            style={{
+                              padding: "0.5em",
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                              margin: "0 0 0.5rem 0",
+                              width: "90%",
+                            }}
+                          >
+                            <p style={{ fontSize: "1.2em" }}>{item.PROD_NM}</p>
+                            <p style={{ fontSize: "0.75em", padding: "0.5em" }}>
+                              {item.ITEM_OPTION.map((option, index) => (
+                                <>
+                                  {option.OPTION_CATE} - {option.OPTION_NM}
+                                  {index != item.ITEM_OPTION.length - 1 &&
+                                    " / "}
+                                </>
+                              ))}
+                            </p>
+                            <p style={{ padding: "0.25em" }}>
+                              {item.ITEM_QUANTITY}개{" / "}
+                              {item.ITEM_AMOUNT.toLocaleString("ko-kr")}원
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
+                    <td>{renderStatus(el.ORDER_STATUS)}</td>
+                    <td>
+                      {el.ORDER_STATUS < 4 ? (
+                        <S.Btn>취소요청</S.Btn>
+                      ) : el.ORDER_STATUS === 4 ? (
+                        <S.Btn>배송추적</S.Btn>
+                      ) : (
+                        <S.Btn
+                          btnBgc="#469cff"
+                          fontColor="#fff"
+                          btnBgcHover="#7cb9ff"
+                          borderCHover="none"
+                          onClick={() => {
+                            openPopup("review_form", {
+                              ORDER_SID: el.ORDER_SID,
+                              PROD_SID: el.ITEMS[0].PROD_SID,
+                              PROD_NM: el.ITEMS[0].PROD_NM,
+                              PROD_CATECODE: el.ITEMS[0].PROD_CATECODE,
+                              ITEM_OPTION: el.ITEMS[0].ITEM_OPTION,
+                            });
+                          }}
+                        >
+                          리뷰쓰기
+                        </S.Btn>
+                      )}
                     </td>
                   </tr>
                 ))}
