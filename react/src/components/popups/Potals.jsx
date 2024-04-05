@@ -5,6 +5,7 @@ import PopFindPw from "./PopFindPw";
 import PopPolicySnow from "./PopPolicySnow";
 import PopPolicyPriv from "./PopPolicyPriv";
 import PopReviewForm from "./PopReviewForm";
+import PopOrderDetail from "./PopOrderDetail";
 
 /////포탈1
 const ModalPortal = ({
@@ -26,7 +27,7 @@ const ModalPortal = ({
   // 1 : 회원가입
   // 2 : 비밀번호 찾기
   // 3 : 이용약관
-  // review_form : 리뷰폼
+  // reviewForm : 리뷰폼
 
   switch (popupIndex) {
     case 0:
@@ -52,6 +53,11 @@ const ModalPortal = ({
     case "review_form":
       return ReactDOM.createPortal(
         <PopReviewForm closePopup={closePopup} popupData={popupData} />,
+        el
+      );
+    case "orderDetail":
+      return ReactDOM.createPortal(
+        <PopOrderDetail closePopup={closePopup} popupData={popupData} />,
         el
       );
     default:

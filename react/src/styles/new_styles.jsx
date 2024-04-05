@@ -677,6 +677,40 @@ export const Pop_Policy_Content = styled.div`
   }
 `;
 
+export const Pop_OrderDetail_ProdBox = styled.div`
+  margin: 1em;
+  border: 1px solid #eee;
+
+  & h1 {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 500;
+    padding: 0.25em;
+  }
+
+  & h2 {
+    text-align: center;
+    font-size: 0.8em;
+    color: #777;
+    padding: 0.25em;
+  }
+
+  & p {
+    text-align: center;
+    font-size: 0.8em;
+    padding-bottom: 0.5em;
+
+    &:last-child {
+      padding-bottom: 1em;
+    }
+  }
+
+  & img {
+    width: 100%;
+    height: 240px;
+  }
+`;
+
 /**
  * 상품 페이지
  * ProductsPage
@@ -2088,6 +2122,7 @@ export const OrderListMidProdBox = styled.div`
   margin-top: 2rem;
   & table {
     margin-bottom: 2rem;
+    width: 100%;
   }
 
   & th {
@@ -2097,11 +2132,11 @@ export const OrderListMidProdBox = styled.div`
     font-size: 0.9rem;
   }
 
-  & th:nth-child(1) {
+  /* & th:nth-child(1) {
     width: 130px;
   }
   & th:nth-child(3) {
-    width: 500px;
+    width: px;
   }
   & th:nth-child(2) {
     width: 130px;
@@ -2114,7 +2149,7 @@ export const OrderListMidProdBox = styled.div`
   }
   & th:nth-child(6) {
     width: 130px;
-  }
+  } */
 
   & td {
     padding: 1rem;
@@ -3510,5 +3545,29 @@ export const AdminCateItem = styled.div`
 
   & .header {
     background-color: #f7f7f7;
+  }
+`;
+
+export const AdminInfoBox = styled.div`
+  display: flex;
+  padding: 0.5em 1em 1em 0;
+  font-size: 0.9em;
+
+  & div {
+    margin-right: 1em;
+    cursor: pointer;
+
+    &:hover {
+      color: #0088ff;
+    }
+
+    & span.title {
+    }
+
+    & span.number {
+      margin-left: 0.5em;
+      color: #0088ff;
+      font-weight: 500;
+    }
   }
 `;

@@ -55,7 +55,7 @@ const ProductsPage = () => {
       <S.MainSection bgc="#f9fafc">
         <S.ProductReviewWrapper>
           <h1>고객 리뷰</h1>
-          <ReviewBoard reviewDatas={reviewDatas}></ReviewBoard>
+          <ReviewBoard reviewDatas={reviewDatas} />
         </S.ProductReviewWrapper>
       </S.MainSection>
     </S.MainLayout>

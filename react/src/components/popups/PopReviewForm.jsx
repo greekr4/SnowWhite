@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring, animated } from "react-spring";
+import axios from "axios";
 
 const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
   const [reviewTitle, setReviewTitle] = useState();
   const [reviewContent, setReviewContent] = useState();
   const [reviewStar, setReviewStar] = useState(0);
   const [holdStar, setHoldStar] = useState(false);
+  const inputRefs = useRef([]);
 
   const fadeInAnimation = useSpring({
     to: { opacity: 1 },
@@ -20,8 +22,49 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
       reviewTitle,
       reviewContent,
       popupData.PROD_CATECODE,
-      popupData.ORDER_SID
+      popupData.ORDER_SID,
+      popupData.USER_ID
     );
+
+    console.log(popupData);
+
+    if (!reviewTitle) {
+      alert("리뷰 제목을 작성해주세요.");
+      inputRefs.current[0].focus();
+      return false;
+    }
+
+    if (!reviewContent) {
+      alert("리뷰 내용을 작성해주세요.");
+      inputRefs.current[1].focus();
+      return false;
+    }
+
+    if (reviewContent.length < 10) {
+      alert("리뷰 내용은 10자 이상 작성해주세요.");
+      inputRefs.current[1].focus();
+      return false;
+    }
+
+    if (reviewStar < 1) {
+      alert("별점을 입력해주세요.");
+      return false;
+    }
+
+    const res = await axios.put("/api/review", {
+      order_sid: popupData.ORDER_SID,
+      user_id: popupData.USER_ID,
+      review_title: reviewTitle,
+      review_content: reviewContent,
+      review_star: reviewStar,
+      cate_sid: popupData.PROD_CATECODE,
+      prod_sid: popupData.PROD_SID,
+    });
+
+    if (res.status === 200) {
+      alert("작성되었습니다.");
+      closePopup();
+    }
   };
 
   return (
@@ -128,11 +171,13 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
                 placeholder="리뷰 제목"
                 value={reviewTitle}
                 onChange={(e) => setReviewTitle(e.target.value)}
+                ref={(el) => (inputRefs.current[0] = el)}
               />
               <S.Pop_Textarea
                 placeholder="리뷰 내용"
                 value={reviewContent}
                 onChange={(e) => setReviewContent(e.target.value)}
+                ref={(el) => (inputRefs.current[1] = el)}
               />
               <S.Pop_Info_Wrap>
                 <S.Pop_Info_Title>유의사항</S.Pop_Info_Title>

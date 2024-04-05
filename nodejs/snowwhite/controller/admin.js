@@ -624,6 +624,7 @@ select
 	*
 from
 	TB_ORDER
+order by ORDER_DATE desc
   `;
 
   const res_data = await getConnection(qry);

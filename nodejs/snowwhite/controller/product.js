@@ -135,6 +135,7 @@ on
 where
 	T1.USER_ID = ?
   AND T1.CART_STATUS = 1
+order by T1.CART_REGDATE DESC
 `;
 
   const res_data = await getConnection(qry, [userid]);
@@ -287,6 +288,7 @@ on
 where
 	T1.ITEM_SID IN (?)
   AND T1.CART_STATUS = 1
+order by ITEM_REGDATE desc
 `;
 
   const res_data = await getConnection(qry, [item_sid]);

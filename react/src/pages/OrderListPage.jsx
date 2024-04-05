@@ -50,17 +50,17 @@ const OrderListPage = ({ openPopup }) => {
         })
       ).data;
 
-      await Promise.all(
-        updated.map(async (el, index) => {
-          const item_ary = el.ITEM_SIDS.split(",");
+      // await Promise.all(
+      //   updated.map(async (el, index) => {
+      //     const item_ary = el.ITEM_SIDS.split(",");
 
-          updated[index].ITEMS = (
-            await axios.post("/api/orderlist/item", {
-              item_sids: item_ary,
-            })
-          ).data;
-        })
-      );
+      //     updated[index].ITEMS = (
+      //       await axios.post("/api/orderlist/item", {
+      //         item_sids: item_ary,
+      //       })
+      //     ).data;
+      //   })
+      // );
 
       console.log(updated);
 
@@ -154,12 +154,12 @@ const OrderListPage = ({ openPopup }) => {
             <table>
               <thead>
                 <tr>
-                  <th>주문번호</th>
                   <th>주문일</th>
+                  <th>주문번호</th>
                   <th>상품정보</th>
-                  <th>가격</th>
+                  <th>결제금액</th>
                   <th>진행상태</th>
-                  <th>비고</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -185,10 +185,43 @@ const OrderListPage = ({ openPopup }) => {
                 ))} */}
                 {orderlist?.map((el, index) => (
                   <tr key={index}>
-                    <td>{el.ORDER_SID}</td>
                     <td>{formatDate(el.ORDER_DATE)}</td>
+                    <td style={{ fontSize: "0.75em" }}>{el.ORDER_SID}</td>
                     <td>
-                      <div
+                      <p style={{ fontSize: "1.1em", fontWeight: "500" }}>
+                        {el.ORDER_CORE_PROD}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: "0.8em",
+                          color: "#777",
+                          padding: "0.25em",
+                        }}
+                      >
+                        {el.ORDER_CORE_OPTION}
+                      </p>
+                      {el.ITEM_SIDS.split(",").length - 1 != 0 ? (
+                        <p
+                          style={{
+                            fontSize: "0.8em",
+                            padding: "0.25em",
+                            cursor: "pointer",
+                          }}
+                          onClick={() =>
+                            openPopup("orderDetail", { ITEMS: el.ITEM_SIDS })
+                          }
+                        >
+                          {" "}
+                          외 {el.ITEM_SIDS.split(",").length - 1} 건
+                        </p>
+                      ) : (
+                        <></>
+                      )}
+                      <p></p>
+
+                      {/* 외{" "}
+                      {el.ITEM_SIDS.split(",").length - 1} 건 */}
+                      {/* <div
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -224,7 +257,7 @@ const OrderListPage = ({ openPopup }) => {
                             </p>
                           </div>
                         ))}
-                      </div>
+                      </div> */}
                     </td>
                     <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
                     <td>{renderStatus(el.ORDER_STATUS)}</td>
@@ -233,24 +266,27 @@ const OrderListPage = ({ openPopup }) => {
                         <S.Btn>취소요청</S.Btn>
                       ) : el.ORDER_STATUS === 4 ? (
                         <S.Btn>배송추적</S.Btn>
-                      ) : (
+                      ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === 0 ? (
                         <S.Btn
                           btnBgc="#469cff"
                           fontColor="#fff"
                           btnBgcHover="#7cb9ff"
                           borderCHover="none"
                           onClick={() => {
-                            openPopup("review_form", {
+                            openPopup("reviewForm", {
                               ORDER_SID: el.ORDER_SID,
                               PROD_SID: el.ITEMS[0].PROD_SID,
                               PROD_NM: el.ITEMS[0].PROD_NM,
                               PROD_CATECODE: el.ITEMS[0].PROD_CATECODE,
                               ITEM_OPTION: el.ITEMS[0].ITEM_OPTION,
+                              USER_ID: data?.USER_ID,
                             });
                           }}
                         >
-                          리뷰쓰기
+                          리뷰작성
                         </S.Btn>
+                      ) : (
+                        <S.Btn>리뷰확인</S.Btn>
                       )}
                     </td>
                   </tr>

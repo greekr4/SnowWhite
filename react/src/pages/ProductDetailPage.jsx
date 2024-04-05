@@ -1,61 +1,13 @@
-import Slider from "react-slick";
 import * as S from "../styles/new_styles";
-import snow0 from "../assets/snow0.png";
 import OptionItem from "../components/options/OptionItem";
 import { useEffect, useRef, useState } from "react";
-import { useSpring } from "react-spring";
 import ReviewBoard from "../components/products/ReviewBoard";
-import TabBar from "../components/products/TabBar";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FaAngleDown } from "react-icons/fa";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
 import ReactQuill, { Quill } from "react-quill";
-
-const TestOptions = [
-  { OptionName: "규격", OptionValue: ["90x50", "86x52"] },
-  {
-    OptionName: "용지",
-    OptionValue: [
-      "소프트",
-      "프리미엄 소프트",
-      "프리미엄 매트",
-      "오리지널",
-      "럭스",
-      "리넨",
-      "펠트",
-      "펄",
-      "크라프트",
-      "투명",
-      "매트블랙",
-      "리사이클",
-    ],
-  },
-  {
-    OptionName: "용지 두께",
-    OptionValue: ["보통", "두꺼움"],
-  },
-  {
-    OptionName: "색도",
-    OptionValue: ["양면컬러 4도", "단면컬러 4도"],
-  },
-  {
-    OptionName: "효과",
-    OptionValue: ["효과 없음", "박", "형압"],
-  },
-  { OptionName: "귀도리", OptionValue: ["직각 모서리", "둥근 모서리"] },
-  { OptionName: "테스트 옵션", OptionValue: ["옵션 테스트", "옵션 테스트"] },
-  { OptionName: "테스트 옵션", OptionValue: ["옵션 테스트", "옵션 테스트"] },
-];
-
-const imageContext = require.context(
-  "../assets/products/detail",
-  false,
-  /\.(jpg)$/
-);
-
-////////////////////////////////////////
 
 const ProductDetailPage = () => {
   const [qty, setQty] = useState();
@@ -75,6 +27,8 @@ const ProductDetailPage = () => {
 
   const { data } = useQuery("userinfo", { enabled: false });
   const USER_ID = data?.USER_ID;
+
+  const [reviewDatas, setReviewDatas] = useState([]);
 
   useEffect(() => {
     axios
@@ -122,7 +76,15 @@ const ProductDetailPage = () => {
       .catch((error) => {
         console.log(error);
       });
+
+    initdb();
   }, [prod_sid]);
+
+  const initdb = async () => {
+    setReviewDatas(
+      (await axios.post("/api/review", { prod_sid: prod_sid })).data
+    );
+  };
 
   useEffect(() => {
     // 초기 옵션 값 설정 (첫번째로)
@@ -360,7 +322,7 @@ const ProductDetailPage = () => {
         <S.MainSection>
           <S.ProductReviewWrapper>
             <h1>고객 리뷰</h1>
-            <ReviewBoard></ReviewBoard>
+            <ReviewBoard reviewDatas={reviewDatas} />
           </S.ProductReviewWrapper>
         </S.MainSection>
       </S.MainLayout>

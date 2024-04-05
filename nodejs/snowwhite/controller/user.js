@@ -370,6 +370,9 @@ exports.insert_order = async (req, res) => {
     orderAddAddress,
     orderReq,
     radioValue,
+    order_core_prod,
+    order_core_option,
+    orderNm,
   } = req.body;
 
   const item_sids_array = item_sids.split(",");
@@ -410,12 +413,16 @@ where
 	ORDER_STATUS,
 	ORDER_INVOICE,
 	ORDER_REC,
-	ORDER_TEL0,
+	REC_TEL,
 	ORDER_POSTCODE,
 	ORDER_ADDRESS,
 	ORDER_ADD_ADDRESS,
 	ORDER_REQ,
-	ORDER_PAYMENT_TYPE
+	ORDER_PAYMENT_TYPE,
+  ORDER_CORE_PROD,
+  ORDER_CORE_OPTION,
+  ORDER_NM,
+  ORDER_TEL
   )
 values(
 '${order_sid}',
@@ -431,7 +438,11 @@ null,
 '${orderAddress}',
 '${orderAddAddress}',
 '${orderReq}',
-'${radioValue}'
+'${radioValue}',
+'${order_core_prod}',
+'${order_core_option}',
+'${orderNm}',
+'${userTel}'
 )
   `;
 
@@ -479,6 +490,7 @@ from
 	TB_ORDER
 where
 	USER_ID = '${userid}'
+order by ORDER_DATE DESC
   `;
 
   console.log(qry);
@@ -492,21 +504,27 @@ exports.select_order_item = async (req, res) => {
   const { item_sids } = req.body;
 
   const qry = `
-select
-  T2.PROD_SID,
-  PROD_NM,
-  PROD_CATECODE,
-  ITEM_OPTION,
-  ITEM_DESIGN,
-  ITEM_AMOUNT,
-  ITEM_QUANTITY
+  select
+	T2.PROD_SID,
+	PROD_NM,
+	PROD_CATECODE,
+	ITEM_OPTION,
+	ITEM_DESIGN,
+	ITEM_AMOUNT,
+	ITEM_QUANTITY,
+	IMAGE_LOCATION
 from
 	TB_CUSTOM_PROD T1
 left outer join TB_PRODUCT T2
 	on
 	T1.PROD_SID = T2.PROD_SID
+left outer join TB_PRODUCT_IMAGE T3
+on
+	T1.PROD_SID = T3.PROD_SID
 where
-	T1.ITEM_SID in (?)
+	T3.IMAGE_CATE = 'thumbnail'
+  AND	T1.ITEM_SID in (?)
+order by ITEM_REGDATE DESC
   `;
 
   const res_data = await getConnection(qry, [item_sids]);

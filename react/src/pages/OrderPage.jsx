@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "../styles/new_styles";
 import expand_arrow from "../assets/icons/expand-arrow.png";
 import collapse_arrow from "../assets/icons/collapse-arrow.png";
@@ -10,7 +10,7 @@ import DaumPostcodeEmbed from "react-daum-postcode";
 
 const OrderPage = () => {
   const { data } = useQuery("userinfo", { enabled: false });
-  const [radioValue, SetRadioValue] = useState();
+  const [radioValue, SetRadioValue] = useState("pm3");
   const [ViewStep, SetViewStep] = useState(0);
   const { item_sids } = useParams();
   const [orderItem, setOrderItem] = useState([]);
@@ -27,9 +27,11 @@ const OrderPage = () => {
   const [orderPostcode, setOrderPostcode] = useState();
   const [orderAddress, setOrderAddress] = useState();
   const [orderAddAddress, setOrderAddAddress] = useState();
-  const [orderReq, setOrderReq] = useState();
+  const [orderReq, setOrderReq] = useState("");
 
   const [addressVisible, setAddressVisible] = useState(false);
+
+  const ckRef = useRef(null);
 
   useEffect(() => {
     initdb();
@@ -98,6 +100,35 @@ const OrderPage = () => {
       radioValue
     );
 
+    if (
+      !userEmail ||
+      !orderReceiver ||
+      !orderTel ||
+      !orderPostcode ||
+      !orderAddress ||
+      !orderAddAddress ||
+      !radioValue
+    ) {
+      alert("주문자 혹은 배송지 정보를 정확히 입력해주세요.");
+      return false;
+    }
+
+    if (!ckRef.current.checked) {
+      alert("개인정보 수집 동의를 체크해주세요.");
+      return false;
+    }
+
+    let optionNm = "";
+    let coreNm = orderItem[0].PROD_NM;
+    // console.log(orderItem[0].PROD_NM);
+    orderItem[0].ITEM_OPTION.map((option, index) => {
+      if (index < orderItem[0].ITEM_OPTION.length - 1) {
+        optionNm += option.OPTION_NM + " / ";
+      } else {
+        optionNm += option.OPTION_NM;
+      }
+    });
+
     const res = await axios.put("/api/order", {
       userId: data?.USER_ID,
       userTel: userTel,
@@ -111,7 +142,11 @@ const OrderPage = () => {
       orderAddAddress: orderAddAddress,
       orderReq: orderReq,
       radioValue: radioValue,
+      order_core_prod: coreNm,
+      order_core_option: optionNm,
+      orderNm: userNm,
     });
+
     alert(res.data);
   };
 
@@ -350,6 +385,7 @@ const OrderPage = () => {
                       name="payment"
                       id="pm1"
                       onChange={handleRadioValue}
+                      disabled
                     />
                     <label htmlFor="pm1">신용카드</label>
                   </S.OBRadioBox>
@@ -359,6 +395,7 @@ const OrderPage = () => {
                       name="payment"
                       id="pm2"
                       onChange={handleRadioValue}
+                      disabled
                     />
                     <label htmlFor="pm2">실시간 계좌이체</label>
                   </S.OBRadioBox>
@@ -368,6 +405,7 @@ const OrderPage = () => {
                       name="payment"
                       id="pm3"
                       onChange={handleRadioValue}
+                      checked
                     />
                     <label htmlFor="pm3">무통장 입금</label>
                   </S.OBRadioBox>
@@ -377,6 +415,7 @@ const OrderPage = () => {
                       name="payment"
                       id="pm4"
                       onChange={handleRadioValue}
+                      disabled
                     />
                     <label htmlFor="pm4">휴대폰 결제</label>
                   </S.OBRadioBox>
@@ -386,6 +425,7 @@ const OrderPage = () => {
                       name="payment"
                       id="pm5"
                       onChange={handleRadioValue}
+                      disabled
                     />
                     <label htmlFor="pm5">포인트 결제</label>
                   </S.OBRadioBox>
@@ -447,7 +487,7 @@ const OrderPage = () => {
                       ∙ 주문취소 및 수정은 결제 후 1시간 이내에만 가능합니다.
                     </p>
                     <p>
-                      <input type="checkbox" name="ck1" id="ck1" />
+                      <input type="checkbox" name="ck1" id="ck1" ref={ckRef} />
                       <label htmlFor="ck1">개인정보 수집 동의 (필수)</label>
                       <span>약관보기</span>
                     </p>

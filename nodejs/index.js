@@ -74,7 +74,10 @@ const {
   select_admin_orderlist,
 } = require("./snowwhite/controller/admin");
 const { upload } = require("./snowwhite/controller/upload");
-const { select_review } = require("./snowwhite/controller/review");
+const {
+  select_review,
+  insert_review,
+} = require("./snowwhite/controller/review");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -209,6 +212,8 @@ app.post("/api/admin/orderlist", auth, select_admin_orderlist);
 app.post("/api/upload", upload);
 
 app.post("/api/review", select_review);
+
+app.put("/api/review", auth, insert_review);
 
 app.post("/api/orderlist", auth, select_orderlist);
 

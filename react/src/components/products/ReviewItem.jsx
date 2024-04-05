@@ -38,7 +38,7 @@ const ReviewItem = ({ reviewData }) => {
   return (
     <>
       <S.ReviewBox onClick={ToggleVisible}>
-        <S.ReviewNum>1</S.ReviewNum>
+        <S.ReviewNum>{reviewData?.REVIEW_SID}</S.ReviewNum>
         <S.ReviewImg img={reviewData?.IMAGE_LOCATION}></S.ReviewImg>
         <S.ReviewContent>
           <h1>{reviewData?.REVIEW_TITLE}</h1>
