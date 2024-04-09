@@ -8,6 +8,7 @@ const mysql = require("mysql2/promise");
 const cors = require("cors");
 const busboy = require("connect-busboy");
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const multer = require("multer");
 
 const jwt = require("jsonwebtoken"); // JWT 모듈 연결
 const {
@@ -72,8 +73,9 @@ const {
   delete_category,
   cate_modify,
   select_admin_orderlist,
+  update_order_status,
 } = require("./snowwhite/controller/admin");
-const { upload } = require("./snowwhite/controller/upload");
+const { upload, upload_design } = require("./snowwhite/controller/upload");
 const {
   select_review,
   insert_review,
@@ -209,7 +211,7 @@ app.patch("/api/admin/cate", auth, cate_modify);
 
 app.post("/api/admin/orderlist", auth, select_admin_orderlist);
 
-app.post("/api/upload", upload);
+app.put("/api/admin/order", update_order_status);
 
 app.post("/api/review", select_review);
 
@@ -218,6 +220,11 @@ app.put("/api/review", auth, insert_review);
 app.post("/api/orderlist", auth, select_orderlist);
 
 app.post("/api/orderlist/item", auth, select_order_item);
+
+app.post("/api/upload", upload);
+
+const uploader = multer({ dest: "uploads/" });
+app.post("/api/upload_design", uploader.single("file"), upload_design);
 
 app.get("/api", () => {
   refreshVerify("123123", "a");

@@ -631,3 +631,27 @@ order by ORDER_DATE desc
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row);
 };
+
+exports.update_order_status = async (req, res) => {
+  const { field, order_sid, order_status } = req.body;
+
+  const fields = [];
+
+  if (field.indexOf("ORDER_STATUS") != -1) {
+    fields.push(` ORDER_STATUS = ${order_status}\r\n `);
+  }
+
+  const qry = `
+update
+	TB_ORDER
+set
+${fields.toString()}
+where
+	ORDER_SID in (?)
+  `;
+
+  console.log(qry);
+  const res_update = await getConnection(qry, [order_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};

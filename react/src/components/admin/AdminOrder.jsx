@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { formatDate, formatTime } from "../../hooks/Utill";
 import axios from "axios";
+import AdminOrderDetail from "./AdminOrderDetail";
 
 const AdminOrder = ({ openPopup }) => {
   const [initOrderlist, setInitOrderlist] = useState([]);
   const [orderlist, setOrderlist] = useState([]);
   const [selectedItem, setSelectedItem] = useState([]);
+  const [orderDetail, setOrderDetail] = useState([]);
+  const [orderDetailVisible, setOrderDetailVisible] = useState(false);
+
+  const allCheckbox = useRef(null);
 
   useEffect(() => {
     initdb();
@@ -15,25 +20,15 @@ const AdminOrder = ({ openPopup }) => {
   const initdb = async () => {
     const res = (await axios.post("/api/admin/orderlist")).data;
 
-    // await Promise.all(
-    //   updated.map(async (el, index) => {
-    //     const item_ary = el.ITEM_SIDS.split(",");
-
-    //     updated[index].ITEMS = (
-    //       await axios.post("/api/orderlist/item", {
-    //         item_sids: item_ary,
-    //       })
-    //     ).data;
-    //   })
-    // );
+    const initSelectedItem = Array.from({ length: res?.length }, () => false);
+    console.log(initSelectedItem);
+    setSelectedItem(initSelectedItem);
 
     setInitOrderlist(res);
     setOrderlist(res);
-
-    // setOrderlist((await axios.post("/api/admin/orderlist")).data);
   };
 
-  const renderStatus = (status) => {
+  const renderOrderStatus = (status) => {
     switch (status) {
       case 1:
         return "결제 대기";
@@ -52,21 +47,72 @@ const AdminOrder = ({ openPopup }) => {
 
   const statusFillter = (status) => {
     const fillerdata = initOrderlist.filter((el) => el.ORDER_STATUS === status);
+    const initSelectedItem = Array.from(
+      { length: fillerdata?.length },
+      () => false
+    );
+    console.log(initSelectedItem);
+    setSelectedItem(initSelectedItem);
     setOrderlist(fillerdata);
   };
 
   const statusFillter_cancle = () => {
+    const initSelectedItem = Array.from(
+      { length: initOrderlist?.length },
+      () => false
+    );
+    console.log(initSelectedItem);
+    setSelectedItem(initSelectedItem);
     setOrderlist(initOrderlist);
+  };
+
+  const updateStatus = async (value) => {
+    const result = window.confirm("변경 하시겠습니까?");
+    if (!result) {
+      return false;
+    }
+
+    const order_sids = [];
+
+    selectedItem.map((el, index) => {
+      if (el) {
+        order_sids.push(orderlist[index].ORDER_SID);
+      }
+    });
+
+    console.log(order_sids);
+
+    const res = await axios.put("/api/admin/order", {
+      order_sid: order_sids,
+      field: "ORDER_STATUS",
+      order_status: value,
+    });
+
+    initdb();
+    allCheckbox.current.checked = false;
   };
 
   return (
     <S.MainLayout>
       <S.AdminWrapper>
-        <S.Btn margin="0 0.5em 0.5em 0">입금확인 처리</S.Btn>
-        <S.Btn margin="0 0.5em 0.5em 0">배송준비 처리</S.Btn>
-        <S.Btn margin="0 0.5em 0.5em 0">배송중 처리</S.Btn>
-        <S.Btn margin="0 0.5em 0.5em 0">배송완료 처리</S.Btn>
-        <S.Btn margin="0 0.5em 0.5em 0">취소 처리</S.Btn>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(1)}>
+          결제대기 처리
+        </S.Btn>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(2)}>
+          결제완료 처리
+        </S.Btn>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(3)}>
+          배송준비 처리
+        </S.Btn>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(4)}>
+          배송중 처리
+        </S.Btn>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(5)}>
+          배송완료 처리
+        </S.Btn>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(0)}>
+          취소 처리
+        </S.Btn>
         <S.AdminInfoBox>
           <div onClick={() => statusFillter_cancle()}>
             <span className="title">전체주문</span>
@@ -105,9 +151,19 @@ const AdminOrder = ({ openPopup }) => {
         </S.AdminInfoBox>
         <S.AdminTable>
           <thead>
-            <tr>
+            <tr style={{ height: "30px" }}>
               <th style={{ width: "5%" }}>
-                <input type="checkbox" />
+                <input
+                  ref={allCheckbox}
+                  type="checkbox"
+                  onChange={(e) => {
+                    const updated = [...selectedItem];
+                    updated.map((el, index) => {
+                      el = updated[index] = e.target.checked;
+                    });
+                    setSelectedItem(updated);
+                  }}
+                />
               </th>
               <th style={{ width: "10%" }}>주문일 (결제일)</th>
               <th style={{ width: "10%" }}>주문번호</th>
@@ -126,7 +182,16 @@ const AdminOrder = ({ openPopup }) => {
               orderlist.map((el, index) => (
                 <tr key={index} style={{ height: "100px" }}>
                   <th>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      onChange={() => {
+                        const updated = [...selectedItem];
+                        updated[index] = !updated[index];
+                        setSelectedItem(updated);
+                        console.log(updated);
+                      }}
+                      checked={selectedItem[index]}
+                    />
                   </th>
                   <th>
                     <p>{formatDate(el.ORDER_DATE)}</p>
@@ -162,11 +227,18 @@ const AdminOrder = ({ openPopup }) => {
                   </th>
                   <th>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</th>
                   <th>{el.ORDER_PAYMENT_TYPE}</th>
-                  <th>{renderStatus(el.ORDER_STATUS)}</th>
+                  <th>{renderOrderStatus(el.ORDER_STATUS)}</th>
                   <th></th>
                   <th>{el.ORDER_REQ}</th>
                   <th>
-                    <S.Btn>상세보기</S.Btn>
+                    <S.Btn
+                      onClick={() => {
+                        setOrderDetail(el);
+                        setOrderDetailVisible(true);
+                      }}
+                    >
+                      상세보기
+                    </S.Btn>
                   </th>
                 </tr>
               ))
@@ -179,6 +251,8 @@ const AdminOrder = ({ openPopup }) => {
             )}
           </tbody>
         </S.AdminTable>
+
+        {orderDetailVisible && <AdminOrderDetail orderData={orderDetail} />}
       </S.AdminWrapper>
     </S.MainLayout>
   );

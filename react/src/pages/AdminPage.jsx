@@ -7,7 +7,6 @@ const AdminPage = ({ openPopup }) => {
   return (
     <div>
       <AdminOrder openPopup={openPopup} />
-      <AdminOrderDetail />
       <AdminCate />
       <AdminProd />
     </div>

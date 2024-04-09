@@ -35,6 +35,7 @@ const AdminCate = () => {
     console.log(items);
 
     setCate(items);
+    console.log("cate:", cate);
   };
 
   const handlePriority = async () => {
@@ -146,13 +147,7 @@ const AdminCate = () => {
                             )}
                           >
                             <div>{el.CATE_PRIORITY}</div>
-                            <div>
-                              <input
-                                type="text"
-                                value={cateValues[index].CATE_NM}
-                                onChange={(e) => handleInputChange(e, index)}
-                              />
-                            </div>
+                            <div>{el.CATE_NM}</div>
 
                             <div>
                               {el.CATE_SHOW === 1 ? (

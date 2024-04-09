@@ -12,8 +12,8 @@ import "fabric-history";
 
 const undoStack = [];
 const redoStack = [];
-const defaultWidth = 900;
-const defaultHight = 500;
+const defaultWidth = 340;
+const defaultHight = 190;
 const backgroundImageUrl = background1; // 이미지 URL로 변경
 const EditorPage = () => {
   const canvasRef = useRef(null);

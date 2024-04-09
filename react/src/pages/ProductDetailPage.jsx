@@ -12,23 +12,20 @@ import ReactQuill, { Quill } from "react-quill";
 const ProductDetailPage = () => {
   const [qty, setQty] = useState();
   const [scrollPositon, setScrollPosition] = useState(0);
-  const [imgPath, SetImgPath] = useState();
   const [SliderIndex, SetSliderIndex] = useState(0);
   const DtailBox = useRef(null);
   const DropDown = useRef(null);
-
   const { prod_sid } = useParams();
   const [prodDetail, setProdDetail] = useState();
   const [prodImages, setProdImages] = useState([]);
   const [prodOptions, setProdOptions] = useState([]);
   const [prodPrice, setProdPrice] = useState(0);
-
   const [seletedOptions, setSeletedOptions] = useState([]);
-
   const { data } = useQuery("userinfo", { enabled: false });
   const USER_ID = data?.USER_ID;
-
   const [reviewDatas, setReviewDatas] = useState([]);
+  const [designCheck, setDesignCheck] = useState(false);
+  const [designFile, setDesignFile] = useState();
 
   useEffect(() => {
     axios
@@ -166,6 +163,60 @@ const ProductDetailPage = () => {
     }
   };
 
+  const handleSendCart = async () => {
+    if (!designCheck) {
+      alert("디자인을 확인 해 주세요.");
+      return false;
+    }
+
+    const PROD_SID = prodDetail.PROD_SID;
+    const ITEM_OPTION = JSON.stringify(seletedOptions);
+    const ITEM_QUANTITY = qty;
+    const ITEM_AMOUNT = prodPrice;
+    const ITEM_DESIGN = JSON.stringify([]);
+
+    const res = await axios.post("/api/cart/add", {
+      PROD_SID: PROD_SID,
+      ITEM_OPTION: ITEM_OPTION,
+      ITEM_QUANTITY: ITEM_QUANTITY,
+      ITEM_AMOUNT: ITEM_AMOUNT,
+      ITEM_DESIGN: ITEM_DESIGN,
+      USER_ID: USER_ID,
+      ITEM_FILE_LOCATION: designFile,
+    });
+
+    if (res.status === 200) {
+      alert("장바구니에 추가 되었습니다.");
+    }
+  };
+
+  const handleUploadDesign = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "pdf/*");
+    input.click();
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "design");
+      formData.append("userid", "a");
+      try {
+        const result = await axios.post("/api/upload_design", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const designUrl = result.data;
+        alert("디자인이 등록되었습니다.");
+        setDesignFile(designUrl);
+        setDesignCheck(true);
+      } catch (error) {
+        console.log("실패");
+      }
+    });
+  };
+
   return (
     <>
       <S.MainLayout>
@@ -253,15 +304,22 @@ const ProductDetailPage = () => {
                   >
                     직접 디자인하기
                   </S.Btn>
-                  <S.Btn
-                    width="45%"
-                    onClick={() => {
-                      alert("준비 중입니다.");
-                    }}
-                  >
+                  <S.Btn width="45%" onClick={handleUploadDesign}>
                     파일 업로드
                   </S.Btn>
                 </S.ProdDetailDesignBtns>
+                {designCheck && (
+                  <S.ProdDetailDesignBtns>
+                    <S.Btn
+                      onClick={() => {
+                        window.open(designFile);
+                      }}
+                    >
+                      디자인 파일 열기
+                    </S.Btn>
+                  </S.ProdDetailDesignBtns>
+                )}
+
                 <S.ProdDetailPayBox>
                   <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
                   <S.ProdDetailPriceValue>
@@ -269,38 +327,7 @@ const ProductDetailPage = () => {
                   </S.ProdDetailPriceValue>
                 </S.ProdDetailPayBox>
                 {/* <Link to="/order"> */}
-                <S.ProdDetailPayButton
-                  onClick={() => {
-                    // PROD_SID,
-                    // ITEM_OPTION,
-                    // ITEM_QUANTITY,
-                    // ITEM_AMOUNT,
-                    // ITEM_DESIGN,
-                    // USER_ID,
-                    const PROD_SID = prodDetail.PROD_SID;
-                    const ITEM_OPTION = JSON.stringify(seletedOptions);
-                    const ITEM_QUANTITY = qty;
-                    const ITEM_AMOUNT = prodPrice;
-                    const ITEM_DESIGN = JSON.stringify([]);
-
-                    axios
-                      .post("/api/cart/add", {
-                        PROD_SID: PROD_SID,
-                        ITEM_OPTION: ITEM_OPTION,
-                        ITEM_QUANTITY: ITEM_QUANTITY,
-                        ITEM_AMOUNT: ITEM_AMOUNT,
-                        ITEM_DESIGN: ITEM_DESIGN,
-                        USER_ID: USER_ID,
-                      })
-                      .then((res) => {
-                        console.log(res);
-                        alert("장바구니에 추가되었습니다.");
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
-                  }}
-                >
+                <S.ProdDetailPayButton onClick={handleSendCart}>
                   장바구니에 담기
                 </S.ProdDetailPayButton>
                 {/* </Link> */}

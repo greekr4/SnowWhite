@@ -153,12 +153,32 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
     ITEM_AMOUNT,
     ITEM_DESIGN,
     USER_ID,
+    ITEM_FILE_LOCATION,
     // CART_SID,
   } = req.body;
   let conn;
 
-  const ITEM_SID = `test${Date.now()}`;
-  const CART_SID = `test${Date.now()}`;
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  const select_cnt_qry = `
+  select
+    COUNT(1) as CNT
+  from 
+    TB_CART
+  where
+    CART_REGDATE like '${year}-${month}-${day}%'
+    AND USER_ID = '${USER_ID}'
+  `;
+
+  const cnt = await getConnection(select_cnt_qry);
+  if (cnt.state === false) return res.status(401).send("DB Error.");
+  const seq = (parseInt(cnt.row[0].CNT) + 1).toString().padStart(8, "0");
+
+  const ITEM_SID = `${USER_ID}-${year}-${month}-${day}-${seq}`;
+  const CART_SID = `${USER_ID}-${year}-${month}-${day}-${seq}`;
 
   try {
     conn = await Connection();
@@ -174,7 +194,8 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
       ITEM_REGDATE,
       ITEM_MODIDATE,
       ITEM_DESIGN,
-      USER_ID
+      USER_ID,
+      ITEM_FILE_LOCATION
   ) VALUES (
       ?,
       ?,
@@ -184,7 +205,8 @@ exports.insert_custom_prod_and_cart = async (req, res) => {
       NOW(),
       NOW(),
       ?,
-      ?
+      ?,
+      '${ITEM_FILE_LOCATION}'
   )`;
     const qry2 = `
     INSERT INTO tb_cart (

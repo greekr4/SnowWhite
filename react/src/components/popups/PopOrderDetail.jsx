@@ -48,9 +48,13 @@ const PopOrderDetail = ({ openPopup, closePopup, popupData }) => {
                   <h2>
                     {el.ITEM_OPTION.map((option, index) =>
                       index < el.ITEM_OPTION.length - 1 ? (
-                        <>{option.OPTION_NM} / </>
+                        <>
+                          {option.OPTION_CATE}-{option.OPTION_NM} /{" "}
+                        </>
                       ) : (
-                        <>{option.OPTION_NM}</>
+                        <>
+                          {option.OPTION_CATE}-{option.OPTION_NM}
+                        </>
                       )
                     )}
                   </h2>

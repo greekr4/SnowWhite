@@ -325,10 +325,11 @@ const PikasoEditor = forwardRef(
         });
         console.log(
           editor.export.toImage({
-            x: 200,
-            y: 200,
-            width: 900,
-            height: 500,
+            x: 0,
+            y: 0,
+            width: 255,
+            height: 142,
+            mimeType: "pdf",
             callback: () => {
               alert("d");
             },
