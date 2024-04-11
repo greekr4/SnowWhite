@@ -502,6 +502,7 @@ exports.select_order_item = async (req, res) => {
 
   const qry = `
   select
+  ITEM_SID,
 	T2.PROD_SID,
 	PROD_NM,
 	PROD_CATECODE,

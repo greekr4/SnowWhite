@@ -74,6 +74,10 @@ const {
   cate_modify,
   select_admin_orderlist,
   update_order_status,
+  update_custom_item,
+  insert_option,
+  update_option,
+  delete_option,
 } = require("./snowwhite/controller/admin");
 const { upload, upload_design } = require("./snowwhite/controller/upload");
 const {
@@ -213,6 +217,8 @@ app.post("/api/admin/orderlist", auth, select_admin_orderlist);
 
 app.put("/api/admin/order", update_order_status);
 
+app.put("/api/admin/custom_item", update_custom_item);
+
 app.post("/api/review", select_review);
 
 app.put("/api/review", auth, insert_review);
@@ -229,3 +235,9 @@ app.post("/api/upload_design", uploader.single("file"), upload_design);
 app.get("/api", () => {
   refreshVerify("123123", "a");
 });
+
+// RESTFUL
+
+app.post("/api/admin/option", auth, insert_option);
+app.put("/api/admin/option", auth, update_option);
+app.delete("/api/admin/option", auth, delete_option);

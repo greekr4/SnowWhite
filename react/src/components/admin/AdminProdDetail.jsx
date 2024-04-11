@@ -95,17 +95,40 @@ const AdminProdDetail = () => {
   }, [prod]);
 
   useEffect(() => {
+    initOption();
+    // const initialSelectedOptions = Array.from(
+    //   { length: options?.length },
+    //   () => false
+    // );
+    // console.log("z", initialSelectedOptions);
+
+    // setSelectedOption(initialSelectedOptions);
+
+    // axios
+    //   .post("/api/admin/prodoptions", { prod_sid: prod_sid })
+    //   .then((res) => {
+    //     const initChecked = [...selectedOption];
+
+    //     options.forEach((e) => {
+    //       initChecked[findIndexByOptionSid(res.data, e.OPTION_SID)] = true;
+    //       setSelectedOption(initChecked);
+    //     });
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
+  }, [options]);
+
+  const initOption = async () => {
     const initialSelectedOptions = Array.from(
       { length: options?.length },
       () => false
     );
 
-    setSelectedOption(initialSelectedOptions);
-
     axios
       .post("/api/admin/prodoptions", { prod_sid: prod_sid })
       .then((res) => {
-        const initChecked = [...selectedOption];
+        const initChecked = [...initialSelectedOptions];
 
         options.forEach((e) => {
           initChecked[findIndexByOptionSid(res.data, e.OPTION_SID)] = true;
@@ -115,7 +138,7 @@ const AdminProdDetail = () => {
       .catch((e) => {
         console.log(e);
       });
-  }, [options]);
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -287,8 +310,6 @@ const AdminProdDetail = () => {
       console.log(e);
     }
   };
-
-  
 
   ///////////////////////
 

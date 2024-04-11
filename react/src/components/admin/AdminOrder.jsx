@@ -21,7 +21,6 @@ const AdminOrder = ({ openPopup }) => {
     const res = (await axios.post("/api/admin/orderlist")).data;
 
     const initSelectedItem = Array.from({ length: res?.length }, () => false);
-    console.log(initSelectedItem);
     setSelectedItem(initSelectedItem);
 
     setInitOrderlist(res);

@@ -98,6 +98,7 @@ inner join TB_PRODUCT_OPTION T2
 	T1.OPTION_SID = T2.OPTION_SID
 where
 	PROD_SID = ?
+  AND OPTION_DELETE = 'N'
   `;
 
   const res_data = await getConnection(qry, [prod_sid]);

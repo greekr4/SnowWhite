@@ -6,6 +6,7 @@ import PopPolicySnow from "./PopPolicySnow";
 import PopPolicyPriv from "./PopPolicyPriv";
 import PopReviewForm from "./PopReviewForm";
 import PopOrderDetail from "./PopOrderDetail";
+import PopOptionForm from "./PopOptionForm";
 
 /////포탈1
 const ModalPortal = ({
@@ -60,6 +61,12 @@ const ModalPortal = ({
         <PopOrderDetail closePopup={closePopup} popupData={popupData} />,
         el
       );
+    case "optionForm":
+      return ReactDOM.createPortal(
+        <PopOptionForm closePopup={closePopup} popupData={popupData} />,
+        el
+      );
+
     default:
       return null;
   }

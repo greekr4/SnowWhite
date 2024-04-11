@@ -711,6 +711,120 @@ export const Pop_OrderDetail_ProdBox = styled.div`
   }
 `;
 
+export const Pop_Table = styled.table`
+  width: 100%;
+
+  & tr {
+    height: 30px;
+  }
+
+  & input {
+    font-size: 15px;
+    color: #222222;
+    width: 300px;
+    border: none;
+    border-bottom: solid #aaaaaa 1px;
+    padding-bottom: 10px;
+    text-align: center;
+    position: relative;
+    background: none;
+    z-index: 5;
+  }
+
+  & input::placeholder {
+    color: #aaaaaa;
+  }
+  & input:focus {
+    outline: none;
+  }
+
+  & div {
+    position: relative;
+    width: 300px;
+    margin-left: 50px;
+    margin-top: 100px;
+  }
+
+  & span {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 50%; /* right로만 바꿔주면 오 - 왼 */
+    background-color: #666;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: 0.5s;
+  }
+
+  & label {
+    position: absolute;
+    color: #aaa;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    bottom: 8px;
+    transition: all 0.2s;
+  }
+
+  & input:focus ~ label,
+  input:valid ~ label {
+    font-size: 16px;
+    bottom: 40px;
+    color: #666;
+    font-weight: bold;
+  }
+
+  & input:focus ~ span,
+  input:valid ~ span {
+    width: 100%;
+  }
+`;
+
+export const GlobalInputBox = styled.div`
+  position: relative;
+  width: 100%;
+  margin-top: 1.5em;
+  & input {
+    width: 100%;
+    outline: none;
+    border: 2px solid #dadce0;
+    padding: 16px 13px;
+    font-size: 18px;
+    border-radius: 5px;
+  }
+
+  & input:valid + label {
+    top: -8px;
+    padding: 0 3px;
+    font-size: 14px;
+    color: #8d8d8d;
+  }
+
+  & input:focus {
+    border: 2px solid #abacaf;
+  }
+
+  & label {
+    color: #8d8d8d;
+    position: absolute;
+    top: 20px;
+    left: 13px;
+    background: #ffffff;
+    transition: 0.2s ease-in-out;
+  }
+
+  & input:focus + label {
+    top: -8px;
+    padding: 0 3px;
+    font-size: 14px;
+    color: #848486;
+
+    transition: 0.2s ease-in-out;
+  }
+`;
+
 /**
  * 상품 페이지
  * ProductsPage

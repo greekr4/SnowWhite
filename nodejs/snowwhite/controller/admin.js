@@ -61,6 +61,8 @@ exports.select_admin_options = async (req, res) => {
   *
 from
   TB_OPTION
+where
+  OPTION_DELETE = 'N'
 order by
   OPTION_SID
       `;
@@ -652,6 +654,120 @@ where
 
   console.log(qry);
   const res_update = await getConnection(qry, [order_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_custom_item = async (req, res) => {
+  const { field, item_sid, item_status } = req.body;
+
+  const fields = [];
+
+  if (field.indexOf("ITEM_STATUS") != -1) {
+    fields.push(` ITEM_STATUS = ${item_status}\r\n `);
+  }
+
+  const qry = `
+update
+  TB_CUSTOM_PROD
+set
+${fields.toString()}
+where
+	ITEM_SID in (?)
+  `;
+
+  console.log(qry);
+  const res_update = await getConnection(qry, [item_sid]);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.insert_option = async (req, res) => {
+  const { OPTION_CATE, OPTION_NM, OPTION_DETAIL, OPTION_PRICE } = req.body;
+
+  const cnt_qry = `
+select
+	COUNT(*) as CNT
+from
+	TB_OPTION
+  `;
+
+  const data = await getConnection(cnt_qry);
+
+  const cnt = data.row[0].CNT;
+
+  // OPTION_00000001
+  const OPTION_SID = `OPTION_${(parseInt(cnt) + 1)
+    .toString()
+    .padStart(8, "0")}`;
+
+  const qry = `
+insert
+	into
+	TB_OPTION
+(
+  OPTION_SID,
+	OPTION_CATE,
+	OPTION_NM,
+	OPTION_DETAIL,
+	OPTION_PRICE,
+	OPTION_REGDATE,
+	OPTION_MODIDATE
+  )
+values(
+'${OPTION_SID}',
+'${OPTION_CATE}',
+'${OPTION_NM}',
+'${OPTION_DETAIL}',
+'${OPTION_PRICE}',
+now(),
+now()
+)
+`;
+
+  const res_insert = await getConnection(qry);
+  if (res_insert.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_option = async (req, res) => {
+  const { OPTION_SID, OPTION_CATE, OPTION_NM, OPTION_DETAIL, OPTION_PRICE } =
+    req.body;
+
+  const qry = `
+update
+  TB_OPTION
+set
+  OPTION_CATE = '${OPTION_CATE}',
+  OPTION_NM = '${OPTION_NM}',
+  OPTION_DETAIL = '${OPTION_DETAIL}',
+  OPTION_PRICE = '${OPTION_PRICE}',
+  OPTION_MODIDATE = now()
+where
+  OPTION_SID = '${OPTION_SID}'
+  `;
+
+  const res_update = await getConnection(qry);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.delete_option = async (req, res) => {
+  const { OPTION_SID } = req.body;
+
+  const qry = `
+update
+  TB_OPTION
+set
+  OPTION_DELETE = 'Y',
+  OPTION_MODIDATE = now()
+where
+  OPTION_SID in (?)
+  `;
+
+  console.log(qry);
+  console.log(OPTION_SID);
+  const res_update = await getConnection(qry, [OPTION_SID]);
   if (res_update.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };

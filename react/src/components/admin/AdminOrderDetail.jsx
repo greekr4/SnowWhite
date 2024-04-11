@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import axios from "axios";
 import { formatDate, formatTime } from "../../hooks/Utill";
@@ -8,13 +8,21 @@ const AdminOrderDetail = ({ orderData }) => {
   const [items, setItems] = useState([]);
 
   const [selectedItem, setSelectedItem] = useState([]);
-  console.log(orderData);
+  const allCheckbox = useRef(null);
+
   useEffect(() => {
     initdb();
   }, [orderData]);
 
+  useEffect(() => {
+    const initSelectedItem = Array.from({ length: items?.length }, () => false);
+    console.log(initSelectedItem);
+    setSelectedItem(initSelectedItem);
+  }, [items]);
+
   const initdb = async () => {
     getItem();
+    allCheckbox.current.checked = false;
   };
 
   const getItem = async () => {
@@ -62,6 +70,34 @@ const AdminOrderDetail = ({ orderData }) => {
       default:
         return "error";
     }
+  };
+
+  const updateStatus = async (value) => {
+    const result = window.confirm("변경 하시겠습니까?");
+    if (!result) {
+      return false;
+    }
+
+    const item_sids = [];
+
+    console.log(items);
+    console.log(selectedItem);
+    selectedItem.map((el, index) => {
+      if (el) {
+        item_sids.push(items[index].ITEM_SID);
+      }
+    });
+
+    console.log(item_sids);
+
+    const res = await axios.put("/api/admin/custom_item", {
+      item_sid: item_sids,
+      field: "ITEM_STATUS",
+      item_status: value,
+    });
+
+    initdb();
+    allCheckbox.current.checked = false;
   };
 
   return (
@@ -129,11 +165,32 @@ const AdminOrderDetail = ({ orderData }) => {
           </tbody>
         </S.AdminTable>
         주문 상품
+        <div>
+          <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(1)}>
+            미처리
+          </S.Btn>
+          <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(2)}>
+            준비중 처리
+          </S.Btn>
+          <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(3)}>
+            준비완료 처리
+          </S.Btn>
+        </div>
         <S.AdminTable>
           <thead>
             <tr>
               <th style={{ width: "5%" }}>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  ref={allCheckbox}
+                  onChange={(e) => {
+                    const updated = [...selectedItem];
+                    updated.map((el, index) => {
+                      el = updated[index] = e.target.checked;
+                    });
+                    setSelectedItem(updated);
+                  }}
+                />
               </th>
               <th style={{ width: "10%" }}>주문상품</th>
               <th style={{ width: "36%" }}>옵션</th>
@@ -154,7 +211,16 @@ const AdminOrderDetail = ({ orderData }) => {
               items.map((orderData, index) => (
                 <tr style={{ height: "50px" }}>
                   <th>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      onChange={() => {
+                        const updated = [...selectedItem];
+                        updated[index] = !updated[index];
+                        setSelectedItem(updated);
+                        console.log(updated);
+                      }}
+                      checked={selectedItem[index]}
+                    />
                   </th>
                   <th>{orderData.PROD_NM}</th>
                   <th>
