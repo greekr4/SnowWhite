@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { CheckoutPage } from "../tossPay/Checkout";
 
 const OrderPage = () => {
   const { data } = useQuery("userinfo", { enabled: false });
@@ -492,6 +493,8 @@ const OrderPage = () => {
                       <span>약관보기</span>
                     </p>
                     <S.Btn onClick={handleOrderBtn}>결제하기</S.Btn>
+                    <S.Btn onClick={() => {}}>결제하기(PG테스트)</S.Btn>
+                    <CheckoutPage />
                   </S.OBFinalPymentBoxAdd>
                 </S.OBFinalPymentBoxAddWrapper>
               </S.OBFinalPaymentBox>

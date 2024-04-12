@@ -7,6 +7,7 @@ import insta_static from "../../assets/icons/insta_static.png";
 import insta_animated from "../../assets/icons/insta_animated.gif";
 import youtube_static from "../../assets/icons/youtube_static.png";
 import youtube_animated from "../../assets/icons/youtube_animated.gif";
+import { Link } from "react-router-dom";
 
 const Footer2 = () => {
   const [facebookIcon, setFacebookIcon] = useState(facebook_static);
@@ -66,10 +67,14 @@ const Footer2 = () => {
                 <S.FooterBtnText>개인정보처리방침</S.FooterBtnText>
               </S.FooterBtnItem>
               <S.FooterBtnItem>
-                <S.FooterBtnText>공지사항</S.FooterBtnText>
+                <Link to={"/notice"}>
+                  <S.FooterBtnText>공지사항</S.FooterBtnText>
+                </Link>
               </S.FooterBtnItem>
               <S.FooterBtnItem>
-                <S.FooterBtnText>오시는길</S.FooterBtnText>
+                <Link to={"/intro0"}>
+                  <S.FooterBtnText>오시는길</S.FooterBtnText>
+                </Link>
               </S.FooterBtnItem>
             </S.FooterBtnList>
             <S.FooterSnsList>

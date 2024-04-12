@@ -84,6 +84,12 @@ const {
   select_review,
   insert_review,
 } = require("./snowwhite/controller/review");
+const {
+  insert_board,
+  select_board,
+  delete_board,
+  update_board,
+} = require("./snowwhite/controller/board");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -241,3 +247,8 @@ app.get("/api", () => {
 app.post("/api/admin/option", auth, insert_option);
 app.put("/api/admin/option", auth, update_option);
 app.delete("/api/admin/option", auth, delete_option);
+
+app.get("/api/board", select_board);
+app.post("/api/board", auth, insert_board);
+app.put("/api/board", auth, update_board);
+app.delete("/api/board", auth, delete_board);

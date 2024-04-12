@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring } from "react-spring";
 import NoticeDetail from "./NoticeDetail";
+import axios from "axios";
 
 const NB = () => {
   const data = {
@@ -65,6 +66,20 @@ const NB = () => {
     ],
   };
 
+  const [boardData, setBoardData] = useState();
+  useEffect(() => {
+    initdb();
+  }, []);
+
+  const initdb = async () => {
+    const res = await axios.get("/api/board", {
+      params: {
+        type: "NOTICE",
+      },
+    });
+    setBoardData(res.data);
+  };
+
   const widths = [];
   data.header.map((item, index) => {
     widths.push(item.width);
@@ -73,12 +88,15 @@ const NB = () => {
   return (
     <S.NBBox>
       <S.NBHeader>
-        {data.header.map((item, index) => (
+        {/* {data.header.map((item, index) => (
           <S.NBTh width={item.width}>{item.text}</S.NBTh>
-        ))}
+        ))} */}
+        <S.NBTh width={"10%"}>번호</S.NBTh>
+        <S.NBTh width={"65%"}>제목</S.NBTh>
+        <S.NBTh width={"15%"}>작성일</S.NBTh>
       </S.NBHeader>
-      {data.rows.map((item, index) => (
-        <NoticeDetail item={item} widths={widths} />
+      {boardData?.map((item, index) => (
+        <NoticeDetail item={item} index={index} />
       ))}
       <S.BoardPageBox>
         <S.BoardPagePrev />

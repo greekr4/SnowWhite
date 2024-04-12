@@ -40,6 +40,10 @@ import TestKonva3 from "./pages/TestKonva3.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import AdminProdDetail from "./components/admin/AdminProdDetail.jsx";
 import AdminProdAdd from "./components/admin/AdminProdAdd.jsx";
+import CsPage from "./pages/CsPage.jsx";
+import { CheckoutPage } from "./tossPay/Checkout.jsx";
+import { SuccessPage } from "./tossPay/Success.jsx";
+import { FailPage } from "./tossPay/Fail.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -111,6 +115,7 @@ function App({ queryClient }) {
               element={<OrderListPage openPopup={openPopup} />}
             />
             <Route path="/notice" element={<NoticePage />} />
+            <Route path="/cs" element={<CsPage />} />
             <Route
               path="/mypage"
               element={<MyPage queryClient={queryClient} />}
@@ -123,6 +128,8 @@ function App({ queryClient }) {
           <Route path="/test3" element={<TestKonva3 />} />
           <Route path="/admin" element={<AdminPage openPopup={openPopup} />} />
           <Route path="/admin/prod/:prod_sid" element={<AdminProdDetail />} />
+          <Route path="/tosspay/success" element={SuccessPage} />
+          <Route path="/tosspay/fail" element={FailPage} />
           {/* <Route path="/admin/prod/add" element={<AdminProdAdd />} /> */}
         </Routes>
       </BrowserRouter>

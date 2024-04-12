@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring } from "react-spring";
+import { formatDate, formatTime } from "../../hooks/Utill";
 
-const NoticeDetail = ({ item, widths }) => {
+const NoticeDetail = ({ item, index }) => {
   const [isVisible, SetIsVisible] = useState(false);
   const [maxHeight, SetMaxHeight] = useState(0);
   const ref = useRef(null);
@@ -23,21 +24,17 @@ const NoticeDetail = ({ item, widths }) => {
 
   return (
     <S.NBRow>
-      <S.NBTdBox>
-        {item.cell.map((cell, index) => (
-          <S.NBTd
-            width={widths[index]}
-            className={isVisible ? "selected" : null}
-            onClick={toggleVisible}
-          >
-            {cell.text}
-          </S.NBTd>
-        ))}
+      <S.NBTdBox onClick={toggleVisible}>
+        <S.NBTd style={{ width: "10%" }}>{item.ROWNUM}</S.NBTd>
+        <S.NBTd style={{ width: "65%" }}>{item.BOARD_TITLE}</S.NBTd>
+        <S.NBTd style={{ width: "15%" }}>
+          {formatDate(item.BOARD_REGDATE)}
+        </S.NBTd>
       </S.NBTdBox>
       <S.NBDetailBox style={SlideDown}>
         <S.NBDetail
           ref={ref}
-          dangerouslySetInnerHTML={{ __html: item.desc }}
+          dangerouslySetInnerHTML={{ __html: item.BOARD_CONTENT }}
         ></S.NBDetail>
       </S.NBDetailBox>
     </S.NBRow>

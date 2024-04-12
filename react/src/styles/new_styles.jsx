@@ -266,6 +266,9 @@ export const FooterBtnItem = styled.li`
 export const FooterBtnText = styled.span`
   font-size: 13px;
   font-weight: 550;
+  &:hover {
+    color: #777;
+  }
 `;
 
 export const FooterSnsItem = styled.li`
@@ -796,6 +799,29 @@ export const GlobalInputBox = styled.div`
   }
 
   & input:valid + label {
+    top: -8px;
+    padding: 0 3px;
+    font-size: 14px;
+    color: #8d8d8d;
+  }
+
+  & select {
+    width: 100%;
+    outline: none;
+    border: 2px solid #dadce0;
+    padding: 16px 13px;
+    font-size: 18px;
+    border-radius: 5px;
+  }
+
+  & select:valid + label {
+    top: -8px;
+    padding: 0 3px;
+    font-size: 14px;
+    color: #8d8d8d;
+  }
+
+  & .quill + label {
     top: -8px;
     padding: 0 3px;
     font-size: 14px;
@@ -3684,4 +3710,9 @@ export const AdminInfoBox = styled.div`
       font-weight: 500;
     }
   }
+`;
+
+export const AdminBoardFormBox = styled.div`
+  width: 50%;
+  margin: 0 auto;
 `;
