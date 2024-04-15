@@ -2543,10 +2543,10 @@ export const OrderBotWrapper = styled.div`
 `;
 
 export const OBLeftBox = styled.div`
-  flex-basis: 65%;
+  flex-basis: 50%;
 `;
 export const OBRightBox = styled.div`
-  flex-basis: 35%;
+  flex-basis: 50%;
 `;
 
 export const OBTitleBox = styled.div`
@@ -2861,9 +2861,19 @@ export const OBFinalPymentBoxAdd = styled.div`
 
   & button {
     width: 100%;
-    margin-top: 1rem;
     font-size: 1em;
     font-weight: 550;
+  }
+`;
+
+export const OBCheckoutBox = styled.div`
+  padding: 1em;
+  text-align: center;
+
+  & p.nopm {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: red;
   }
 `;
 

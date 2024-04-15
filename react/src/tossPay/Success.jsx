@@ -12,7 +12,7 @@ export function SuccessPage() {
     // TODO: API를 호출해서 서버에게 paymentKey, orderId, amount를 넘겨주세요.
     // 서버에선 해당 데이터를 가지고 승인 API를 호출하면 결제가 완료됩니다.
     // https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%8A%B9%EC%9D%B8
-    const response = await fetch("/sandbox-dev/api/v1/payments/confirm", {
+    const response = await fetch("/api/tosspay/confirm", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,6 +24,7 @@ export function SuccessPage() {
       }),
     });
 
+    console.log(response);
     if (response.ok) {
       setIsConfirmed(true);
     }
@@ -64,7 +65,7 @@ export function SuccessPage() {
               </span>
             </div>
           </div>
-
+          {/* 
           <div className="w-100 button-group">
             <a
               class="btn primary"
@@ -90,27 +91,29 @@ export function SuccessPage() {
                 결제 연동 문서가기
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
       ) : (
-        <div className="flex-column align-center confirm-loading w-100 max-w-540">
-          <div className="flex-column align-center">
-            <img
-              src="https://static.toss.im/lotties/loading-spot-apng.png"
-              width="120"
-              height="120"
-            />
-            <h2 className="title text-center">결제 요청까지 성공했어요.</h2>
-            <h4 className="text-center description">
-              결제 승인하고 완료해보세요.
-            </h4>
+        <>
+          <div className="flex-column align-center confirm-loading w-100 max-w-540">
+            <div className="flex-column align-center">
+              <img
+                src="https://static.toss.im/lotties/loading-spot-apng.png"
+                width="120"
+                height="120"
+              />
+              <h2 className="title text-center">결제 요청까지 성공했어요.</h2>
+              <h4 className="text-center description">
+                결제 승인하고 완료해보세요.
+              </h4>
+            </div>
+            <div className="w-100">
+              <button className="btn primary w-100" onClick={confirmPayment}>
+                결제 승인하기
+              </button>
+            </div>
           </div>
-          <div className="w-100">
-            <button className="btn primary w-100" onClick={confirmPayment}>
-              결제 승인하기
-            </button>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );

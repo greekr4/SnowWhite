@@ -11,11 +11,12 @@ import { CheckoutPage } from "../tossPay/Checkout";
 
 const OrderPage = () => {
   const { data } = useQuery("userinfo", { enabled: false });
-  const [radioValue, SetRadioValue] = useState("pm3");
+  const [radioValue, SetRadioValue] = useState();
   const [ViewStep, SetViewStep] = useState(0);
   const { item_sids } = useParams();
   const [orderItem, setOrderItem] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [deliPrice, setDeliPrice] = useState(3000);
 
   // 배송 정보 - 주문자
   const [userNm, setUserNm] = useState();
@@ -31,6 +32,8 @@ const OrderPage = () => {
   const [orderReq, setOrderReq] = useState("");
 
   const [addressVisible, setAddressVisible] = useState(false);
+
+  const [orderData, setOrderData] = useState();
 
   const ckRef = useRef(null);
 
@@ -87,20 +90,73 @@ const OrderPage = () => {
     height: ViewStep === 2 ? 200 + "px" : 0 + "px",
   });
 
-  const handleOrderBtn = async () => {
-    console.log(
-      userNm,
-      userTel,
-      userEmail,
-      orderReceiver,
-      orderTel,
-      orderPostcode,
-      orderAddress,
-      orderAddAddress,
-      orderReq,
-      radioValue
-    );
+  const ckInput = async () => {
+    if (
+      !userEmail ||
+      !orderReceiver ||
+      !orderTel ||
+      !orderPostcode ||
+      !orderAddress ||
+      !orderAddAddress ||
+      !radioValue
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
+  const insertPgOrder = async (
+    pgOrderId,
+    pgPaymentKey,
+    pgPaymentType,
+    pgPaymentAmount
+  ) => {
+    try {
+      let optionNm = "";
+      let coreNm = orderItem[0].PROD_NM;
+      // console.log(orderItem[0].PROD_NM);
+      orderItem[0].ITEM_OPTION.map((option, index) => {
+        if (index < orderItem[0].ITEM_OPTION.length - 1) {
+          optionNm += option.OPTION_NM + " / ";
+        } else {
+          optionNm += option.OPTION_NM;
+        }
+      });
+      const res = await axios.put("/api/order", {
+        userId: data?.USER_ID,
+        userTel: userTel,
+        userEmail: userEmail,
+        item_sids: item_sids,
+        orderAmount: parseInt(totalPrice + deliPrice),
+        orderReceiver: orderReceiver,
+        orderTel: orderTel,
+        orderPostcode: orderPostcode,
+        orderAddress: orderAddress,
+        orderAddAddress: orderAddAddress,
+        orderReq: orderReq,
+        radioValue: radioValue,
+        order_core_prod: coreNm,
+        order_core_option: optionNm,
+        orderNm: userNm,
+        pgOrderId: pgOrderId,
+        pgPaymentKey: pgPaymentKey,
+        pgPaymentType: pgPaymentType,
+        pgPaymentAmount: pgPaymentAmount,
+        orderStatus: 2,
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const getorderNm = () => {
+    const back = orderItem?.length > 1 ? ` 외 ${orderItem?.length - 1}개` : ``;
+    return `${orderItem[0]?.PROD_NM}${back}`;
+  };
+
+  const handleOrderBtn = async () => {
     if (
       !userEmail ||
       !orderReceiver ||
@@ -111,11 +167,6 @@ const OrderPage = () => {
       !radioValue
     ) {
       alert("주문자 혹은 배송지 정보를 정확히 입력해주세요.");
-      return false;
-    }
-
-    if (!ckRef.current.checked) {
-      alert("개인정보 수집 동의를 체크해주세요.");
       return false;
     }
 
@@ -135,7 +186,7 @@ const OrderPage = () => {
       userTel: userTel,
       userEmail: userEmail,
       item_sids: item_sids,
-      orderAmount: totalPrice + 3000,
+      orderAmount: parseInt(totalPrice + deliPrice),
       orderReceiver: orderReceiver,
       orderTel: orderTel,
       orderPostcode: orderPostcode,
@@ -146,9 +197,17 @@ const OrderPage = () => {
       order_core_prod: coreNm,
       order_core_option: optionNm,
       orderNm: userNm,
+      orderStatus: 1,
     });
 
-    alert(res.data);
+    if (res.status === 200) {
+      alert(
+        `${getorderNm()}
+          ${parseInt(totalPrice + deliPrice).toLocaleString("ko-kr")}원
+          홍길동 123-567-8910 우리 은행`
+      );
+      window.location.href = "/orderlist";
+    }
   };
 
   return (
@@ -160,7 +219,7 @@ const OrderPage = () => {
             <p>주문할 상품을 확인하고 결제가 가능해요.</p>
           </S.CartTopTitleBox>
           <S.CartTopAddtionBox>
-            <p>주문 상품 1개</p>
+            <p>주문 상품 {orderItem?.length}개</p>
           </S.CartTopAddtionBox>
         </S.OrderTopWrapper>
         <S.OrderWrapper>
@@ -279,7 +338,7 @@ const OrderPage = () => {
                           }}
                           margin="0 0 0 0.5rem"
                         >
-                          우편번호 조회
+                          주소찾기
                         </S.Btn>
 
                         {addressVisible && (
@@ -359,14 +418,20 @@ const OrderPage = () => {
                     <tr>
                       <th>배송비</th>
                       <td>
-                        <input type="text" id="" value="3,000" readOnly />원
+                        <input
+                          type="text"
+                          id=""
+                          value={deliPrice.toLocaleString("ko-kr")}
+                          readOnly
+                        />
+                        원
                       </td>
                     </tr>
                   </table>
                 </S.OBDeliPriceBox>
                 <S.OBPaymentBox>
                   <S.OBPaymentSpan>
-                    기본 배송비는 3,000원 입니다.
+                    기본 배송비는 {deliPrice.toLocaleString("ko-kr")}원 입니다.
                   </S.OBPaymentSpan>
                 </S.OBPaymentBox>
               </S.StepMenu>
@@ -375,7 +440,7 @@ const OrderPage = () => {
                   SetViewStep(2);
                 }}
               >
-                <span>결제 수단</span>
+                <span>결제 방법</span>
                 <S.Arrow img={ViewStep === 2 ? collapse_arrow : expand_arrow} />
               </S.OBTitleBox>
               <S.StepMenu style={StepSlideDown3}>
@@ -386,9 +451,8 @@ const OrderPage = () => {
                       name="payment"
                       id="pm1"
                       onChange={handleRadioValue}
-                      disabled
                     />
-                    <label htmlFor="pm1">신용카드</label>
+                    <label htmlFor="pm1">일반 결제</label>
                   </S.OBRadioBox>
                   <S.OBRadioBox>
                     <input
@@ -396,9 +460,8 @@ const OrderPage = () => {
                       name="payment"
                       id="pm2"
                       onChange={handleRadioValue}
-                      disabled
                     />
-                    <label htmlFor="pm2">실시간 계좌이체</label>
+                    <label htmlFor="pm2">무통장 입금</label>
                   </S.OBRadioBox>
                   <S.OBRadioBox>
                     <input
@@ -406,46 +469,13 @@ const OrderPage = () => {
                       name="payment"
                       id="pm3"
                       onChange={handleRadioValue}
-                      checked
-                    />
-                    <label htmlFor="pm3">무통장 입금</label>
-                  </S.OBRadioBox>
-                  <S.OBRadioBox>
-                    <input
-                      type="radio"
-                      name="payment"
-                      id="pm4"
-                      onChange={handleRadioValue}
                       disabled
                     />
-                    <label htmlFor="pm4">휴대폰 결제</label>
-                  </S.OBRadioBox>
-                  <S.OBRadioBox>
-                    <input
-                      type="radio"
-                      name="payment"
-                      id="pm5"
-                      onChange={handleRadioValue}
-                      disabled
-                    />
-                    <label htmlFor="pm5">포인트 결제</label>
+                    <label htmlFor="pm3">포인트 결제</label>
                   </S.OBRadioBox>
                 </S.OBRadioGroup>
-                <S.OBPaymentAddBox style={SlideDown}>
-                  <div>
-                    <label>카드 선택</label>
-                    <select>
-                      <option value="">신한</option>
-                      <option value="">우리</option>
-                    </select>
-                    <select readOnly>
-                      <option value="">일시불</option>
-                    </select>
-                  </div>
-                </S.OBPaymentAddBox>
-
                 <S.OBPaymentBox>
-                  <S.OBPaymentSpan>결제 수단을 선택해주세요.</S.OBPaymentSpan>
+                  <S.OBPaymentSpan>결제 방법을 선택해주세요.</S.OBPaymentSpan>
                 </S.OBPaymentBox>
               </S.StepMenu>
             </S.OBLeftBox>
@@ -457,7 +487,7 @@ const OrderPage = () => {
                 <S.OBFinalRowBox>
                   <div className="left">합계</div>
                   <div className="right">
-                    {(totalPrice + 3000).toLocaleString("ko-kr")}
+                    {(totalPrice + deliPrice).toLocaleString("ko-kr")}
                   </div>
                 </S.OBFinalRowBox>
                 <S.OBFinalRowBox>
@@ -476,7 +506,9 @@ const OrderPage = () => {
                 </S.OBFinalRowBox>
                 <S.OBFinalRowBox>
                   <div className="left">배송비</div>
-                  <div className="right">3,000</div>
+                  <div className="right">
+                    {deliPrice.toLocaleString("ko-kr")}
+                  </div>
                 </S.OBFinalRowBox>
                 <S.OBFinalPymentBoxAddWrapper>
                   <S.OBFinalPymentBoxAdd>
@@ -487,16 +519,33 @@ const OrderPage = () => {
                     <p>
                       ∙ 주문취소 및 수정은 결제 후 1시간 이내에만 가능합니다.
                     </p>
-                    <p>
+                    {/* <p>
                       <input type="checkbox" name="ck1" id="ck1" ref={ckRef} />
                       <label htmlFor="ck1">개인정보 수집 동의 (필수)</label>
                       <span>약관보기</span>
-                    </p>
-                    <S.Btn onClick={handleOrderBtn}>결제하기</S.Btn>
-                    <S.Btn onClick={() => {}}>결제하기(PG테스트)</S.Btn>
-                    <CheckoutPage />
+                    </p> */}
+                    {/* <S.Btn onClick={handleOrderBtn}>결제하기</S.Btn>
+                    <S.Btn onClick={() => {}}>결제하기(PG테스트)</S.Btn> */}
                   </S.OBFinalPymentBoxAdd>
                 </S.OBFinalPymentBoxAddWrapper>
+                {radioValue === "pm1" ? (
+                  <CheckoutPage
+                    totalPrice={parseInt(totalPrice + deliPrice)}
+                    orderName={getorderNm()}
+                    ckInput={ckInput}
+                    insertPgOrder={insertPgOrder}
+                  />
+                ) : radioValue === "pm2" ? (
+                  <S.OBFinalPymentBoxAddWrapper>
+                    <S.OBFinalPymentBoxAdd>
+                      <S.Btn onClick={handleOrderBtn}>무통장 결제하기</S.Btn>
+                    </S.OBFinalPymentBoxAdd>
+                  </S.OBFinalPymentBoxAddWrapper>
+                ) : (
+                  <S.OBCheckoutBox>
+                    <p className="nopm">결제 방법을 선택해주세요.</p>
+                  </S.OBCheckoutBox>
+                )}
               </S.OBFinalPaymentBox>
             </S.OBRightBox>
           </S.OrderBotWrapper>

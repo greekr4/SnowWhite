@@ -643,6 +643,10 @@ exports.update_order_status = async (req, res) => {
     fields.push(` ORDER_STATUS = ${order_status}\r\n `);
   }
 
+  if (order_status === 2) {
+    fields.push(` ORDER_PAYMENT_DATE = NOW()\r\n `);
+  }
+
   const qry = `
 update
 	TB_ORDER
@@ -771,7 +775,3 @@ where
   if (res_update.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
-
-
-
-

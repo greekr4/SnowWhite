@@ -3,11 +3,17 @@ import { loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
 
 const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
 
-export function CheckoutPage() {
+export function CheckoutPage({
+  totalPrice,
+  orderName,
+  ckInput,
+  insertPgOrder,
+}) {
+  console.log(totalPrice);
   const paymentWidgetRef = useRef(null);
   const paymentMethodsWidgetRef = useRef(null);
   const agreementWidgetRef = useRef(null);
-  const [price, setPrice] = useState(1000);
+  const [price, setPrice] = useState(totalPrice);
 
   useEffect(() => {
     (async () => {
@@ -27,7 +33,7 @@ export function CheckoutPage() {
       const paymentMethodsWidget =
         paymentWidgetRef.current.renderPaymentMethods(
           "#payment-method",
-          { value: price },
+          { value: totalPrice },
           { variantKey: "DEFAULT" }
         );
 
@@ -44,6 +50,27 @@ export function CheckoutPage() {
     })();
   }, []);
 
+  async function confirmPayment(paymentKey, orderId, amount) {
+    // TODO: API를 호출해서 서버에게 paymentKey, orderId, amount를 넘겨주세요.
+    // 서버에선 해당 데이터를 가지고 승인 API를 호출하면 결제가 완료됩니다.
+    // https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%8A%B9%EC%9D%B8
+    const response = await fetch("/api/tosspay/confirm", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        paymentKey,
+        orderId,
+        amount,
+      }),
+    });
+
+    console.log(response);
+    if (response.ok) {
+    }
+  }
+
   return (
     <div className="wrapper w-100">
       <div className="max-w-540 w-100">
@@ -53,6 +80,13 @@ export function CheckoutPage() {
           <button
             className="btn primary w-100"
             onClick={async () => {
+              const input = ckInput();
+
+              if (input === false) {
+                alert("주문자 및 배송지 정보를 정확히 입력해주세요.");
+                return false;
+              }
+
               const paymentWidget = paymentWidgetRef.current;
 
               try {
@@ -60,20 +94,32 @@ export function CheckoutPage() {
                  * 결제 요청
                  * @docs https://docs.tosspayments.com/reference/widget-sdk#requestpayment%EA%B2%B0%EC%A0%9C-%EC%A0%95%EB%B3%B4
                  */
-                await paymentWidget?.requestPayment({
-                  orderId: generateRandomString(),
-                  orderName: "명함",
-                  customerName: "김태균",
-                  customerEmail: "greekr4@naver.com",
-                  successUrl:
-                    window.location.origin +
-                    "/tosspay/success" +
-                    window.location.search,
-                  failUrl:
-                    window.location.origin +
-                    "/tosspay/fail" +
-                    window.location.search,
-                });
+
+                await paymentWidget
+                  ?.requestPayment({
+                    orderId: generateRandomString(),
+                    orderName: orderName,
+                    customerName: "",
+                    customerEmail: "",
+                    // successUrl:
+                    //   window.location.origin +
+                    //   "/tosspay/success" +
+                    //   window.location.search,
+                    // failUrl:
+                    //   window.location.origin +
+                    //   "/tosspay/fail" +
+                    //   window.location.search,
+                  })
+                  .then((res) => {
+                    confirmPayment(res.paymentKey, res.orderId, res.amount);
+                    insertPgOrder(
+                      res.orderId,
+                      res.paymentKey,
+                      res.paymentType,
+                      res.amount
+                    );
+                    window.location.href = "/orderlist";
+                  });
               } catch (error) {
                 // TODO: 에러 처리
               }

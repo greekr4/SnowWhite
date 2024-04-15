@@ -90,6 +90,7 @@ const {
   delete_board,
   update_board,
 } = require("./snowwhite/controller/board");
+const { tosspayConfirm } = require("./snowwhite/controller/tosspay");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -252,3 +253,7 @@ app.get("/api/board", select_board);
 app.post("/api/board", auth, insert_board);
 app.put("/api/board", auth, update_board);
 app.delete("/api/board", auth, delete_board);
+
+// 토스페이
+
+app.post("/api/tosspay/confirm", tosspayConfirm);

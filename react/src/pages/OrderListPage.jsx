@@ -183,45 +183,46 @@ const OrderListPage = ({ openPopup }) => {
                     </td>
                   </tr>
                 ))} */}
-                {orderlist?.map((el, index) => (
-                  <tr key={index}>
-                    <td>{formatDate(el.ORDER_DATE)}</td>
-                    <td style={{ fontSize: "0.75em" }}>{el.ORDER_SID}</td>
-                    <td>
-                      <p style={{ fontSize: "1.1em", fontWeight: "500" }}>
-                        {el.ORDER_CORE_PROD}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: "0.8em",
-                          color: "#777",
-                          padding: "0.25em",
-                        }}
-                      >
-                        {el.ORDER_CORE_OPTION}
-                      </p>
-                      {el.ITEM_SIDS.split(",").length - 1 != 0 ? (
+                {orderlist?.length ? (
+                  orderlist?.map((el, index) => (
+                    <tr key={index}>
+                      <td>{formatDate(el.ORDER_DATE)}</td>
+                      <td style={{ fontSize: "0.75em" }}>{el.ORDER_SID}</td>
+                      <td>
+                        <p style={{ fontSize: "1.1em", fontWeight: "500" }}>
+                          {el.ORDER_CORE_PROD}
+                        </p>
                         <p
                           style={{
                             fontSize: "0.8em",
+                            color: "#777",
                             padding: "0.25em",
-                            cursor: "pointer",
                           }}
-                          onClick={() =>
-                            openPopup("orderDetail", { ITEMS: el.ITEM_SIDS })
-                          }
                         >
-                          {" "}
-                          외 {el.ITEM_SIDS.split(",").length - 1} 건
+                          {el.ORDER_CORE_OPTION}
                         </p>
-                      ) : (
-                        <></>
-                      )}
-                      <p></p>
+                        {el.ITEM_SIDS.split(",").length - 1 != 0 ? (
+                          <p
+                            style={{
+                              fontSize: "0.8em",
+                              padding: "0.25em",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              openPopup("orderDetail", { ITEMS: el.ITEM_SIDS })
+                            }
+                          >
+                            {" "}
+                            외 {el.ITEM_SIDS.split(",").length - 1} 건
+                          </p>
+                        ) : (
+                          <></>
+                        )}
+                        <p></p>
 
-                      {/* 외{" "}
+                        {/* 외{" "}
                       {el.ITEM_SIDS.split(",").length - 1} 건 */}
-                      {/* <div
+                        {/* <div
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -258,39 +259,46 @@ const OrderListPage = ({ openPopup }) => {
                           </div>
                         ))}
                       </div> */}
-                    </td>
-                    <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
-                    <td>{renderStatus(el.ORDER_STATUS)}</td>
-                    <td>
-                      {el.ORDER_STATUS < 4 ? (
-                        <S.Btn>취소요청</S.Btn>
-                      ) : el.ORDER_STATUS === 4 ? (
-                        <S.Btn>배송추적</S.Btn>
-                      ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === 0 ? (
-                        <S.Btn
-                          btnBgc="#469cff"
-                          fontColor="#fff"
-                          btnBgcHover="#7cb9ff"
-                          borderCHover="none"
-                          onClick={() => {
-                            openPopup("reviewForm", {
-                              ORDER_SID: el.ORDER_SID,
-                              PROD_SID: el.ITEMS[0].PROD_SID,
-                              PROD_NM: el.ITEMS[0].PROD_NM,
-                              PROD_CATECODE: el.ITEMS[0].PROD_CATECODE,
-                              ITEM_OPTION: el.ITEMS[0].ITEM_OPTION,
-                              USER_ID: data?.USER_ID,
-                            });
-                          }}
-                        >
-                          리뷰작성
-                        </S.Btn>
-                      ) : (
-                        <S.Btn>리뷰확인</S.Btn>
-                      )}
+                      </td>
+                      <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
+                      <td>{renderStatus(el.ORDER_STATUS)}</td>
+                      <td>
+                        {el.ORDER_STATUS < 4 ? (
+                          <S.Btn>취소요청</S.Btn>
+                        ) : el.ORDER_STATUS === 4 ? (
+                          <S.Btn>배송추적</S.Btn>
+                        ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === 0 ? (
+                          <S.Btn
+                            btnBgc="#469cff"
+                            fontColor="#fff"
+                            btnBgcHover="#7cb9ff"
+                            borderCHover="none"
+                            onClick={() => {
+                              openPopup("reviewForm", {
+                                ORDER_SID: el.ORDER_SID,
+                                PROD_SID: el.ITEMS[0].PROD_SID,
+                                PROD_NM: el.ITEMS[0].PROD_NM,
+                                PROD_CATECODE: el.ITEMS[0].PROD_CATECODE,
+                                ITEM_OPTION: el.ITEMS[0].ITEM_OPTION,
+                                USER_ID: data?.USER_ID,
+                              });
+                            }}
+                          >
+                            리뷰작성
+                          </S.Btn>
+                        ) : (
+                          <S.Btn>리뷰확인</S.Btn>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={"100%"} style={{ height: "6rem" }}>
+                      주문내역이 비었습니다.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </S.OrderListMidProdBox>

@@ -373,6 +373,11 @@ exports.insert_order = async (req, res) => {
     order_core_prod,
     order_core_option,
     orderNm,
+    pgOrderId,
+    pgPaymentKey,
+    pgPaymentType,
+    pgPaymentAmount,
+    orderStatus,
   } = req.body;
 
   const item_sids_array = item_sids.split(",");
@@ -419,7 +424,12 @@ where
   ORDER_CORE_PROD,
   ORDER_CORE_OPTION,
   ORDER_NM,
-  ORDER_TEL
+  ORDER_TEL,
+  PG_ORDERID,
+  PG_PAYMENT_KEY,
+  PG_PAYMENT_TYPE,
+  PG_PAYMENT_AMOUNT
+  ${orderStatus === 2 ? `,ORDER_PAYMENT_DATE` : ""}
   )
 values(
 '${order_sid}',
@@ -427,7 +437,7 @@ values(
 '${item_sids}',
 NOW(),
 ${orderAmount},
-1,
+${orderStatus},
 null,
 '${orderReceiver}',
 '${orderTel}',
@@ -439,7 +449,12 @@ null,
 '${order_core_prod}',
 '${order_core_option}',
 '${orderNm}',
-'${userTel}'
+'${userTel}',
+'${pgOrderId}',
+'${pgPaymentKey}',
+'${pgPaymentType}',
+'${pgPaymentAmount}'
+${orderStatus === 2 ? `,NOW()` : ""}
 )
   `;
 

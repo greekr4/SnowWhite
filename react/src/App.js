@@ -128,8 +128,8 @@ function App({ queryClient }) {
           <Route path="/test3" element={<TestKonva3 />} />
           <Route path="/admin" element={<AdminPage openPopup={openPopup} />} />
           <Route path="/admin/prod/:prod_sid" element={<AdminProdDetail />} />
-          <Route path="/tosspay/success" element={SuccessPage} />
-          <Route path="/tosspay/fail" element={FailPage} />
+          <Route path="/tosspay/success" element={<SuccessPage />} />
+          <Route path="/tosspay/fail" element={<FailPage />} />
           {/* <Route path="/admin/prod/add" element={<AdminProdAdd />} /> */}
         </Routes>
       </BrowserRouter>
