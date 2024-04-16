@@ -40,7 +40,11 @@ axios.interceptors.response.use(
       };
 
       try {
-        const res = await axios.post("/api/refresh", {}, { headers: headers });
+        const res = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/refresh",
+          {},
+          { headers: headers }
+        );
         if (res.status === 200) {
           cookies.set("token", res.data.data.accessToken);
           cookies.set("refreshToken", res.data.data.refreshToken);

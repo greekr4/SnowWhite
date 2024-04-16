@@ -73,7 +73,7 @@ const MyPage = ({ queryClient }) => {
     const usertel1 = `${inputUserTel1_0}-${inputUserTel1_1}-${inputUserTel1_2}`;
 
     axios
-      .post("/api/mypage/edituser", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/mypage/edituser", {
         userid: USER_ID,
         userpw: inputUserPw,
         usertel0: usertel0,
@@ -97,7 +97,7 @@ const MyPage = ({ queryClient }) => {
     }
 
     axios
-      .post("/api/delivery/add", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/delivery/add", {
         userid: USER_ID,
         delinm: inputNm,
         delirec: inputRec,
@@ -128,7 +128,7 @@ const MyPage = ({ queryClient }) => {
     }
 
     axios
-      .post("/api/delivery/edit", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/delivery/edit", {
         delicode: inputDelicode,
         delinm: inputNm,
         delirec: inputRec,
@@ -154,7 +154,7 @@ const MyPage = ({ queryClient }) => {
 
   const handleDelDeli = (delicode) => {
     axios
-      .post("/api/delivery/del", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/delivery/del", {
         delicode: delicode,
       })
       .then((res) => {
@@ -187,7 +187,7 @@ const MyPage = ({ queryClient }) => {
       }
     });
     axios
-      .post("/api/delivery/del", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/delivery/del", {
         delicode: delicodes,
       })
       .then((res) => {
@@ -501,10 +501,13 @@ const MyPage = ({ queryClient }) => {
                     <S.Btn
                       onClick={() => {
                         axios
-                          .post("/api/mypage/auth", {
-                            userid: USER_ID,
-                            authpw: inputAuthPw,
-                          })
+                          .post(
+                            process.env.REACT_APP_DB_HOST + "/api/mypage/auth",
+                            {
+                              userid: USER_ID,
+                              authpw: inputAuthPw,
+                            }
+                          )
                           .then((res) => {
                             console.log(res);
                             if (res.status === 200) {
@@ -625,10 +628,13 @@ const MyPage = ({ queryClient }) => {
 
                   const trueIndex = seletedDelis.indexOf(true);
                   axios
-                    .post("/api/delivery/default", {
-                      userid: USER_ID,
-                      delicode: delis[trueIndex].DELI_CODE,
-                    })
+                    .post(
+                      process.env.REACT_APP_DB_HOST + "/api/delivery/default",
+                      {
+                        userid: USER_ID,
+                        delicode: delis[trueIndex].DELI_CODE,
+                      }
+                    )
                     .then((res) => {
                       queryClient.refetchQueries("userinfo");
                       alert("성공");

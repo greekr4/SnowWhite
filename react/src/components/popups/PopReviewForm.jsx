@@ -51,7 +51,7 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
       return false;
     }
 
-    const res = await axios.put("/api/review", {
+    const res = await axios.put(process.env.REACT_APP_DB_HOST + "/api/review", {
       order_sid: popupData.ORDER_SID,
       user_id: popupData.USER_ID,
       review_title: reviewTitle,

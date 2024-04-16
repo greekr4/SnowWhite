@@ -9,7 +9,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import ReactQuill, { Quill } from "react-quill";
 
-const ProductDetailPage = () => {
+const ProductDetailPage = ({ openPopup }) => {
   const [qty, setQty] = useState();
   const [scrollPositon, setScrollPosition] = useState(0);
   const [SliderIndex, SetSliderIndex] = useState(0);
@@ -29,7 +29,9 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     axios
-      .post("/api/product/detail", { prod_sid: prod_sid })
+      .post(process.env.REACT_APP_DB_HOST + "/api/product/detail", {
+        prod_sid: prod_sid,
+      })
       .then((res) => {
         console.log(res);
         setProdDetail(res.data);
@@ -41,7 +43,9 @@ const ProductDetailPage = () => {
       });
 
     axios
-      .post("/api/product/images", { prod_sid: prod_sid })
+      .post(process.env.REACT_APP_DB_HOST + "/api/product/images", {
+        prod_sid: prod_sid,
+      })
       .then((res) => {
         console.log(res);
         setProdImages(res.data);
@@ -51,7 +55,9 @@ const ProductDetailPage = () => {
       });
 
     axios
-      .post("/api/product/options", { prod_sid: prod_sid })
+      .post(process.env.REACT_APP_DB_HOST + "/api/product/options", {
+        prod_sid: prod_sid,
+      })
       .then((res) => {
         const groupedData = {};
         res.data.forEach((option) => {
@@ -79,7 +85,11 @@ const ProductDetailPage = () => {
 
   const initdb = async () => {
     setReviewDatas(
-      (await axios.post("/api/review", { prod_sid: prod_sid })).data
+      (
+        await axios.post(process.env.REACT_APP_DB_HOST + "/api/review", {
+          prod_sid: prod_sid,
+        })
+      ).data
     );
   };
 
@@ -164,6 +174,10 @@ const ProductDetailPage = () => {
   };
 
   const handleSendCart = async () => {
+    if (USER_ID === undefined) {
+      openPopup(0);
+      return false;
+    }
     if (!designCheck) {
       alert("디자인을 확인 해 주세요.");
       return false;
@@ -175,15 +189,18 @@ const ProductDetailPage = () => {
     const ITEM_AMOUNT = prodPrice;
     const ITEM_DESIGN = JSON.stringify([]);
 
-    const res = await axios.post("/api/cart/add", {
-      PROD_SID: PROD_SID,
-      ITEM_OPTION: ITEM_OPTION,
-      ITEM_QUANTITY: ITEM_QUANTITY,
-      ITEM_AMOUNT: ITEM_AMOUNT,
-      ITEM_DESIGN: ITEM_DESIGN,
-      USER_ID: USER_ID,
-      ITEM_FILE_LOCATION: designFile,
-    });
+    const res = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/cart/add",
+      {
+        PROD_SID: PROD_SID,
+        ITEM_OPTION: ITEM_OPTION,
+        ITEM_QUANTITY: ITEM_QUANTITY,
+        ITEM_AMOUNT: ITEM_AMOUNT,
+        ITEM_DESIGN: ITEM_DESIGN,
+        USER_ID: USER_ID,
+        ITEM_FILE_LOCATION: designFile,
+      }
+    );
 
     if (res.status === 200) {
       alert("장바구니에 추가 되었습니다.");
@@ -191,6 +208,10 @@ const ProductDetailPage = () => {
   };
 
   const handleUploadDesign = () => {
+    if (USER_ID === undefined) {
+      openPopup(0);
+      return false;
+    }
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "pdf/*");
@@ -200,13 +221,17 @@ const ProductDetailPage = () => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", "design");
-      formData.append("userid", "a");
+      formData.append("userid", USER_ID);
       try {
-        const result = await axios.post("/api/upload_design", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const result = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/upload_design",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         const designUrl = result.data;
         alert("디자인이 등록되었습니다.");
         setDesignFile(designUrl);
@@ -301,6 +326,7 @@ const ProductDetailPage = () => {
                     onClick={() => {
                       navigate("/editor");
                     }}
+                    disabled
                   >
                     직접 디자인하기
                   </S.Btn>

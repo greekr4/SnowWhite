@@ -22,12 +22,15 @@ const PopOptionForm = ({ openPopup, closePopup, popupData }) => {
       return false;
     }
     if (popupData.mode === "insert") {
-      const res = await axios.post("/api/admin/option", {
-        OPTION_CATE: optionCate,
-        OPTION_NM: optionNm,
-        OPTION_DETAIL: optionDetail,
-        OPTION_PRICE: optionPrice,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/option",
+        {
+          OPTION_CATE: optionCate,
+          OPTION_NM: optionNm,
+          OPTION_DETAIL: optionDetail,
+          OPTION_PRICE: optionPrice,
+        }
+      );
       if (res.status === 200) {
         alert("옵션 생성이 완료 되었습니다.");
         popupData.initdb();
@@ -36,13 +39,16 @@ const PopOptionForm = ({ openPopup, closePopup, popupData }) => {
         alert("옵션 생성에 실패했습니다.");
       }
     } else if (popupData.mode === "update") {
-      const res = await axios.put("/api/admin/option", {
-        OPTION_SID: optionSid,
-        OPTION_CATE: optionCate,
-        OPTION_NM: optionNm,
-        OPTION_DETAIL: optionDetail,
-        OPTION_PRICE: optionPrice,
-      });
+      const res = await axios.put(
+        process.env.REACT_APP_DB_HOST + "/api/admin/option",
+        {
+          OPTION_SID: optionSid,
+          OPTION_CATE: optionCate,
+          OPTION_NM: optionNm,
+          OPTION_DETAIL: optionDetail,
+          OPTION_PRICE: optionPrice,
+        }
+      );
       if (res.status === 200) {
         alert("옵션 변경이 완료 되었습니다.");
         popupData.initdb();

@@ -31,9 +31,12 @@ const AdminOrderDetail = ({ orderData }) => {
       item_sids.push(orderData)
     );
     setIsLoading(true);
-    const res = await axios.post("api/orderlist/item", {
-      item_sids: item_sids,
-    });
+    const res = await axios.post(
+      process.env.REACT_APP_DB_HOST + "api/orderlist/item",
+      {
+        item_sids: item_sids,
+      }
+    );
     setItems(res.data);
     console.log(res);
     setIsLoading(false);
@@ -90,11 +93,14 @@ const AdminOrderDetail = ({ orderData }) => {
 
     console.log(item_sids);
 
-    const res = await axios.put("/api/admin/custom_item", {
-      item_sid: item_sids,
-      field: "ITEM_STATUS",
-      item_status: value,
-    });
+    const res = await axios.put(
+      process.env.REACT_APP_DB_HOST + "/api/admin/custom_item",
+      {
+        item_sid: item_sids,
+        field: "ITEM_STATUS",
+        item_status: value,
+      }
+    );
 
     initdb();
     allCheckbox.current.checked = false;

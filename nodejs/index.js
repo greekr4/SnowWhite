@@ -102,7 +102,7 @@ process.on("uncaughtException", (error) => {
 });
 
 let corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   // origin: "http://175.213.96.31:3000",
   credentials: true,
 };
@@ -120,10 +120,6 @@ const getConn = async () => {
 };
 
 app.use(cors(corsOptions));
-
-app.listen("3030", () => {
-  console.log("Server started");
-});
 
 app.post("/api/cate", cate);
 
@@ -234,10 +230,11 @@ app.post("/api/orderlist", auth, select_orderlist);
 
 app.post("/api/orderlist/item", auth, select_order_item);
 
-app.post("/api/upload", upload);
-
 const uploader = multer({ dest: "uploads/" });
-app.post("/api/upload_design", uploader.single("file"), upload_design);
+
+app.post("/api/upload", auth, uploader.single("file"), upload);
+
+app.post("/api/upload_design", auth, uploader.single("file"), upload_design);
 
 app.get("/api", () => {
   refreshVerify("123123", "a");
@@ -257,3 +254,7 @@ app.delete("/api/board", auth, delete_board);
 // 토스페이
 
 app.post("/api/tosspay/confirm", tosspayConfirm);
+
+app.listen("3030", () => {
+  console.log("Server started");
+});

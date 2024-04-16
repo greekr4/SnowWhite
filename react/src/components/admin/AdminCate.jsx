@@ -12,7 +12,11 @@ const AdminCate = () => {
   }, []);
 
   const getCate = async () => {
-    const Cate = (await axios.post("/api/cate", { all: true })).data;
+    const Cate = (
+      await axios.post(process.env.REACT_APP_DB_HOST + "/api/cate", {
+        all: true,
+      })
+    ).data;
     setCate(Cate);
     setCateValues(Cate.map((el) => ({ ...el })));
   };
@@ -50,10 +54,13 @@ const AdminCate = () => {
     console.log(cate_priority);
     console.log(cate_sid);
 
-    const res = await axios.post("/api/admin/cate/update_prioirty", {
-      cate_priority,
-      cate_sid,
-    });
+    const res = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/admin/cate/update_prioirty",
+      {
+        cate_priority,
+        cate_sid,
+      }
+    );
 
     alert(res.data);
     getCate();
@@ -66,32 +73,43 @@ const AdminCate = () => {
   });
 
   const toggleCateShow = async (cate_show, cate_sid) => {
-    const res = await axios.post("/api/admin/cate/update_show", {
-      cate_show: cate_show,
-      cate_sid: cate_sid,
-    });
+    const res = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/admin/cate/update_show",
+      {
+        cate_show: cate_show,
+        cate_sid: cate_sid,
+      }
+    );
 
     getCate();
   };
 
   const insert_dummy_cate = async () => {
-    const res = await axios.post("/api/admin/cate/add");
+    const res = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/admin/cate/add"
+    );
     alert(res.data);
     getCate();
   };
 
   const delete_cate = async (cate_sid) => {
-    const res = await axios.post("/api/admin/cate/del", { cate_sid: cate_sid });
+    const res = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/admin/cate/del",
+      { cate_sid: cate_sid }
+    );
     alert(res.data);
     getCate();
   };
 
   const modify_cate_nm = async (cate_sid, cate_nm) => {
     console.log(cateValues);
-    const res = await axios.patch("/api/admin/cate", {
-      cate_sid: cate_sid,
-      cate_nm: cate_nm,
-    });
+    const res = await axios.patch(
+      process.env.REACT_APP_DB_HOST + "/api/admin/cate",
+      {
+        cate_sid: cate_sid,
+        cate_nm: cate_nm,
+      }
+    );
 
     alert(res.data);
     getCate();

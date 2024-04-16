@@ -19,13 +19,27 @@ const ProductsPage = () => {
 
   const initdb = async () => {
     setProducts(
-      (await axios.post("/api/product/thumbnail", { cateid: cateid })).data
+      (
+        await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/product/thumbnail",
+          { cateid: cateid }
+        )
+      ).data
     );
     setBannerImg(
-      (await axios.post("/api/banner", { cate: "CATE", code: cateid })).data
+      (
+        await axios.post(process.env.REACT_APP_DB_HOST + "/api/banner", {
+          cate: "CATE",
+          code: cateid,
+        })
+      ).data
     );
     setReviewDatas(
-      (await axios.post("/api/review", { cate_sid: cateid })).data
+      (
+        await axios.post(process.env.REACT_APP_DB_HOST + "/api/review", {
+          cate_sid: cateid,
+        })
+      ).data
     );
   };
 

@@ -46,7 +46,13 @@ const OrderPage = () => {
     item_sids.split(",").forEach((el) => {
       params.push(el);
     });
-    setOrderItem((await axios.post("/api/order", { item_sid: params })).data);
+    setOrderItem(
+      (
+        await axios.post(process.env.REACT_APP_DB_HOST + "/api/order", {
+          item_sid: params,
+        })
+      ).data
+    );
     setUserNm(data?.USER_NM);
     setUserTel(data?.USER_TEL0);
     setUserEmail(data?.USER_ID);
@@ -123,28 +129,31 @@ const OrderPage = () => {
           optionNm += option.OPTION_NM;
         }
       });
-      const res = await axios.put("/api/order", {
-        userId: data?.USER_ID,
-        userTel: userTel,
-        userEmail: userEmail,
-        item_sids: item_sids,
-        orderAmount: parseInt(totalPrice + deliPrice),
-        orderReceiver: orderReceiver,
-        orderTel: orderTel,
-        orderPostcode: orderPostcode,
-        orderAddress: orderAddress,
-        orderAddAddress: orderAddAddress,
-        orderReq: orderReq,
-        radioValue: radioValue,
-        order_core_prod: coreNm,
-        order_core_option: optionNm,
-        orderNm: userNm,
-        pgOrderId: pgOrderId,
-        pgPaymentKey: pgPaymentKey,
-        pgPaymentType: pgPaymentType,
-        pgPaymentAmount: pgPaymentAmount,
-        orderStatus: 2,
-      });
+      const res = await axios.put(
+        process.env.REACT_APP_DB_HOST + "/api/order",
+        {
+          userId: data?.USER_ID,
+          userTel: userTel,
+          userEmail: userEmail,
+          item_sids: item_sids,
+          orderAmount: parseInt(totalPrice + deliPrice),
+          orderReceiver: orderReceiver,
+          orderTel: orderTel,
+          orderPostcode: orderPostcode,
+          orderAddress: orderAddress,
+          orderAddAddress: orderAddAddress,
+          orderReq: orderReq,
+          radioValue: radioValue,
+          order_core_prod: coreNm,
+          order_core_option: optionNm,
+          orderNm: userNm,
+          pgOrderId: pgOrderId,
+          pgPaymentKey: pgPaymentKey,
+          pgPaymentType: pgPaymentType,
+          pgPaymentAmount: pgPaymentAmount,
+          orderStatus: 2,
+        }
+      );
       return true;
     } catch (e) {
       return false;
@@ -181,7 +190,7 @@ const OrderPage = () => {
       }
     });
 
-    const res = await axios.put("/api/order", {
+    const res = await axios.put(process.env.REACT_APP_DB_HOST + "/api/order", {
       userId: data?.USER_ID,
       userTel: userTel,
       userEmail: userEmail,

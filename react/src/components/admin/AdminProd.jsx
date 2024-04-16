@@ -23,7 +23,9 @@ const AdminProd = () => {
 
   const initdb = async () => {
     try {
-      const res = await axios.post("/api/admin/prods");
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prods"
+      );
       setProds(res.data);
     } catch (e) {
       console.log(e);
@@ -32,7 +34,9 @@ const AdminProd = () => {
 
   const handleAddDummy = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/add");
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/add"
+      );
       alert(res.data);
       initdb();
     } catch (e) {
@@ -51,9 +55,12 @@ const AdminProd = () => {
     console.log(sids_ary);
 
     try {
-      const res = await axios.post("/api/admin/prod/del", {
-        prod_sids: sids_ary,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/del",
+        {
+          prod_sids: sids_ary,
+        }
+      );
       alert(res.data);
       initdb();
     } catch (e) {

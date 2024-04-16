@@ -2,7 +2,7 @@ const { getConnection, Connection } = require("../utils/dbUtils");
 
 exports.select_admin_prods = async (req, res) => {
   const qry = `
-  select
+select
   T1.*,
   T2.*,
   T3.*
@@ -393,12 +393,26 @@ exports.insert_products_dummy = async (req, res) => {
   try {
     conn = await Connection();
 
+    const cntqry = `
+    select
+      count(1) as CNT
+    from
+      TB_PRODUCT
+    `;
+
+    const res_cnt = await getConnection(cntqry);
+
+    const PROD_SID = `PROD_${parseInt(res_cnt.row[0].CNT + 1)
+      .toString()
+      .padStart(8, "0")}`;
+
     await conn.beginTransaction();
     const qry1 = `
     insert
     into
-    SNOWDB.TB_PRODUCT
+    TB_PRODUCT
   (
+    PROD_SID,
     PROD_CATECODE,
     PROD_NM,
     PROD_PRICE,
@@ -420,6 +434,7 @@ exports.insert_products_dummy = async (req, res) => {
     PROD_DELCODE
     )
   values(
+  '${PROD_SID}',
   '99999',
   '더미데이터',
   null,
@@ -442,28 +457,19 @@ exports.insert_products_dummy = async (req, res) => {
   )
   `;
     const qry2 = `
-    insert
-    into
-    TB_PRODUCT_IMAGE (PROD_SID,
+  insert
+  into
+    TB_PRODUCT_IMAGE (
+    PROD_SID,
     IMAGE_LOCATION,
     IMAGE_PRIORITY,
     IMAGE_CATE)
-  select
-    PROD_SID,
+    values(
+    '${PROD_SID}',
     '/ASSERTS/PRODUCTS/NOIMG.PNG',
     0,
     'THUMBNAIL'
-  from
-    TB_PRODUCT
-  where
-    PROD_SID not in (
-    select
-      PROD_SID
-    from
-      TB_PRODUCT_IMAGE
-    where
-      IMAGE_CATE = 'THUMBNAIL'
-      )
+    )
   `;
 
     await conn.query(qry1);

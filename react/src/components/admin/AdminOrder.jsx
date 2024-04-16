@@ -18,7 +18,9 @@ const AdminOrder = ({ openPopup }) => {
   }, []);
 
   const initdb = async () => {
-    const res = (await axios.post("/api/admin/orderlist")).data;
+    const res = (
+      await axios.post(process.env.REACT_APP_DB_HOST + "/api/admin/orderlist")
+    ).data;
 
     const initSelectedItem = Array.from({ length: res?.length }, () => false);
     setSelectedItem(initSelectedItem);
@@ -81,11 +83,14 @@ const AdminOrder = ({ openPopup }) => {
 
     console.log(order_sids);
 
-    const res = await axios.put("/api/admin/order", {
-      order_sid: order_sids,
-      field: "ORDER_STATUS",
-      order_status: value,
-    });
+    const res = await axios.put(
+      process.env.REACT_APP_DB_HOST + "/api/admin/order",
+      {
+        order_sid: order_sids,
+        field: "ORDER_STATUS",
+        order_status: value,
+      }
+    );
 
     initdb();
     allCheckbox.current.checked = false;

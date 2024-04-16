@@ -14,13 +14,16 @@ const AdminBoardForm = ({ editData, initdb }) => {
 
   const handleSend = async () => {
     if (!editData?.BOARD_EDIT) {
-      const res = await axios.post("/api/board", {
-        BOARD_TYPE: boardType,
-        BOARD_WRITER: boardWriter,
-        BOARD_TITLE: boardTitle,
-        BOARD_CONTENT: boardContent,
-        USER_ID: userId,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/board",
+        {
+          BOARD_TYPE: boardType,
+          BOARD_WRITER: boardWriter,
+          BOARD_TITLE: boardTitle,
+          BOARD_CONTENT: boardContent,
+          USER_ID: userId,
+        }
+      );
 
       if (res.status === 200) {
         alert("게시글 작성이 완료되었습니다.");
@@ -29,14 +32,17 @@ const AdminBoardForm = ({ editData, initdb }) => {
         alert("게시글 작성을 실패하였습니다.");
       }
     } else {
-      const res = await axios.put("/api/board", {
-        BOARD_TYPE: boardType,
-        BOARD_WRITER: boardWriter,
-        BOARD_TITLE: boardTitle,
-        BOARD_CONTENT: boardContent,
-        USER_ID: userId,
-        BOARD_SID: editData.BOARD_SID,
-      });
+      const res = await axios.put(
+        process.env.REACT_APP_DB_HOST + "/api/board",
+        {
+          BOARD_TYPE: boardType,
+          BOARD_WRITER: boardWriter,
+          BOARD_TITLE: boardTitle,
+          BOARD_CONTENT: boardContent,
+          USER_ID: userId,
+          BOARD_SID: editData.BOARD_SID,
+        }
+      );
 
       if (res.status === 200) {
         alert("게시글 수정이 완료되었습니다.");

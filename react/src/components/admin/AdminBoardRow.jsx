@@ -11,9 +11,12 @@ const AdminBoardRow = ({ data, initdb, setEditData }) => {
   };
 
   const handleDelete = async (BOARD_SID) => {
-    const res = await axios.delete("/api/board", {
-      data: { BOARD_SID: BOARD_SID },
-    });
+    const res = await axios.delete(
+      process.env.REACT_APP_DB_HOST + "/api/board",
+      {
+        data: { BOARD_SID: BOARD_SID },
+      }
+    );
 
     if (res.status === 200) {
       alert("게시글이 삭제되었습니다.");

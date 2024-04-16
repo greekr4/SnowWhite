@@ -25,7 +25,7 @@ const Header3 = ({ openPopup, queryClient }) => {
   const userGrade = data?.USER_GRADE;
 
   useEffect(() => {
-    // axios.post("/api/cate").then((res) => {
+    // axios.post(process.env.REACT_APP_DB_HOST + "/api/cate").then((res) => {
     //   const groupedCategories =
     //     res.data &&
     //     res.data.reduce((result, category) => {
@@ -62,8 +62,12 @@ const Header3 = ({ openPopup, queryClient }) => {
   }, []);
 
   const getCate = async () => {
-    const cateData = (await axios.post("/api/cate")).data;
-    const subcateData = (await axios.post("/api/subcate")).data;
+    const cateData = (
+      await axios.post(process.env.REACT_APP_DB_HOST + "/api/cate")
+    ).data;
+    const subcateData = (
+      await axios.post(process.env.REACT_APP_DB_HOST + "/api/subcate")
+    ).data;
     const groupCate = [];
     cateData.forEach((el) => {
       groupCate.push({ ...el, subCate: [] });

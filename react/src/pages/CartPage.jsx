@@ -63,7 +63,7 @@ const CartPage = () => {
 
   const getCart = () => {
     axios
-      .post("/api/cart", { userid: USER_ID })
+      .post(process.env.REACT_APP_DB_HOST + "/api/cart", { userid: USER_ID })
       .then((res) => {
         console.log(res);
         setCartData(res.data);
@@ -107,7 +107,7 @@ const CartPage = () => {
       }
     });
     axios
-      .post("/api/cart/del", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/cart/del", {
         cart_sid: cart_sids,
       })
       .then((res) => {

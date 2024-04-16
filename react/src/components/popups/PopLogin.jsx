@@ -30,7 +30,7 @@ const PopLogin = ({ openPopup, closePopup }) => {
 
     if (!isInputEmpty) {
       axios
-        .post("/api/login", {
+        .post(process.env.REACT_APP_DB_HOST + "/api/login", {
           userid: userid,
           userpw: userpw,
         })

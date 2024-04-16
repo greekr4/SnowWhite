@@ -18,7 +18,7 @@ const PopOrderDetail = ({ openPopup, closePopup, popupData }) => {
   const initdb = async () => {
     const item_sids = popupData.ITEMS.split(",");
     const items = (
-      await axios.post("/api/orderlist/item", {
+      await axios.post(process.env.REACT_APP_DB_HOST + "/api/orderlist/item", {
         item_sids: item_sids,
       })
     ).data;

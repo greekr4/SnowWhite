@@ -47,7 +47,7 @@ const AdminProdAdd = () => {
 
   const initdb = () => {
     axios
-      .post("/api/admin/prods/detail", {
+      .post(process.env.REACT_APP_DB_HOST + "/api/admin/prods/detail", {
         prod_sid: prod_sid,
       })
       .then((res) => {
@@ -59,7 +59,7 @@ const AdminProdAdd = () => {
       });
 
     axios
-      .post("/api/cate")
+      .post(process.env.REACT_APP_DB_HOST + "/api/cate")
       .then((res) => {
         setCate(res.data);
       })
@@ -68,7 +68,7 @@ const AdminProdAdd = () => {
       });
 
     axios
-      .post("/api/admin/options")
+      .post(process.env.REACT_APP_DB_HOST + "/api/admin/options")
       .then((res) => {
         setOptions(res.data);
       })
@@ -77,7 +77,7 @@ const AdminProdAdd = () => {
       });
 
     axios
-      .post("/api/product/images", { prod_sid: prod_sid })
+      .post(process.env.REACT_APP_DB_HOST + "/api/product/images", { prod_sid: prod_sid })
       .then((res) => {
         setImages(res.data);
       })
@@ -103,7 +103,7 @@ const AdminProdAdd = () => {
     setSelectedOption(initialSelectedOptions);
 
     axios
-      .post("/api/admin/prodoptions", { prod_sid: prod_sid })
+      .post(process.env.REACT_APP_DB_HOST + "/api/admin/prodoptions", { prod_sid: prod_sid })
       .then((res) => {
         const initChecked = [...selectedOption];
 
@@ -158,10 +158,13 @@ const AdminProdAdd = () => {
 
   const handleSetCate = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/update_cate", {
-        prod_sid: prod?.PROD_SID,
-        prod_catecode: parseInt(inputCate),
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_cate",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_catecode: parseInt(inputCate),
+        }
+      );
       alert(res.data);
     } catch (e) {
       console.log(e);
@@ -170,10 +173,13 @@ const AdminProdAdd = () => {
 
   const handleSetPriority = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/update_priority", {
-        prod_sid: prod?.PROD_SID,
-        prod_priority: parseInt(inputPriority),
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_priority",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_priority: parseInt(inputPriority),
+        }
+      );
       alert(res.data);
     } catch (e) {
       console.log(e);
@@ -182,10 +188,13 @@ const AdminProdAdd = () => {
 
   const handleSetProdNm = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/update_nm", {
-        prod_sid: prod?.PROD_SID,
-        prod_nm: inputProdNm,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_nm",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_nm: inputProdNm,
+        }
+      );
       alert(res.data);
       initdb();
     } catch (e) {
@@ -203,13 +212,19 @@ const AdminProdAdd = () => {
       const formData = new FormData();
       formData.append("img", file);
       try {
-        const result = await axios.post("/api/upload", formData);
+        const result = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/upload",
+          formData
+        );
         const IMG_URL = result.data;
 
-        const res = await axios.post("/api/admin/prod/update_thumnail", {
-          prod_sid: prod_sid,
-          image_location: IMG_URL,
-        });
+        const res = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_thumnail",
+          {
+            prod_sid: prod_sid,
+            image_location: IMG_URL,
+          }
+        );
 
         alert(res.data);
         initdb();
@@ -221,10 +236,13 @@ const AdminProdAdd = () => {
 
   const handleSetProdDesc = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/update_desc", {
-        prod_sid: prod?.PROD_SID,
-        prod_desc: inputProdDesc,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_desc",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_desc: inputProdDesc,
+        }
+      );
       alert(res.data);
       initdb();
     } catch (e) {
@@ -234,10 +252,13 @@ const AdminProdAdd = () => {
 
   const handleSetProdDetail = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/update_detail", {
-        prod_sid: prod?.PROD_SID,
-        prod_detail: inputProdDetail,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_detail",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_detail: inputProdDetail,
+        }
+      );
       alert(res.data);
     } catch (e) {
       console.log(e);
@@ -246,10 +267,13 @@ const AdminProdAdd = () => {
 
   const handleSetProdNoti = async () => {
     try {
-      const res = await axios.post("/api/admin/prod/update_noti", {
-        prod_sid: prod?.PROD_SID,
-        prod_noti: inputProdNoti,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_noti",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_noti: inputProdNoti,
+        }
+      );
       alert(res.data);
     } catch (e) {
       console.log(e);
@@ -263,12 +287,15 @@ const AdminProdAdd = () => {
     }
 
     try {
-      const res = await axios.post("/api/admin/prod/update_price", {
-        prod_sid: prod?.PROD_SID,
-        prod_price: inputProdPrice,
-        prod_unit: inputProdUnit,
-        prod_quantity: inputProdQuantity,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_price",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_price: inputProdPrice,
+          prod_unit: inputProdUnit,
+          prod_quantity: inputProdQuantity,
+        }
+      );
       alert(res.data);
     } catch (e) {
       console.log(e);
@@ -278,10 +305,13 @@ const AdminProdAdd = () => {
   const handleSetContent = async () => {
     console.log(prodContent);
     try {
-      const res = await axios.post("/api/admin/prod/update_content", {
-        prod_sid: prod?.PROD_SID,
-        prod_content: prodContent,
-      });
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/update_content",
+        {
+          prod_sid: prod?.PROD_SID,
+          prod_content: prodContent,
+        }
+      );
       alert(res.data);
     } catch (e) {
       console.log(e);
@@ -666,7 +696,7 @@ const AdminProdAdd = () => {
                       });
                       console.log(options_ary);
                       try {
-                        const res = await axios.post(
+                        const res = await axios.post(process.env.REACT_APP_DB_HOST + 
                           "/api/admin/prod/update_options",
                           {
                             prod_sid: prod_sid,
@@ -738,7 +768,7 @@ const AdminProdAdd = () => {
                           <S.Btn
                             onClick={() => {
                               axios
-                                .post("/api/admin/prodimages/delete", {
+                                .post(process.env.REACT_APP_DB_HOST + "/api/admin/prodimages/delete", {
                                   prod_sid: prod_sid,
                                   image_location: el.IMAGE_LOCATION,
                                   image_priority: el.IMAGE_PRIORITY,
@@ -771,14 +801,14 @@ const AdminProdAdd = () => {
                           const formData = new FormData();
                           formData.append("img", file);
                           try {
-                            const result = await axios.post(
+                            const result = await axios.post(process.env.REACT_APP_DB_HOST + 
                               "/api/upload",
                               formData
                             );
                             const IMG_URL = result.data;
 
                             axios
-                              .post("/api/admin/prodimages/add", {
+                              .post(process.env.REACT_APP_DB_HOST + "/api/admin/prodimages/add", {
                                 prod_sid: prod_sid,
                                 image_location: IMG_URL,
                               })

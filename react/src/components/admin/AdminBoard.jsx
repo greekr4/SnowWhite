@@ -14,7 +14,7 @@ const AdminBoard = () => {
   }, []);
 
   const initdb = async () => {
-    const res = await axios.get("/api/board", {
+    const res = await axios.get(process.env.REACT_APP_DB_HOST + "/api/board", {
       params: {
         type: "NOTICE",
       },

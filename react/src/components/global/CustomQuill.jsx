@@ -18,7 +18,10 @@ const CustomQuill = ({ initContent, setContent }) => {
       const formData = new FormData();
       formData.append("img", file);
       try {
-        const result = await axios.post("/api/upload", formData);
+        const result = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/upload",
+          formData
+        );
         console.log("성공 시, 백엔드가 보내주는 데이터", result.data);
         const IMG_URL = result.data;
         const editor = quillRef.current.getEditor();

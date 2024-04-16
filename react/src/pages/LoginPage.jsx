@@ -34,7 +34,7 @@ const LoginPage = () => {
     console.log(inputId);
     console.log(inputPw);
     axios
-      .post("api/login", null, {
+      .post(process.env.REACT_APP_DB_HOST + "api/login", null, {
         params: { userid: inputId, userpw: inputPw },
         withCredentials: true,
       })

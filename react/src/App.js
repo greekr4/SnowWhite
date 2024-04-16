@@ -106,7 +106,7 @@ function App({ queryClient }) {
             <Route path="/products/:cateid" element={<ProductsPage />} />
             <Route
               path="/products/detail/:prod_sid"
-              element={<ProductDetailPage />}
+              element={<ProductDetailPage openPopup={openPopup} />}
             />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/order/:item_sids" element={<OrderPage />} />

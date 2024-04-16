@@ -45,7 +45,7 @@ const OrderListPage = ({ openPopup }) => {
   const initdb = async () => {
     if (data?.USER_ID) {
       const updated = (
-        await axios.post("/api/orderlist", {
+        await axios.post(process.env.REACT_APP_DB_HOST + "/api/orderlist", {
           userid: data?.USER_ID,
         })
       ).data;
@@ -55,7 +55,7 @@ const OrderListPage = ({ openPopup }) => {
       //     const item_ary = el.ITEM_SIDS.split(",");
 
       //     updated[index].ITEMS = (
-      //       await axios.post("/api/orderlist/item", {
+      //       await axios.post(process.env.REACT_APP_DB_HOST + "/api/orderlist/item", {
       //         item_sids: item_ary,
       //       })
       //     ).data;

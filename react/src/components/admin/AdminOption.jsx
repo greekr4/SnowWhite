@@ -21,7 +21,9 @@ const AdminOption = ({ openPopup }) => {
   }, [options]);
 
   const initdb = async () => {
-    const initdata = (await axios.post("/api/admin/options")).data;
+    const initdata = (
+      await axios.post(process.env.REACT_APP_DB_HOST + "/api/admin/options")
+    ).data;
     setInitOptions(initdata);
     setOptions(initdata);
 
@@ -36,9 +38,12 @@ const AdminOption = ({ openPopup }) => {
     optionSid.split(",").map((el, index) => {
       OPTION_SIDS.push(el);
     });
-    const res = await axios.delete("/api/admin/option", {
-      data: { OPTION_SID: OPTION_SIDS },
-    });
+    const res = await axios.delete(
+      process.env.REACT_APP_DB_HOST + "/api/admin/option",
+      {
+        data: { OPTION_SID: OPTION_SIDS },
+      }
+    );
 
     if (res.status === 200) {
       alert("옵션을 삭제했습니다.");
@@ -56,9 +61,12 @@ const AdminOption = ({ openPopup }) => {
         OPTION_SIDS.push(options[index].OPTION_SID);
       }
     });
-    const res = await axios.delete("/api/admin/option", {
-      data: { OPTION_SID: OPTION_SIDS },
-    });
+    const res = await axios.delete(
+      process.env.REACT_APP_DB_HOST + "/api/admin/option",
+      {
+        data: { OPTION_SID: OPTION_SIDS },
+      }
+    );
 
     if (res.status === 200) {
       alert("옵션을 삭제했습니다.");
