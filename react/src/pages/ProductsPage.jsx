@@ -10,7 +10,7 @@ import close from "../assets/icons/close.png";
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [bannerImg, setBannerImg] = useState();
-  const [reviewDatas, setReviewDatas] = useState([]);
+  const [reviewData, setReviewData] = useState([]);
   const { cateid } = useParams();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const ProductsPage = () => {
         })
       ).data
     );
-    setReviewDatas(
+    setReviewData(
       (
         await axios.post(process.env.REACT_APP_DB_HOST + "/api/review", {
           cate_sid: cateid,
@@ -69,7 +69,7 @@ const ProductsPage = () => {
       <S.MainSection bgc="#f9fafc">
         <S.ProductReviewWrapper>
           <h1>고객 리뷰</h1>
-          <ReviewBoard reviewDatas={reviewDatas} />
+          <ReviewBoard reviewData={reviewData} />
         </S.ProductReviewWrapper>
       </S.MainSection>
     </S.MainLayout>

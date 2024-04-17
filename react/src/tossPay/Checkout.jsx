@@ -66,8 +66,10 @@ export function CheckoutPage({
       }),
     });
 
-    console.log(response);
     if (response.ok) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -110,18 +112,28 @@ export function CheckoutPage({
                     //   "/tosspay/fail" +
                     //   window.location.search,
                   })
-                  .then((res) => {
-                    confirmPayment(res.paymentKey, res.orderId, res.amount);
-                    insertPgOrder(
-                      res.orderId,
+                  .then(async (res) => {
+                    const confirm = await confirmPayment(
                       res.paymentKey,
-                      res.paymentType,
+                      res.orderId,
                       res.amount
                     );
-                    window.location.href = "/orderlist";
+
+                    if (confirm) {
+                      insertPgOrder(
+                        res.orderId,
+                        res.paymentKey,
+                        res.paymentType,
+                        res.amount
+                      );
+                      window.location.href = "/orderlist";
+                    } else {
+                      alert("결제를 실패하였습니다.");
+                    }
                   });
               } catch (error) {
                 // TODO: 에러 처리
+                alert("결제를 실패하였습니다.");
               }
             }}
           >

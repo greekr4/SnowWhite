@@ -118,14 +118,14 @@ const Header3 = ({ openPopup, queryClient }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const maxheight = document.body.offsetHeight;
-    if (maxheight > 1100 && scrollPositon > 70) {
-      setIsFixed(true);
-    } else {
-      setIsFixed(false);
-    }
-  }, [scrollPositon]);
+  // useEffect(() => {
+  //   const maxheight = document.body.offsetHeight;
+  //   if (maxheight > 1100 && scrollPositon > 70) {
+  //     setIsFixed(true);
+  //   } else {
+  //     setIsFixed(false);
+  //   }
+  // }, [scrollPositon]);
 
   const submenus = {
     mymenu: [
@@ -137,9 +137,9 @@ const Header3 = ({ openPopup, queryClient }) => {
   return (
     <S.HeaderLayout>
       {/* 배너 */}
-      <S.HeaderBannerWrapper img={bannerBg}>
+      {/* <S.HeaderBannerWrapper img={bannerBg}>
         <S.HeaderBannerBox></S.HeaderBannerBox>
-      </S.HeaderBannerWrapper>
+      </S.HeaderBannerWrapper> */}
       {/* gnb */}
       <S.HeaderGnbWrapper className={isFixed ? "fix" : ""}>
         <S.HeaderGnbRows>
@@ -187,13 +187,17 @@ const Header3 = ({ openPopup, queryClient }) => {
                           ? [
                               { CATE_NM: "마이페이지", CATE_LINK: "/mypage" },
                               { CATE_NM: "장바구니", CATE_LINK: "/cart" },
-                              { CATE_NM: "주문 내역", CATE_LINK: "/orderlist" },
+                              { CATE_NM: "주문내역", CATE_LINK: "/orderlist" },
+                              { CATE_NM: "문의사항", CATE_LINK: "/cs" },
+                              { CATE_NM: "공지사항", CATE_LINK: "/notice" },
                               { CATE_NM: "어드민", CATE_LINK: "/admin" },
                             ]
                           : [
                               { CATE_NM: "마이페이지", CATE_LINK: "/mypage" },
                               { CATE_NM: "장바구니", CATE_LINK: "/cart" },
-                              { CATE_NM: "주문 내역", CATE_LINK: "/orderlist" },
+                              { CATE_NM: "주문내역", CATE_LINK: "/orderlist" },
+                              { CATE_NM: "문의사항", CATE_LINK: "/cs" },
+                              { CATE_NM: "공지사항", CATE_LINK: "/notice" },
                             ]
                       }
                     />

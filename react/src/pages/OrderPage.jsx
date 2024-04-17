@@ -39,6 +39,7 @@ const OrderPage = () => {
 
   useEffect(() => {
     initdb();
+    console.log("orderITEM", orderItem);
   }, [data]);
 
   const initdb = async () => {
@@ -53,6 +54,7 @@ const OrderPage = () => {
         })
       ).data
     );
+
     setUserNm(data?.USER_NM);
     setUserTel(data?.USER_TEL0);
     setUserEmail(data?.USER_ID);
@@ -152,6 +154,7 @@ const OrderPage = () => {
           pgPaymentType: pgPaymentType,
           pgPaymentAmount: pgPaymentAmount,
           orderStatus: 2,
+          ORDER_CORE_PROD_SID: orderItem[0].PROD_SID,
         }
       );
       return true;
@@ -207,6 +210,7 @@ const OrderPage = () => {
       order_core_option: optionNm,
       orderNm: userNm,
       orderStatus: 1,
+      ORDER_CORE_PROD_SID: orderItem[0].PROD_SID,
     });
 
     if (res.status === 200) {

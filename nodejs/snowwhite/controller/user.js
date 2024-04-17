@@ -378,6 +378,7 @@ exports.insert_order = async (req, res) => {
     pgPaymentType,
     pgPaymentAmount,
     orderStatus,
+    ORDER_CORE_PROD_SID,
   } = req.body;
 
   const item_sids_array = item_sids.split(",");
@@ -428,7 +429,8 @@ where
   PG_ORDERID,
   PG_PAYMENT_KEY,
   PG_PAYMENT_TYPE,
-  PG_PAYMENT_AMOUNT
+  PG_PAYMENT_AMOUNT,
+  ORDER_CORE_PROD_SID
   ${orderStatus === 2 ? `,ORDER_PAYMENT_DATE` : ""}
   )
 values(
@@ -453,7 +455,8 @@ null,
 '${pgOrderId}',
 '${pgPaymentKey}',
 '${pgPaymentType}',
-'${pgPaymentAmount}'
+'${pgPaymentAmount}',
+'${ORDER_CORE_PROD_SID}'
 ${orderStatus === 2 ? `,NOW()` : ""}
 )
   `;
@@ -545,7 +548,23 @@ order by ITEM_REGDATE DESC
 
   const res_data = await getConnection(qry, [item_sids]);
   if (res_data.state === false) return res.status(401).send("DB Error.");
-  console.log(res_data);
-  console.log(qry);
   return res.status(200).send(res_data.row);
+};
+
+exports.select_mypage_info = async (req, res) => {
+  const userid = req.query.userid;
+
+  const qry = `
+SELECT
+  (SELECT COUNT(*) FROM TB_ORDER WHERE ORDER_STATUS  BETWEEN 1 AND 5 AND USER_ID = '${userid}') AS TOTAL_CNT,
+  (SELECT COUNT(*) FROM TB_ORDER WHERE ORDER_STATUS = 1 AND USER_ID = '${userid}') AS CNT1,
+  (SELECT COUNT(*) FROM TB_ORDER WHERE ORDER_STATUS = 2 AND USER_ID = '${userid}') AS CNT2,
+  (SELECT COUNT(*) FROM TB_ORDER WHERE ORDER_STATUS = 3 AND USER_ID = '${userid}') AS CNT3,
+  (SELECT COUNT(*) FROM TB_ORDER WHERE ORDER_STATUS = 4 AND USER_ID = '${userid}') AS CNT4,
+  (SELECT COUNT(*) FROM TB_ORDER WHERE ORDER_STATUS = 5 AND USER_ID = '${userid}') AS CNT5  
+  `;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row[0]);
 };

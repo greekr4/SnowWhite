@@ -1,25 +1,33 @@
 import React, { useEffect, useState } from "react";
 import * as S from "../../styles/new_styles";
-import ReviewItem from "./ReviewItem";
+import { useSpring } from "react-spring";
+import NoticeDetail from "./NoticeDetail";
+import axios from "axios";
 import Pagination from "react-js-pagination";
+import styled from "styled-components";
 import arrow_left from "../../assets/icons/arrow_left.png";
 import arrow_right from "../../assets/icons/arrow_right.png";
 
-const ReviewBoard = ({ reviewData }) => {
-  const [initReviewData, setInitReviewData] = useState([]);
-  const [ReviewData, setReviewData] = useState([]);
+const GlobalBoard = ({ boardType }) => {
+  const [initBoardData, setInitBoardData] = useState();
+  const [boardData, setBoardData] = useState();
+  useEffect(() => {
+    initdb();
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [countPerPage, setCountPerPage] = useState(10);
 
-  useEffect(() => {
-    console.log(reviewData);
-    reviewData?.length
-      ? setInitReviewData([...reviewData])
-      : setInitReviewData([]);
-    reviewData?.length
-      ? setReviewData(reviewData.slice(0, countPerPage))
-      : setReviewData([]);
-  }, [reviewData]);
+  const initdb = async () => {
+    const res = await axios.get(process.env.REACT_APP_DB_HOST + "/api/board", {
+      params: {
+        type: boardType,
+      },
+    });
+
+    setInitBoardData(res.data);
+    setBoardData(res.data.slice(0, countPerPage));
+  };
 
   function getPageItems(array, page, pageSize) {
     // 페이지 인덱스 계산
@@ -33,33 +41,33 @@ const ReviewBoard = ({ reviewData }) => {
 
   const handlePageChange = (e) => {
     setCurrentPage(e);
-    const pageItems = getPageItems(initReviewData, e, countPerPage);
-    setReviewData(pageItems);
+    const pageItems = getPageItems(initBoardData, e, countPerPage);
+    setBoardData(pageItems);
   };
+
   return (
-    <S.BoardBox>
-      <S.BoardCateBox>
-        {/* <S.BoardCateBtn className="selected"> */}
-        <p>전체 리뷰 {(initReviewData?.length).toLocaleString("ko-kr")} 건</p>
-        {/* </S.BoardCateBtn> */}
-      </S.BoardCateBox>
-      <S.BoardContentBox>
-        <S.BoardContentList>
-          {ReviewData?.length > 0 ? (
-            ReviewData?.map((el, index) => <ReviewItem reviewData={el} />)
-          ) : (
-            <h1
-              style={{
-                fontSize: "1.5rem",
-                textAlign: "center",
-                padding: "2em",
-              }}
-            >
-              아직 리뷰가 없습니다.
-            </h1>
-          )}
-        </S.BoardContentList>
-      </S.BoardContentBox>
+    <S.NBBox>
+      <S.NBHeader>
+        {/* {data.header.map((item, index) => (
+          <S.NBTh width={item.width}>{item.text}</S.NBTh>
+        ))} */}
+        <S.NBTh width={"10%"}>번호</S.NBTh>
+        <S.NBTh width={"60%"}>제목</S.NBTh>
+        <S.NBTh width={"15%"}>작성자</S.NBTh>
+        <S.NBTh width={"15%"}>작성일</S.NBTh>
+      </S.NBHeader>
+      {boardData?.length ? (
+        boardData?.map((item, index) => (
+          <NoticeDetail item={item} index={index} />
+        ))
+      ) : (
+        <S.NBRow>
+          <S.NBTdBox>
+            <S.NBTd colSpan={"100%"}>게시글이 없습니다.</S.NBTd>
+          </S.NBTdBox>
+        </S.NBRow>
+      )}
+
       <S.PaginationBox>
         <Pagination
           // 현제 보고있는 페이지
@@ -67,7 +75,7 @@ const ReviewBoard = ({ reviewData }) => {
           // 한페이지에 출력할 아이템수
           itemsCountPerPage={countPerPage}
           // 총 아이템수
-          totalItemsCount={initReviewData?.length}
+          totalItemsCount={initBoardData?.length}
           // 표시할 페이지수
           pageRangeDisplayed={10}
           // 마지막 버튼 숨기기
@@ -93,8 +101,8 @@ const ReviewBoard = ({ reviewData }) => {
           onChange={handlePageChange}
         />
       </S.PaginationBox>
-    </S.BoardBox>
+    </S.NBBox>
   );
 };
 
-export default ReviewBoard;
+export default GlobalBoard;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "../styles/new_styles";
 import { QueryClient, useQuery } from "react-query";
 import axios from "axios";
@@ -50,6 +50,13 @@ const MyPage = ({ queryClient }) => {
   const [inputUserTel1_0, setInputUserTel1_0] = useState();
   const [inputUserTel1_1, setInputUserTel1_1] = useState();
   const [inputUserTel1_2, setInputUserTel1_2] = useState();
+
+  //info (주문 상품 수 등)
+
+  const [mypageInfo, setMypageInfo] = useState([]);
+
+  const editFormRef = useRef(null);
+  const deliFormRef = useRef(null);
 
   const SlideDown = useSpring({
     height: userEditVisible ? "300px" : "0px",
@@ -217,19 +224,10 @@ const MyPage = ({ queryClient }) => {
   };
 
   const getDelis = () => {
-    const token = cookies.get("token");
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: token,
-    };
     axios
-      .post(
-        "/api/delivery",
-        {
-          userid: USER_ID,
-        },
-        { headers: headers }
-      )
+      .post(process.env.REACT_APP_DB_HOST + "/api/delivery", {
+        userid: USER_ID,
+      })
       .then((res) => {
         setDelis(res.data);
       })
@@ -248,7 +246,21 @@ const MyPage = ({ queryClient }) => {
     setInputUserTel1_0(USER_TEL1.split("-")[0]);
     setInputUserTel1_1(USER_TEL1.split("-")[1]);
     setInputUserTel1_2(USER_TEL1.split("-")[2]);
+    initdb();
+    console.log(mypageInfo);
   }, [data]);
+
+  const initdb = async () => {
+    setMypageInfo(
+      (
+        await axios.get(process.env.REACT_APP_DB_HOST + "/api/mypage/info", {
+          params: {
+            userid: USER_ID,
+          },
+        })
+      ).data
+    );
+  };
 
   useEffect(() => {
     const initialSelectedDelis = Array.from(
@@ -274,9 +286,27 @@ const MyPage = ({ queryClient }) => {
                 </S.MyPageUserInfoTextBox>
               </S.MyPageUserInfoBox>
               <S.MyPageUserBtnBox>
-                <S.Btn>회원 등급</S.Btn>
-                <S.Btn>정보 수정</S.Btn>
-                <S.Btn>배송지 관리</S.Btn>
+                {/* <S.Btn>회원 등급</S.Btn> */}
+                <S.Btn
+                  onClick={() => {
+                    window.scrollTo({
+                      top: editFormRef.current.offsetTop,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  정보 수정
+                </S.Btn>
+                <S.Btn
+                  onClick={() => {
+                    window.scrollTo({
+                      top: deliFormRef.current.offsetTop,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  배송지 관리
+                </S.Btn>
               </S.MyPageUserBtnBox>
             </S.MyPageTopLeft>
             <S.MyPageTopRight>
@@ -288,7 +318,7 @@ const MyPage = ({ queryClient }) => {
                 </S.MyPageCardItem>
                 <S.MyPageCardItem>
                   <h1>쿠폰</h1>
-                  <h4>1</h4>
+                  <h4>0</h4>
                   <h5>0</h5>
                 </S.MyPageCardItem>
               </S.MyPageCardBox>
@@ -300,44 +330,56 @@ const MyPage = ({ queryClient }) => {
         <S.MyPageStateWrapper>
           <S.MyPageStateTitleBox>
             <h1>진행중인 주문</h1>
-            <p>* 발송완료는 최근 7일 이내 발송완료된 주문건수입니다.</p>
+            <p>* 시안 확인 및 배송 준비 과정은 최대 2일~5일 소요됩니다.</p>
           </S.MyPageStateTitleBox>
-          <S.MyPageStateCellBox>
+          <S.MyPageStateCellBox
+            onClick={() => {
+              window.location.href = "/orderlist";
+            }}
+          >
             <h1>주문 상품</h1>
             <S.MyPageStateCellList>
               <S.MyPageStateCellItem>
-                <h1>주문접수</h1>
-                <p>2</p>
+                <h1>총 주문</h1>
+                <p>{mypageInfo?.TOTAL_CNT}</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>결제대기</h1>
-                <p>0</p>
+                <p>{mypageInfo?.CNT1}</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
                 <h1>결제완료</h1>
-                <p>2</p>
+                <p>{mypageInfo?.CNT2}</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
-                <h1>시안확인중</h1>
-                <p>1</p>
+                <h1>배송준비중</h1>
+                <p>{mypageInfo?.CNT3}</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
-                <h1>제작진행</h1>
-                <p>1</p>
+                <h1>배송중</h1>
+                <p>{mypageInfo?.CNT4}</p>
               </S.MyPageStateCellItem>
               <S.MyPageStateCellItem>
-                <h1>발송완료</h1>
-                <p>3</p>
+                <h1>배송완료</h1>
+                <p>{mypageInfo?.CNT5}</p>
               </S.MyPageStateCellItem>
             </S.MyPageStateCellList>
           </S.MyPageStateCellBox>
           <S.MyPageStateCellBox>
             <S.MyPageStateCardList>
-              <S.MyPageStateCardItem>
+              <S.MyPageStateCardItem
+                onClick={() => {
+                  window.location.href = "/cart";
+                }}
+              >
                 <h1>장바구니</h1>
                 <p>2건</p>
               </S.MyPageStateCardItem>
-              <S.MyPageStateCardItem>
+              <S.MyPageStateCardItem
+                onClick={() => {
+                  window.location.href = "/orderlist";
+                }}
+              >
                 <h1>주문진행</h1>
                 <p>1건</p>
               </S.MyPageStateCardItem>
@@ -355,7 +397,7 @@ const MyPage = ({ queryClient }) => {
       </S.MainSection>
       <S.MainSection>
         <S.MyPageStateEditWrapper>
-          <S.MyPageStateEditBox>
+          <S.MyPageStateEditBox ref={editFormRef}>
             <h1>회원정보수정</h1>
             <S.userEditAnimated style={SlideDown}>
               <table>
@@ -527,7 +569,7 @@ const MyPage = ({ queryClient }) => {
               </S.MyPagePasswordWrapper>
             )}
           </S.MyPageStateEditBox>
-          <S.MyPageStateEditDeliveryBox>
+          <S.MyPageStateEditDeliveryBox ref={deliFormRef}>
             <h1>배송지 관리</h1>
             <table>
               <thead>
@@ -602,7 +644,7 @@ const MyPage = ({ queryClient }) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5}>배송지를 추가해주세요.</td>
+                    <td colSpan={"100%"}>배송지를 추가해주세요.</td>
                   </tr>
                 )}
               </tbody>
@@ -637,7 +679,7 @@ const MyPage = ({ queryClient }) => {
                     )
                     .then((res) => {
                       queryClient.refetchQueries("userinfo");
-                      alert("성공");
+                      alert("기본 배송지로 설정되었습니다.");
                     })
                     .catch((error) => {
                       console.log(error);

@@ -33,6 +33,7 @@ const {
   insert_order,
   select_orderlist,
   select_order_item,
+  select_mypage_info,
 } = require("./snowwhite/controller/user");
 const { cate, subcate } = require("./snowwhite/controller/menu");
 const {
@@ -254,6 +255,10 @@ app.delete("/api/board", auth, delete_board);
 // 토스페이
 
 app.post("/api/tosspay/confirm", tosspayConfirm);
+
+//mypage
+
+app.get("/api/mypage/info", auth, select_mypage_info);
 
 app.listen("3030", () => {
   console.log("Server started");

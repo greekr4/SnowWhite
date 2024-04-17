@@ -8,15 +8,19 @@ import AdminBoardForm from "./AdminBoardForm";
 const AdminBoard = () => {
   const [boardData, setBoardData] = useState();
   const [editData, setEditData] = useState();
-
+  const [boardType, setBoardType] = useState("NOTICE");
   useEffect(() => {
     initdb();
   }, []);
 
+  useEffect(() => {
+    initdb();
+  }, [boardType]);
+
   const initdb = async () => {
     const res = await axios.get(process.env.REACT_APP_DB_HOST + "/api/board", {
       params: {
-        type: "NOTICE",
+        type: boardType,
       },
     });
     setBoardData(res.data);
@@ -27,6 +31,14 @@ const AdminBoard = () => {
       <S.MainLayout>
         <S.AdminWrapper>
           게시판 관리
+          <select
+            onChange={(e) => {
+              setBoardType(e.target.value);
+            }}
+          >
+            <option value={"NOTICE"}>공지사항</option>
+            <option value={"CS"}>고객문의</option>
+          </select>
           <S.Btn
             onClick={() => {
               setEditData({ BOARD_EDIT: false });

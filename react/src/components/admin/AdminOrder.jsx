@@ -123,7 +123,7 @@ const AdminOrder = ({ openPopup }) => {
             <span className="number">{initOrderlist.length}</span>
           </div>
           <div onClick={() => statusFillter(1)}>
-            <span className="title">신규주문</span>
+            <span className="title">결제대기</span>
             <span className="number">
               {initOrderlist.filter((el) => el.ORDER_STATUS === 1).length}
             </span>

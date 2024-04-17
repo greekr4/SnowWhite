@@ -1,6 +1,6 @@
 import React from "react";
 import * as S from "../styles/new_styles";
-import NoticeBoard from "../components/board/NoticeBoard";
+import GlobalBoard from "../components/board/GlobalBoard";
 
 const NoticePage = () => {
   return (
@@ -12,7 +12,7 @@ const NoticePage = () => {
             <p>스노우화이트의 공지사항 입니다.</p>
           </S.CartTopTitleBox>
           <S.NoticeBoardBox>
-            <NoticeBoard />
+            <GlobalBoard boardType={"NOTICE"} />
           </S.NoticeBoardBox>
         </S.NoticeWrapper>
       </S.MainSection>

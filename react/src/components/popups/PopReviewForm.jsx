@@ -93,12 +93,7 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
                   color: "#777",
                 }}
               >
-                {popupData?.ITEM_OPTION.map((option, index) => (
-                  <>
-                    {option.OPTION_CATE} - {option.OPTION_NM}
-                    {index != popupData.ITEM_OPTION.length - 1 && " / "}
-                  </>
-                ))}
+                {popupData?.ITEM_OPTION}
               </p>
               <div>
                 <S.StarChanging

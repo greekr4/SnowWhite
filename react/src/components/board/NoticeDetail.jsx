@@ -26,7 +26,8 @@ const NoticeDetail = ({ item, index }) => {
     <S.NBRow>
       <S.NBTdBox onClick={toggleVisible}>
         <S.NBTd style={{ width: "10%" }}>{item.ROWNUM}</S.NBTd>
-        <S.NBTd style={{ width: "65%" }}>{item.BOARD_TITLE}</S.NBTd>
+        <S.NBTd style={{ width: "60%" }}>{item.BOARD_TITLE}</S.NBTd>
+        <S.NBTd style={{ width: "15%" }}>{item.BOARD_WRITER}</S.NBTd>
         <S.NBTd style={{ width: "15%" }}>
           {formatDate(item.BOARD_REGDATE)}
         </S.NBTd>

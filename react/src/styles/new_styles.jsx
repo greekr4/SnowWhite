@@ -887,9 +887,13 @@ export const ProductReviewWrapper = styled.div`
  */
 
 export const BoardBox = styled.div``;
-export const BoardCateBox = styled.div``;
+export const BoardCateBox = styled.div`
+  & p {
+    font-size: 0.75rem;
+  }
+`;
 export const BoardCateBtn = styled.button`
-  color: #999;
+  /* color: #999;
   &::after {
     content: "|";
     margin-left: 0.5rem;
@@ -901,7 +905,7 @@ export const BoardCateBtn = styled.button`
 
   &.selected {
     color: #333;
-  }
+  } */
 `;
 export const BoardContentBox = styled.div`
   border-top: 1px solid #333;
@@ -1900,7 +1904,10 @@ export const MyPageStateCellItem = styled.div`
   margin-right: 0;
   padding-right: 1rem;
   border-right: 1px solid #ccc;
-
+  cursor: pointer;
+  &:last-child {
+    border: none;
+  }
   & h1 {
     font-size: 1em;
     color: #777;
@@ -1916,7 +1923,6 @@ export const MyPageStateCellItem = styled.div`
       height: 12px;
       margin-left: 0.5rem;
     }
-    cursor: pointer;
   }
 
   & p {
@@ -1936,6 +1942,7 @@ export const MyPageStateCardItem = styled.div`
   background-color: #ebf2ff;
   margin: 1rem;
   padding: 1.5rem;
+  cursor: pointer;
 
   & h1 {
     font-size: 1em;
@@ -2417,6 +2424,59 @@ export const NBDetail = styled.div`
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   margin-left: 10%;
+`;
+
+export const PaginationBox = styled.div`
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin: 1.5em 0 1.5em 0;
+    color: #6b7684;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  ul.pagination li {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #e2e2e2;
+    border-radius: 100%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    margin-right: 0.25em;
+  }
+  ul.pagination li:hover {
+    border: 1px solid #e2f1ff;
+    background-color: #e2f1ff;
+    border-radius: 100%;
+  }
+  ul.pagination li:first-child {
+    border-radius: 5px 0 0 5px;
+  }
+  ul.pagination li:last-child {
+    border-radius: 0 5px 5px 0;
+  }
+  ul.pagination li a {
+    text-decoration: none;
+    /* color: #337ab7; */
+    font-size: 1rem;
+  }
+  ul.pagination li.active a {
+    /* color: white; */
+  }
+  ul.pagination li.active {
+    border: 1px solid #d5ebff;
+    background-color: #d5ebff;
+    border-radius: 100%;
+  }
+  ul.pagination li a:hover,
+  ul.pagination li a.active {
+    /* color: blue; */
+  }
 `;
 
 /**

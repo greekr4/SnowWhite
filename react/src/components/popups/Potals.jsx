@@ -51,7 +51,7 @@ const ModalPortal = ({
         <PopFindPw openPopup={openPopup} closePopup={closePopup} />,
         el
       );
-    case "review_form":
+    case "reviewForm":
       return ReactDOM.createPortal(
         <PopReviewForm closePopup={closePopup} popupData={popupData} />,
         el
