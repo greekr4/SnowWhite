@@ -34,7 +34,6 @@ const GlobalBoard = ({ boardType }) => {
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
-    console.log(page, startIndex, endIndex);
     // 배열에서 해당 페이지의 요소를 추출하여 반환
     return array.slice(startIndex, endIndex);
   }
@@ -81,22 +80,8 @@ const GlobalBoard = ({ boardType }) => {
           // 마지막 버튼 숨기기
           hideFirstLastPages={true}
           // 버튼 커스텀
-          prevPageText={
-            <S.Glob_Icon
-              icon={arrow_left}
-              width="16px"
-              height="16px"
-              margin="3px 0 0 0"
-            />
-          }
-          nextPageText={
-            <S.Glob_Icon
-              icon={arrow_right}
-              width="16px"
-              height="16px"
-              margin="3px 0 0 0"
-            />
-          }
+          prevPageText={<S.Left_Icon />}
+          nextPageText={<S.Right_Icon />}
           // 함수
           onChange={handlePageChange}
         />

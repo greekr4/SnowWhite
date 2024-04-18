@@ -3,13 +3,26 @@ import * as S from "../../styles/new_styles";
 import { formatDate, formatTime } from "../../hooks/Utill";
 import axios from "axios";
 import AdminOrderDetail from "./AdminOrderDetail";
+import Pagination from "react-js-pagination";
 
 const AdminOrder = ({ openPopup }) => {
+  const [initOrderlist_frist, setInitOrderlist_frist] = useState([]);
   const [initOrderlist, setInitOrderlist] = useState([]);
   const [orderlist, setOrderlist] = useState([]);
   const [selectedItem, setSelectedItem] = useState([]);
   const [orderDetail, setOrderDetail] = useState([]);
   const [orderDetailVisible, setOrderDetailVisible] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [countPerPage, setCountPerPage] = useState(10);
+
+  const handlePageChange = (e) => {
+    setCurrentPage(e);
+    const startIndex = (e - 1) * countPerPage;
+    const endIndex = startIndex + countPerPage;
+    const pageItems = initOrderlist.slice(startIndex, endIndex);
+    setOrderlist(pageItems);
+  };
 
   const allCheckbox = useRef(null);
 
@@ -25,8 +38,9 @@ const AdminOrder = ({ openPopup }) => {
     const initSelectedItem = Array.from({ length: res?.length }, () => false);
     setSelectedItem(initSelectedItem);
 
+    setInitOrderlist_frist(res);
     setInitOrderlist(res);
-    setOrderlist(res);
+    setOrderlist(res.slice(0, countPerPage));
   };
 
   const renderOrderStatus = (status) => {
@@ -47,14 +61,18 @@ const AdminOrder = ({ openPopup }) => {
   };
 
   const statusFillter = (status) => {
-    const fillerdata = initOrderlist.filter((el) => el.ORDER_STATUS === status);
+    const fillerdata = initOrderlist_frist.filter(
+      (el) => el.ORDER_STATUS === status
+    );
     const initSelectedItem = Array.from(
       { length: fillerdata?.length },
       () => false
     );
     console.log(initSelectedItem);
     setSelectedItem(initSelectedItem);
-    setOrderlist(fillerdata);
+    setInitOrderlist(fillerdata);
+    setOrderlist(fillerdata.slice(0, countPerPage));
+    setCurrentPage(1);
   };
 
   const statusFillter_cancle = () => {
@@ -64,7 +82,9 @@ const AdminOrder = ({ openPopup }) => {
     );
     console.log(initSelectedItem);
     setSelectedItem(initSelectedItem);
-    setOrderlist(initOrderlist);
+    setInitOrderlist(initOrderlist_frist);
+    setOrderlist(initOrderlist_frist.slice(0, countPerPage));
+    setCurrentPage(1);
   };
 
   const updateStatus = async (value) => {
@@ -120,36 +140,36 @@ const AdminOrder = ({ openPopup }) => {
         <S.AdminInfoBox>
           <div onClick={() => statusFillter_cancle()}>
             <span className="title">전체주문</span>
-            <span className="number">{initOrderlist.length}</span>
+            <span className="number">{initOrderlist_frist.length}</span>
           </div>
           <div onClick={() => statusFillter(1)}>
             <span className="title">결제대기</span>
             <span className="number">
-              {initOrderlist.filter((el) => el.ORDER_STATUS === 1).length}
+              {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 1).length}
             </span>
           </div>
           <div onClick={() => statusFillter(2)}>
             <span className="title">결제완료</span>
             <span className="number">
-              {initOrderlist.filter((el) => el.ORDER_STATUS === 2).length}
+              {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 2).length}
             </span>
           </div>
           <div onClick={() => statusFillter(3)}>
             <span className="title">배송준비</span>
             <span className="number">
-              {initOrderlist.filter((el) => el.ORDER_STATUS === 3).length}
+              {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 3).length}
             </span>
           </div>
           <div onClick={() => statusFillter(4)}>
             <span className="title">배송중</span>
             <span className="number">
-              {initOrderlist.filter((el) => el.ORDER_STATUS === 4).length}
+              {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 4).length}
             </span>
           </div>
           <div onClick={() => statusFillter(5)}>
             <span className="title">배송완료</span>
             <span className="number">
-              {initOrderlist.filter((el) => el.ORDER_STATUS === 5).length}
+              {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 5).length}
             </span>
           </div>
         </S.AdminInfoBox>
@@ -255,7 +275,25 @@ const AdminOrder = ({ openPopup }) => {
             )}
           </tbody>
         </S.AdminTable>
-
+        <S.PaginationBox>
+          <Pagination
+            // 현제 보고있는 페이지
+            activePage={currentPage}
+            // 한페이지에 출력할 아이템수
+            itemsCountPerPage={countPerPage}
+            // 총 아이템수
+            totalItemsCount={initOrderlist?.length}
+            // 표시할 페이지수
+            pageRangeDisplayed={10}
+            // 마지막 버튼 숨기기
+            hideFirstLastPages={true}
+            // 버튼 커스텀
+            prevPageText={<S.Left_Icon />}
+            nextPageText={<S.Right_Icon />}
+            // 함수
+            onChange={handlePageChange}
+          />
+        </S.PaginationBox>
         {orderDetailVisible && <AdminOrderDetail orderData={orderDetail} />}
       </S.AdminWrapper>
     </S.MainLayout>

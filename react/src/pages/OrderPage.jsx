@@ -155,6 +155,7 @@ const OrderPage = () => {
           pgPaymentAmount: pgPaymentAmount,
           orderStatus: 2,
           ORDER_CORE_PROD_SID: orderItem[0].PROD_SID,
+          ORDER_CORE_PROD_CATECODE: orderItem[0].PROD_CATECODE,
         }
       );
       return true;
@@ -211,6 +212,7 @@ const OrderPage = () => {
       orderNm: userNm,
       orderStatus: 1,
       ORDER_CORE_PROD_SID: orderItem[0].PROD_SID,
+      ORDER_CORE_PROD_CATECODE: orderItem[0].PROD_CATECODE,
     });
 
     if (res.status === 200) {

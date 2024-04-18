@@ -64,7 +64,7 @@ from
 where
   OPTION_DELETE = 'N'
 order by
-  OPTION_SID
+  OPTION_SID DESC
       `;
 
   const res_qry = await getConnection(qry);
@@ -82,7 +82,7 @@ from
 where
 	PROD_SID = ?
 order by
-	OPTION_SID
+	OPTION_SID DESC
         `;
 
   const res_qry = await getConnection(qry, [prod_sid]);

@@ -35,6 +35,7 @@ const ReviewItem = ({ reviewData }) => {
     return reviewData?.REVIEW_CONTENT;
   };
 
+  console.log(reviewData);
   return (
     <>
       <S.ReviewBox onClick={ToggleVisible}>
@@ -42,8 +43,8 @@ const ReviewItem = ({ reviewData }) => {
         <S.ReviewImg img={reviewData?.IMAGE_LOCATION}></S.ReviewImg>
         <S.ReviewContent>
           <h1>{reviewData?.REVIEW_TITLE}</h1>
-          <span>일반 명함 | 소프트 | 100매</span>
-          <span>{subTitle()}</span>
+          <span>{reviewData?.ORDER_CORE_OPTION}</span>
+          <span>자세히 보기</span>
           <span>
             {formatDate(reviewData?.REVIEW_REGDATE)} | {reviewData?.USER_ID}
           </span>
@@ -58,7 +59,9 @@ const ReviewItem = ({ reviewData }) => {
         </S.ReviewStarBox>
         {isVisible ? (
           <S.ReviewDetailBox style={Animation}>
-            <span>{reviewData?.REVIEW_CONTENT}</span>
+            <div
+              dangerouslySetInnerHTML={{ __html: reviewData?.REVIEW_CONTENT }}
+            />
           </S.ReviewDetailBox>
         ) : null}
       </S.ReviewBox>

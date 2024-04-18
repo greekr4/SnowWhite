@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring, animated } from "react-spring";
 import axios from "axios";
+import CustomQuill from "../global/CustomQuill";
 
 const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
   const [reviewTitle, setReviewTitle] = useState();
@@ -17,17 +18,6 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
   });
 
   const handleReviewSend = async () => {
-    console.log(
-      popupData.PROD_SID,
-      reviewTitle,
-      reviewContent,
-      popupData.PROD_CATECODE,
-      popupData.ORDER_SID,
-      popupData.USER_ID
-    );
-
-    console.log(popupData);
-
     if (!reviewTitle) {
       alert("리뷰 제목을 작성해주세요.");
       inputRefs.current[0].focus();
@@ -63,6 +53,7 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
 
     if (res.status === 200) {
       alert("작성되었습니다.");
+      popupData.initdb();
       closePopup();
     }
   };
@@ -168,12 +159,19 @@ const PopReviewForm = ({ openPopup, closePopup, popupData }) => {
                 onChange={(e) => setReviewTitle(e.target.value)}
                 ref={(el) => (inputRefs.current[0] = el)}
               />
-              <S.Pop_Textarea
+              {/* <S.Pop_Textarea
                 placeholder="리뷰 내용"
                 value={reviewContent}
                 onChange={(e) => setReviewContent(e.target.value)}
                 ref={(el) => (inputRefs.current[1] = el)}
-              />
+              /> */}
+              <div style={{ marginTop: "0.5em" }}>
+                <CustomQuill
+                  setContent={setReviewContent}
+                  initContent={reviewContent}
+                  placeholder="리뷰 내용"
+                />
+              </div>
               <S.Pop_Info_Wrap>
                 <S.Pop_Info_Title>유의사항</S.Pop_Info_Title>
                 <S.Pop_Info_Desc>

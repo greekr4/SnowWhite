@@ -71,6 +71,22 @@ export const Glob_Icon = styled.span`
   cursor: ${(props) => props.cursor};
 `;
 
+export const Left_Icon = styled.span`
+  display: inline-block;
+  background: url(${arrow_left}) center/contain no-repeat;
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0 0;
+`;
+
+export const Right_Icon = styled.span`
+  display: inline-block;
+  background: url(${arrow_right}) center/contain no-repeat;
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0 0;
+`;
+
 /**
  * 헤더
  * Header

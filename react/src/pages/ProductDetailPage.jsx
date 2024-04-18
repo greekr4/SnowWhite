@@ -23,7 +23,7 @@ const ProductDetailPage = ({ openPopup }) => {
   const [seletedOptions, setSeletedOptions] = useState([]);
   const { data } = useQuery("userinfo", { enabled: false });
   const USER_ID = data?.USER_ID;
-  const [reviewDatas, setReviewDatas] = useState([]);
+  const [reviewData, setReviewData] = useState([]);
   const [designCheck, setDesignCheck] = useState(false);
   const [designFile, setDesignFile] = useState();
 
@@ -84,7 +84,7 @@ const ProductDetailPage = ({ openPopup }) => {
   }, [prod_sid]);
 
   const initdb = async () => {
-    setReviewDatas(
+    setReviewData(
       (
         await axios.post(process.env.REACT_APP_DB_HOST + "/api/review", {
           prod_sid: prod_sid,
@@ -375,7 +375,7 @@ const ProductDetailPage = ({ openPopup }) => {
         <S.MainSection>
           <S.ProductReviewWrapper>
             <h1>고객 리뷰</h1>
-            <ReviewBoard reviewDatas={reviewDatas} />
+            <ReviewBoard reviewData={reviewData} />
           </S.ProductReviewWrapper>
         </S.MainSection>
       </S.MainLayout>

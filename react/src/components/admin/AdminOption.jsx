@@ -1,13 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import axios from "axios";
+import Pagination from "react-js-pagination";
 
 const AdminOption = ({ openPopup }) => {
+  const [initOptions_frist, setInitOptions_frist] = useState([]);
   const [initOptions, setInitOptions] = useState([]);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
   const [optionCate, setOptionCate] = useState([]);
   const allCheckbox = useRef(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [countPerPage, setCountPerPage] = useState(10);
+
+  const handlePageChange = (e) => {
+    setCurrentPage(e);
+    const startIndex = (e - 1) * countPerPage;
+    const endIndex = startIndex + countPerPage;
+    const pageItems = initOptions.slice(startIndex, endIndex);
+    setOptions(pageItems);
+  };
+
   useEffect(() => {
     initdb();
   }, []);
@@ -18,6 +32,7 @@ const AdminOption = ({ openPopup }) => {
       () => false
     );
     setSelectedOption(initSelectedOption);
+    // setOptions(initOptions.slice(0, countPerPage));
   }, [options]);
 
   const initdb = async () => {
@@ -25,7 +40,8 @@ const AdminOption = ({ openPopup }) => {
       await axios.post(process.env.REACT_APP_DB_HOST + "/api/admin/options")
     ).data;
     setInitOptions(initdata);
-    setOptions(initdata);
+    setInitOptions_frist(initdata);
+    setOptions(initdata.slice(0, countPerPage));
 
     ////////////////// 카테고리
     setOptionCate(
@@ -95,13 +111,20 @@ const AdminOption = ({ openPopup }) => {
           <select
             onChange={(e) => {
               if (e.target.value === "all") {
-                setOptions(initOptions);
+                setOptions(initOptions_frist.slice(0, countPerPage));
+                setInitOptions(initOptions_frist);
                 return false;
               }
-              const filltedData = [...initOptions];
-              setOptions(
+              const filltedData = [...initOptions_frist];
+              setInitOptions(
                 filltedData.filter((el) => el.OPTION_CATE === e.target.value)
               );
+              setOptions(
+                filltedData
+                  .filter((el) => el.OPTION_CATE === e.target.value)
+                  .slice(0, countPerPage)
+              );
+              setCurrentPage(1);
             }}
           >
             <option value="all">전체</option>
@@ -183,6 +206,25 @@ const AdminOption = ({ openPopup }) => {
             </tr>
           ))}
         </S.AdminTable>
+        <S.PaginationBox>
+          <Pagination
+            // 현제 보고있는 페이지
+            activePage={currentPage}
+            // 한페이지에 출력할 아이템수
+            itemsCountPerPage={countPerPage}
+            // 총 아이템수
+            totalItemsCount={initOptions?.length}
+            // 표시할 페이지수
+            pageRangeDisplayed={10}
+            // 마지막 버튼 숨기기
+            hideFirstLastPages={true}
+            // 버튼 커스텀
+            prevPageText={<S.Left_Icon />}
+            nextPageText={<S.Right_Icon />}
+            // 함수
+            onChange={handlePageChange}
+          />
+        </S.PaginationBox>
       </S.AdminWrapper>
     </S.MainLayout>
   );

@@ -275,33 +275,36 @@ const OrderListPage = ({ openPopup }) => {
                           <S.Btn>취소요청</S.Btn>
                         ) : el.ORDER_STATUS === 4 ? (
                           <S.Btn>배송추적</S.Btn>
-                        ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === 0 ? (
+                        ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === "N" ? (
                           <S.Btn
                             btnBgc="#469cff"
                             fontColor="#fff"
                             btnBgcHover="#7cb9ff"
                             borderCHover="none"
                             onClick={() => {
-                              console.log(
-                                el.ORDER_SID,
-                                el.ORDER_CORE_PROD_SID,
-                                el.ORDER_CORE_PROD,
-                                el.ORDER_CORE_OPTION,
-                                data?.USER_ID
-                              );
                               openPopup("reviewForm", {
                                 ORDER_SID: el.ORDER_SID,
                                 PROD_SID: el.ORDER_CORE_PROD_SID,
                                 PROD_NM: el.ORDER_CORE_PROD,
                                 ITEM_OPTION: el.ORDER_CORE_OPTION,
                                 USER_ID: data?.USER_ID,
+                                PROD_CATECODE: el.ORDER_CORE_PROD_CATECODE,
+                                initdb: initdb,
                               });
                             }}
                           >
                             리뷰작성
                           </S.Btn>
                         ) : (
-                          <S.Btn>리뷰확인</S.Btn>
+                          <S.Btn
+                            onClick={() => {
+                              openPopup("reviewDetail", {
+                                order_sid: el.ORDER_SID,
+                              });
+                            }}
+                          >
+                            리뷰확인
+                          </S.Btn>
                         )}
                       </td>
                     </tr>
@@ -353,11 +356,11 @@ const OrderListPage = ({ openPopup }) => {
         <S.CartBotWrapper>
           <S.CartBotNotiBox>
             <h1>주문/배송 안내</h1>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
-            <p>안내 문구를 작성해주세요.</p>
+            <p>
+              결제 주문후 2~4일 이내 발송 됩니다. (토, 일, 공휴일은 배송기일에서
+              제외됩니다.)
+            </p>
+            <p>단, 도서 지역은 배송기일이 추가적으로 소요 될 수 있습니다.</p>
           </S.CartBotNotiBox>
         </S.CartBotWrapper>
       </S.MainSection>

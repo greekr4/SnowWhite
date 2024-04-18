@@ -16,10 +16,12 @@ const CustomQuill = ({ initContent, setContent }) => {
     input.addEventListener("change", async () => {
       const file = input.files[0];
       const formData = new FormData();
-      formData.append("img", file);
+      formData.append("file", file);
+      formData.append("type", "review");
+      formData.append("userid", "review");
       try {
         const result = await axios.post(
-          process.env.REACT_APP_DB_HOST + "/api/upload",
+          process.env.REACT_APP_DB_HOST + "/api/upload_design",
           formData
         );
         console.log("성공 시, 백엔드가 보내주는 데이터", result.data);

@@ -9,7 +9,7 @@ const ReviewBoard = ({ reviewData }) => {
   const [initReviewData, setInitReviewData] = useState([]);
   const [ReviewData, setReviewData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [countPerPage, setCountPerPage] = useState(10);
+  const [countPerPage, setCountPerPage] = useState(5);
 
   useEffect(() => {
     console.log(reviewData);
