@@ -6,15 +6,21 @@ import AdminOrder from "../components/admin/AdminOrder";
 import AdminOption from "../components/admin/AdminOption";
 import AdminBoard from "../components/admin/AdminBoard";
 
+import * as S from "../styles/new_styles";
+
 const AdminPage = ({ openPopup }) => {
   return (
-    <div>
-      <AdminBoard />
-      <AdminOption openPopup={openPopup} />
-      <AdminOrder openPopup={openPopup} />
-      <AdminCate />
-      <AdminProd />
-    </div>
+    <S.AdminFlexBox>
+      <S.AdminFlexLeft>옆에</S.AdminFlexLeft>
+      <S.AdminFlexMiddle>
+        <AdminBoard />
+        <AdminOption openPopup={openPopup} />
+        <AdminOrder openPopup={openPopup} />
+        <AdminCate />
+        <AdminProd />
+      </S.AdminFlexMiddle>
+      <S.AdminFlexRight></S.AdminFlexRight>
+    </S.AdminFlexBox>
   );
 };
 

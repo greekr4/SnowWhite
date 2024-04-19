@@ -274,7 +274,16 @@ const OrderListPage = ({ openPopup }) => {
                         {el.ORDER_STATUS < 4 ? (
                           <S.Btn>취소요청</S.Btn>
                         ) : el.ORDER_STATUS === 4 ? (
-                          <S.Btn>배송추적</S.Btn>
+                          <S.Btn
+                            onClick={() => {
+                              openPopup("logisDetail", {
+                                ORDER_LOGIS_NM: el.ORDER_LOGIS_NM,
+                                ORDER_LOGIS_NO: el.ORDER_LOGIS_NO,
+                              });
+                            }}
+                          >
+                            배송추적
+                          </S.Btn>
                         ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === "N" ? (
                           <S.Btn
                             btnBgc="#469cff"

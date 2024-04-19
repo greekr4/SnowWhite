@@ -19,3 +19,11 @@ export const formatTime = (dateString) => {
   const second = date.getSeconds().toString().padStart(2, "0");
   return `${hour}:${minute}:${second}`;
 };
+
+export const formatDateAndTime = (dateString) => {
+  return new Date(dateString)
+    .toISOString()
+    .replace("T", " ")
+    .replace("Z", " ")
+    .replace(/\.\d{3}/, "");
+};

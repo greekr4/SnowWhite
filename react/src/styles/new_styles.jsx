@@ -643,7 +643,8 @@ export const Global_Button = styled.div`
 
 export const Pop_Close_btn = styled.div`
   cursor: pointer;
-  float: right;
+  position: absolute;
+  right: 0px;
   padding: 10px;
   transition: 0.3s ease;
   &:hover {
@@ -798,6 +799,142 @@ export const Pop_Table = styled.table`
   & input:focus ~ span,
   input:valid ~ span {
     width: 100%;
+  }
+`;
+export const PopLogisWrapper = styled.div`
+  padding: 0.5em 0 0.5em 0;
+`;
+
+export const PopLogisTitleBox = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  background-color: #35baf8;
+  color: #fff;
+
+  & div.notice {
+    border: 1px solid #ffffff;
+    border-radius: 16px;
+    padding: 3px 8px;
+    margin: 0.75em auto;
+    font-size: 0.75em;
+  }
+
+  & div.logis_no {
+    margin: 0 auto 0.5em auto;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+  & div.logis_nm {
+    margin: 0 auto 0.75em auto;
+  }
+`;
+
+export const PopLogisIconBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1em 0 1em 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    background-color: #eee;
+    height: 1px;
+    top: 195px;
+    right: 13%;
+    left: 10%;
+    z-index: 1;
+  }
+
+  & div {
+    z-index: 2;
+  }
+
+  & div p {
+    font-size: 0.7em;
+    text-align: center;
+    margin-top: 0.4em;
+    color: #777;
+    font-weight: 500;
+  }
+
+  & div.selected p {
+    color: #35baf8;
+  }
+
+  & div.selected div {
+    background-color: #35baf8;
+  }
+`;
+export const PopLogisIcon = styled.div`
+  width: 60px;
+  height: 60px;
+  background: url(${(props) => props.icon}) center no-repeat;
+  background-color: #eee;
+  border-radius: 100%;
+`;
+
+export const PopLogisItemBox = styled.div`
+  overflow-y: scroll;
+  height: 430px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+`;
+
+export const PopLogisItem = styled.div`
+  margin: 0.25em;
+  padding: 1em 3em 1em 3em;
+
+  & div.circle {
+    border: 2px solid #03a9f4;
+    border-radius: 5px;
+    position: relative;
+    top: 18px;
+    left: -30px;
+    width: 8px;
+    height: 8px;
+    background: #ffffff;
+    z-index: 10;
+    &.selected {
+      background-color: #03a9f4;
+    }
+  }
+  & div.linebox {
+    position: relative;
+  }
+
+  & div.line {
+    position: absolute;
+    width: 2px;
+    height: 80px;
+    background: #03a9f4;
+    left: -27px;
+    top: 18px;
+  }
+
+  & h1 {
+    text-align: center;
+    font-size: 1.2em;
+    padding: 0.5em;
+    font-weight: 500;
+  }
+  & span {
+    font-size: 0.9em;
+    font-weight: 500;
+    padding-bottom: 1em;
+    &.status {
+      color: #03a9f4;
+    }
+  }
+
+  & div.info {
+    padding-bottom: 0.5em;
+  }
+  & div.time {
+    font-size: 0.8em;
+    color: #777;
   }
 `;
 
@@ -3801,4 +3938,20 @@ export const AdminInfoBox = styled.div`
 export const AdminBoardFormBox = styled.div`
   width: 50%;
   margin: 0 auto;
+`;
+
+export const AdminFlexBox = styled.div`
+  display: flex;
+`;
+
+export const AdminFlexLeft = styled.div`
+  flex-basis: 15%;
+`;
+
+export const AdminFlexMiddle = styled.div`
+  flex-basis: 70%;
+`;
+
+export const AdminFlexRight = styled.div`
+  flex-basis: 15%;
 `;

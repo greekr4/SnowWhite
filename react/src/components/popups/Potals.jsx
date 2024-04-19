@@ -8,6 +8,7 @@ import PopReviewForm from "./PopReviewForm";
 import PopOrderDetail from "./PopOrderDetail";
 import PopOptionForm from "./PopOptionForm";
 import PopReviewDetail from "./PopReviewDetail";
+import PopLogisDetail from "./PopLogisDetail";
 
 /////포탈1
 const ModalPortal = ({
@@ -71,6 +72,11 @@ const ModalPortal = ({
     case "reviewDetail":
       return ReactDOM.createPortal(
         <PopReviewDetail closePopup={closePopup} popupData={popupData} />,
+        el
+      );
+    case "logisDetail":
+      return ReactDOM.createPortal(
+        <PopLogisDetail closePopup={closePopup} popupData={popupData} />,
         el
       );
 
