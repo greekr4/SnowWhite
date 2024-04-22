@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import axios from "axios";
 import Pagination from "react-js-pagination";
+import { formatDate, formatTime } from "../../hooks/Utill";
 
 const AdminOption = ({ openPopup }) => {
   const [initOptions_frist, setInitOptions_frist] = useState([]);
@@ -157,6 +158,8 @@ const AdminOption = ({ openPopup }) => {
                 <br />
                 (판매 단위 x 옵션 가격)
               </th>
+              <th>등록일</th>
+              <th>수정일</th>
               <th></th>
             </tr>
           </thead>
@@ -178,6 +181,14 @@ const AdminOption = ({ openPopup }) => {
               <th>{el.OPTION_NM}</th>
               <th>{el.OPTION_DETAIL}</th>
               <th>{el.OPTION_PRICE.toLocaleString("ko-KR")}</th>
+              <th>
+                <p>{formatDate(el.OPTION_REGDATE)}</p>
+                <p>{formatTime(el.OPTION_REGDATE)}</p>
+              </th>
+              <th>
+                <p>{formatDate(el.OPTION_MODIDATE)}</p>
+                <p>{formatTime(el.OPTION_MODIDATE)}</p>
+              </th>
               <th>
                 <S.Btn
                   margin="0 0.5em 0 0"

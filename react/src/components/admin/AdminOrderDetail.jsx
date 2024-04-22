@@ -120,8 +120,8 @@ const AdminOrderDetail = ({ orderData }) => {
               <th style={{ width: "15%" }}>상품명</th>
               <th style={{ width: "10%" }}>결제금액</th>
               <th style={{ width: "5%" }}>결제수단</th>
-              <th style={{ width: "10%" }}>결제상태</th>
-              <th style={{ width: "5%" }}>취소</th>
+              <th style={{ width: "7%" }}>결제상태</th>
+              <th style={{ width: "10%" }}>택배사</th>
               <th style={{ width: "10%" }}>요청사항</th>
               <th style={{ width: "10%" }}>비고</th>
             </tr>
@@ -164,7 +164,10 @@ const AdminOrderDetail = ({ orderData }) => {
               <th>{orderData.ORDER_AMOUNT.toLocaleString("ko-kr")}</th>
               <th>{orderData.ORDER_PAYMENT_TYPE}</th>
               <th>{renderOrderStatus(orderData.ORDER_STATUS)}</th>
-              <th></th>
+              <th>
+                <p>{orderData.ORDER_LOGIS_NM}</p>
+                <p>{orderData.ORDER_LOGIS_NO}</p>
+              </th>
               <th>{orderData.ORDER_REQ}</th>
               <th></th>
             </tr>

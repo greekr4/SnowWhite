@@ -3,6 +3,7 @@ import * as S from "../../styles/new_styles";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
+import { formatDate, formatTime } from "../../hooks/Utill";
 
 const AdminProd = () => {
   const [initProds, setInitProds] = useState([]);
@@ -101,7 +102,7 @@ const AdminProd = () => {
         <S.AdminTable>
           <thead>
             <tr>
-              <th style={{ width: "7.5%" }}>
+              <th style={{ width: "3%" }}>
                 <input
                   type="checkbox"
                   onChange={(e) => {
@@ -114,12 +115,14 @@ const AdminProd = () => {
                   }}
                 />
               </th>
-              <th>상품코드</th>
-              <th>카테고리</th>
-              <th>상품명</th>
-              <th>썸네일</th>
-              <th>썸네일 설명</th>
-              <th></th>
+              <th style={{ width: "10%" }}>상품코드</th>
+              <th style={{ width: "10%" }}>카테고리</th>
+              <th style={{ width: "10%" }}>상품명</th>
+              <th style={{ width: "10%" }}>썸네일</th>
+              <th style={{ width: "" }}>썸네일 설명</th>
+              <th style={{ width: "10%" }}>등록일</th>
+              <th style={{ width: "10%" }}>수정일</th>
+              <th style={{ width: "10%" }}></th>
             </tr>
           </thead>
           {prods?.map((el, index) => (
@@ -145,6 +148,14 @@ const AdminProd = () => {
                 <img src={el.IMAGE_LOCATION} alt="썸네일" />
               </th>
               <th>{el.PROD_DESC}</th>
+              <th>
+                <p>{formatDate(el.PROD_REGDATE)}</p>
+                <p>{formatTime(el.PROD_REGDATE)}</p>
+              </th>
+              <th>
+                <p>{formatDate(el.PROD_REGDATE)}</p>
+                <p>{formatTime(el.PROD_REGDATE)}</p>
+              </th>
               <th>
                 <Link to={`/admin/prod/${el.PROD_SID}`}>
                   <S.Btn>상세보기</S.Btn>

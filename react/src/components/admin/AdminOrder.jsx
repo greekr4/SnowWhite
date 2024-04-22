@@ -4,6 +4,7 @@ import { formatDate, formatTime } from "../../hooks/Utill";
 import axios from "axios";
 import AdminOrderDetail from "./AdminOrderDetail";
 import Pagination from "react-js-pagination";
+import { Divider } from "@mui/material";
 
 const AdminOrder = ({ openPopup }) => {
   const [initOrderlist_frist, setInitOrderlist_frist] = useState([]);
@@ -119,6 +120,8 @@ const AdminOrder = ({ openPopup }) => {
   return (
     <S.MainLayout>
       <S.AdminWrapper>
+        {orderDetailVisible && <AdminOrderDetail orderData={orderDetail} />}
+        <Divider style={{ margin: "2em 0 2em 0" }} />
         <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(1)}>
           결제대기 처리
         </S.Btn>
@@ -176,7 +179,7 @@ const AdminOrder = ({ openPopup }) => {
         <S.AdminTable>
           <thead>
             <tr style={{ height: "30px" }}>
-              <th style={{ width: "5%" }}>
+              <th style={{ width: "3%" }}>
                 <input
                   ref={allCheckbox}
                   type="checkbox"
@@ -189,14 +192,15 @@ const AdminOrder = ({ openPopup }) => {
                   }}
                 />
               </th>
-              <th style={{ width: "10%" }}>주문일 (결제일)</th>
+              <th style={{ width: "7.5%" }}>주문일</th>
+              <th style={{ width: "7.5%" }}>결제일</th>
               <th style={{ width: "10%" }}>주문번호</th>
               <th style={{ width: "10%" }}>주문자</th>
-              <th style={{ width: "15%" }}>상품명</th>
+              <th style={{ width: "10%" }}>상품명</th>
               <th style={{ width: "10%" }}>결제금액</th>
               <th style={{ width: "5%" }}>결제수단</th>
-              <th style={{ width: "10%" }}>결제상태</th>
-              <th style={{ width: "5%" }}>취소</th>
+              <th style={{ width: "7%" }}>결제상태</th>
+              <th style={{ width: "10%" }}>택배사</th>
               <th style={{ width: "10%" }}>요청사항</th>
               <th style={{ width: "10%" }}>비고</th>
             </tr>
@@ -204,7 +208,7 @@ const AdminOrder = ({ openPopup }) => {
           <tbody>
             {orderlist.length > 0 ? (
               orderlist.map((el, index) => (
-                <tr key={index} style={{ height: "100px" }}>
+                <tr key={index} style={{ height: "50px" }}>
                   <th>
                     <input
                       type="checkbox"
@@ -220,7 +224,8 @@ const AdminOrder = ({ openPopup }) => {
                   <th>
                     <p>{formatDate(el.ORDER_DATE)}</p>
                     <p>{formatTime(el.ORDER_DATE)}</p>
-                    <p>------</p>
+                  </th>
+                  <th>
                     <p>{formatDate(el.ORDER_PAYMENT_DATE)}</p>
                     <p>{formatTime(el.ORDER_PAYMENT_DATE)}</p>
                   </th>
@@ -252,11 +257,18 @@ const AdminOrder = ({ openPopup }) => {
                   <th>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</th>
                   <th>{el.ORDER_PAYMENT_TYPE}</th>
                   <th>{renderOrderStatus(el.ORDER_STATUS)}</th>
-                  <th></th>
+                  <th>
+                    <p>{el.ORDER_LOGIS_NM}</p>
+                    <p>{el.ORDER_LOGIS_NO}</p>
+                  </th>
                   <th>{el.ORDER_REQ}</th>
                   <th>
                     <S.Btn
                       onClick={() => {
+                        if (orderDetail === el && orderDetailVisible === true) {
+                          setOrderDetailVisible(false);
+                          return false;
+                        }
                         setOrderDetail(el);
                         setOrderDetailVisible(true);
                       }}
@@ -294,7 +306,6 @@ const AdminOrder = ({ openPopup }) => {
             onChange={handlePageChange}
           />
         </S.PaginationBox>
-        {orderDetailVisible && <AdminOrderDetail orderData={orderDetail} />}
       </S.AdminWrapper>
     </S.MainLayout>
   );

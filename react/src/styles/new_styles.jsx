@@ -523,6 +523,7 @@ export const Pop_Title = styled.div`
 
 export const Pop_form = styled.div`
   padding: 40px;
+  padding-top: 20px;
 `;
 
 export const Pop_Label = styled.div`
@@ -3761,13 +3762,14 @@ export const PrintBtnBox = styled.div`
  */
 
 export const AdminWrapper = styled.div`
-  width: 1140px;
+  /* width: 1140px; */
   margin: 2rem auto;
 `;
 
 export const AdminTable = styled.table`
   width: 100%;
   font-size: 0.9rem;
+  table-layout: fixed;
   & img {
     width: 72px;
     height: 72px;
@@ -3940,8 +3942,17 @@ export const AdminBoardFormBox = styled.div`
   margin: 0 auto;
 `;
 
+export const AdminHeaderWrapper = styled.div`
+  position: fixed;
+  height: 100px;
+  width: 100%;
+  background-color: #f2f2f2;
+  z-index: 100;
+`;
+
 export const AdminFlexBox = styled.div`
   display: flex;
+  padding-top: 100px;
 `;
 
 export const AdminFlexLeft = styled.div`
@@ -3954,4 +3965,64 @@ export const AdminFlexMiddle = styled.div`
 
 export const AdminFlexRight = styled.div`
   flex-basis: 15%;
+`;
+
+export const AdminSideBarWrapper = styled.div`
+  height: 100%;
+  min-width: 200px;
+  max-width: 200px;
+  background-color: #f2f2f2;
+`;
+
+export const AdminSideBarBox = styled.div`
+  position: fixed;
+
+  & li {
+    width: 100%;
+    padding: 10px;
+
+    background-color: #f2f2f2;
+    & span {
+      display: block;
+      padding-left: 1em;
+      margin: 0.5em 0 1em 0;
+    }
+  }
+  & li ul li {
+    width: 100%;
+    background-color: #e6e6e6;
+    padding-left: 2em;
+    width: 180px;
+    cursor: pointer;
+    &:hover {
+      background-color: #d8d8d8;
+    }
+  }
+`;
+
+export const PopDeliTable = styled.table`
+  width: 100%;
+
+  & th {
+    vertical-align: middle;
+    width: 20%;
+    font-size: 14px;
+    color: cornflowerblue;
+    text-align: left;
+    font-weight: 550;
+  }
+  & td {
+    vertical-align: middle;
+    width: 80%;
+    font-size: 14px;
+    padding: 5px;
+    color: #333;
+  }
+`;
+
+export const NoDelis = styled.div`
+  text-align: center;
+  margin-top: 10em;
+  padding: 3em 0 3em 0;
+  border: 1px solid #eee;
 `;

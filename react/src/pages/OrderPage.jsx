@@ -9,7 +9,7 @@ import { useQuery } from "react-query";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { CheckoutPage } from "../tossPay/Checkout";
 
-const OrderPage = () => {
+const OrderPage = ({ openPopup }) => {
   const { data } = useQuery("userinfo", { enabled: false });
   const [radioValue, SetRadioValue] = useState();
   const [ViewStep, SetViewStep] = useState(0);
@@ -66,6 +66,14 @@ const OrderPage = () => {
     setOrderPostcode(data?.DELI_POSTCODE);
     setOrderAddress(data?.DELI_ADDRESS);
     setOrderAddAddress(data?.DELI_ADD_ADDRESS);
+  };
+
+  const handleSetDeli = (REC, TEL, POSTCODE, ADDRESS, ADDADDRESS) => {
+    setOrderReceiver(REC);
+    setOrderTel(TEL);
+    setOrderPostcode(POSTCODE);
+    setOrderAddress(ADDRESS);
+    setOrderAddAddress(ADDADDRESS);
   };
 
   useEffect(() => {
@@ -319,7 +327,31 @@ const OrderPage = () => {
                   </table>
                   <S.OBTextAndBtnBox>
                     <h1>배송지 정보</h1>
-                    <S.Btn onClick={handleSameBtn}>기본 배송지로</S.Btn>
+                    <div>
+                      <S.Btn onClick={handleSameBtn} margin={"0 0 0 0.5em"}>
+                        기본 배송지
+                      </S.Btn>
+                      <S.Btn
+                        onClick={() =>
+                          openPopup("deliveryForm", {
+                            handleSetDeli: handleSetDeli,
+                          })
+                        }
+                        margin={"0 0 0 0.5em"}
+                      >
+                        나의 배송지
+                      </S.Btn>
+                      <S.Btn
+                        onClick={() =>
+                          openPopup("deliveryForm_Recent", {
+                            handleSetDeli: handleSetDeli,
+                          })
+                        }
+                        margin={"0 0 0 0.5em"}
+                      >
+                        최근 배송지
+                      </S.Btn>
+                    </div>
                   </S.OBTextAndBtnBox>
 
                   <table>
@@ -478,7 +510,7 @@ const OrderPage = () => {
                     />
                     <label htmlFor="pm2">무통장 입금</label>
                   </S.OBRadioBox>
-                  <S.OBRadioBox>
+                  {/* <S.OBRadioBox>
                     <input
                       type="radio"
                       name="payment"
@@ -487,7 +519,7 @@ const OrderPage = () => {
                       disabled
                     />
                     <label htmlFor="pm3">포인트 결제</label>
-                  </S.OBRadioBox>
+                  </S.OBRadioBox> */}
                 </S.OBRadioGroup>
                 <S.OBPaymentBox>
                   <S.OBPaymentSpan>결제 방법을 선택해주세요.</S.OBPaymentSpan>

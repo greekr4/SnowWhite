@@ -9,6 +9,8 @@ import PopOrderDetail from "./PopOrderDetail";
 import PopOptionForm from "./PopOptionForm";
 import PopReviewDetail from "./PopReviewDetail";
 import PopLogisDetail from "./PopLogisDetail";
+import PopDeliveryForm from "./PopDeliveryForm";
+import PopDeliveryRecentForm from "./PopDeliveryRecentForm";
 
 /////포탈1
 const ModalPortal = ({
@@ -79,7 +81,16 @@ const ModalPortal = ({
         <PopLogisDetail closePopup={closePopup} popupData={popupData} />,
         el
       );
-
+    case "deliveryForm":
+      return ReactDOM.createPortal(
+        <PopDeliveryForm closePopup={closePopup} popupData={popupData} />,
+        el
+      );
+    case "deliveryForm_Recent":
+      return ReactDOM.createPortal(
+        <PopDeliveryRecentForm closePopup={closePopup} popupData={popupData} />,
+        el
+      );
     default:
       return null;
   }

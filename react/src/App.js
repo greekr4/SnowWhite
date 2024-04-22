@@ -9,7 +9,7 @@ import Header from "./components/headers/Header";
 import Footer from "./components/footers/Footer";
 import Header2 from "./components/headers/Header2";
 import Potals from "./components/popups/Potals";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
@@ -25,7 +25,6 @@ import MyPage from "./pages/MyPage";
 import OrderListPage from "./pages/OrderListPage";
 import OrderPage from "./pages/OrderPage";
 
-import DefaultLayout from "./components/global/DefaultLayout";
 import EditorPage from "./pages/EditorPage";
 import { TestPage } from "./pages/TestPage";
 import IntroPage0 from "./pages/IntroPage0";
@@ -44,6 +43,7 @@ import CsPage from "./pages/CsPage.jsx";
 import { CheckoutPage } from "./tossPay/Checkout.jsx";
 import { SuccessPage } from "./tossPay/Success.jsx";
 import { FailPage } from "./tossPay/Fail.jsx";
+import DefaultLayout from "./components/global/DefaultLayout.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -109,7 +109,10 @@ function App({ queryClient }) {
               element={<ProductDetailPage openPopup={openPopup} />}
             />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/order/:item_sids" element={<OrderPage />} />
+            <Route
+              path="/order/:item_sids"
+              element={<OrderPage openPopup={openPopup} />}
+            />
             <Route
               path="/orderlist"
               element={<OrderListPage openPopup={openPopup} />}
@@ -130,6 +133,7 @@ function App({ queryClient }) {
           <Route path="/admin/prod/:prod_sid" element={<AdminProdDetail />} />
           <Route path="/tosspay/success" element={<SuccessPage />} />
           <Route path="/tosspay/fail" element={<FailPage />} />
+
           {/* <Route path="/admin/prod/add" element={<AdminProdAdd />} /> */}
         </Routes>
       </BrowserRouter>
