@@ -781,3 +781,25 @@ where
   if (res_update.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
+
+exports.select_admin_user = async (req, res) => {
+  const qry = `
+  select
+	T1.*,
+	COUNT(T2.USER_ID) as ORDER_CNT,
+	SUM(T2.ORDER_AMOUNT) AS ORDER_AMT,
+	row_number() over (
+order by
+	T1.USER_ID) as id
+from
+	TB_USER T1
+left outer join TB_ORDER T2 on
+	T1.USER_ID = T2.USER_ID
+group by
+	T1.USER_ID;
+  `;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};

@@ -171,6 +171,45 @@ const CartPage = () => {
     const pageItems = getPageItems(initCartData, e, countPerPage);
     setCartData(pageItems);
   };
+
+  const handleEditDesign = async (item_sid) => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "pdf/*");
+    input.click();
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "design");
+      formData.append("userid", USER_ID);
+      try {
+        const result = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/upload_design",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        const designUrl = result.data;
+
+        const res_update = await axios.put(
+          process.env.REACT_APP_DB_HOST + "/api/cart/design",
+          {
+            item_sid: item_sid,
+            item_file_location: designUrl,
+          }
+        );
+
+        alert("디자인이 등록되었습니다.");
+      } catch (error) {
+        console.log("실패");
+      }
+    });
+  };
+
   return (
     <S.MainLayout>
       <S.MainSection>
@@ -219,15 +258,16 @@ const CartPage = () => {
             <table>
               <thead>
                 <tr>
-                  <th>
+                  <th style={{ width: "5%" }}>
                     <input type="checkbox" onClick={handleAllSeleted} />
                   </th>
-                  <th></th>
-                  <th>상품 정보</th>
-                  <th>수량</th>
-                  <th>가격</th>
-                  <th>최종 편집일</th>
-                  <th>비고</th>
+                  <th style={{ width: "20%" }}></th>
+                  <th style={{ width: "20%" }}>상품 정보</th>
+                  <th style={{ width: "10%" }}>수량</th>
+                  <th style={{ width: "15%" }}>가격</th>
+                  <th style={{ width: "10%" }}>최종 편집일</th>
+                  <th style={{ width: "10%" }}>디자인</th>
+                  <th style={{ width: "10%" }}>비고</th>
                 </tr>
               </thead>
               <tbody>
@@ -267,6 +307,15 @@ const CartPage = () => {
                       <td>{el.ITEM_AMOUNT.toLocaleString("ko-KR")}</td>
                       <td>{formatDate(el.ITEM_MODIDATE)}</td>
                       <td>
+                        <S.Btn
+                          onClick={() => {
+                            window.open(el.ITEM_FILE_LOCATION);
+                          }}
+                        >
+                          디자인보기
+                        </S.Btn>
+                      </td>
+                      <td>
                         <Link to={`/order/${el.ITEM_SID}`}>
                           <S.Btn
                             btnBgc="#469cff"
@@ -277,7 +326,13 @@ const CartPage = () => {
                             주문하기
                           </S.Btn>
                         </Link>
-                        <S.Btn>편집하기</S.Btn>
+                        <S.Btn
+                          onClick={() => {
+                            handleEditDesign(el.ITEM_SID);
+                          }}
+                        >
+                          편집하기
+                        </S.Btn>
                       </td>
                     </tr>
                   ))

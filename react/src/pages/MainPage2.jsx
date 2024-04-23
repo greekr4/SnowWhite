@@ -9,6 +9,7 @@ import img3 from "../assets/products/product-test3.png";
 import img4 from "../assets/products/product-test4.png";
 import img5 from "../assets/products/product-test5.png";
 import img6 from "../assets/products/product-test6.png";
+import MainSlider from "../components/main/MainSlider";
 
 const MainPage2 = () => {
   const test_products = [
@@ -76,7 +77,7 @@ const MainPage2 = () => {
   return (
     <S.MainLayout>
       <S.MainSection>
-        <S.MainBannerBox></S.MainBannerBox>
+        <MainSlider />
       </S.MainSection>
       <S.MainSection bgc="#fff">
         <S.GlobProdWrapper>

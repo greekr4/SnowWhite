@@ -1,7 +1,14 @@
 const { getConnection, Connection } = require("../utils/dbUtils");
 
 exports.select_banner = async (req, res) => {
-  const { cate, code } = req.body;
+  const { cate, code } = req.query;
+
+  const where = [];
+
+  if (code) {
+    where.push(`and BANNER_CODE = ${code}`);
+  }
+
   const qry = `
 select
 	BANNER_SID,
@@ -12,12 +19,14 @@ from
 	TB_BANNER TB
 where 
 	BANNER_CATE = ?
-	and BANNER_CODE = ?
+	${where.toString()}
+order by BANNER_PRIORITY
+
   `;
 
   const res_data = await getConnection(qry, [cate, code]);
   if (res_data.state === false) return res.status(401).send("DB Error.");
-  return res.status(200).send(res_data.row[0]);
+  return res.status(200).send(res_data.row);
 };
 
 exports.select_products_thumbnail = async (req, res) => {

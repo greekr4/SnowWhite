@@ -415,7 +415,6 @@ where
 	ORDER_DATE,
 	ORDER_AMOUNT,
 	ORDER_STATUS,
-	ORDER_INVOICE,
 	ORDER_REC,
 	REC_TEL,
 	ORDER_POSTCODE,
@@ -442,7 +441,6 @@ values(
 NOW(),
 ${orderAmount},
 ${orderStatus},
-null,
 '${orderReceiver}',
 '${orderTel}',
 '${orderPostcode}',
@@ -570,4 +568,42 @@ SELECT
   const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row[0]);
+};
+
+exports.select_recent_delis = async (req, res) => {
+  const userid = req.query.userid;
+
+  const qry = `
+  select
+	distinct
+  ORDER_ADDRESS as DELI_ADDRESS,
+	ORDER_ADD_ADDRESS as DELI_ADD_ADDRESS,
+	REC_TEL as DELI_TEL0,
+	ORDER_POSTCODE as DELI_POSTCODE,
+	ORDER_REC as DELI_REC
+from
+	TB_ORDER
+where
+	USER_ID = '${userid}'
+  `;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};
+
+exports.update_cart_design = async (req, res) => {
+  const { item_sid, item_file_location } = req.body;
+
+  const qry = `
+update
+  tb_custom_prod
+set
+  ITEM_FILE_LOCATION = '${item_file_location}'
+where
+  ITEM_SID = '${item_sid}'
+`;
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
 };

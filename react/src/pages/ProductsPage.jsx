@@ -28,9 +28,11 @@ const ProductsPage = () => {
     );
     setBannerImg(
       (
-        await axios.post(process.env.REACT_APP_DB_HOST + "/api/banner", {
-          cate: "CATE",
-          code: cateid,
+        await axios.get(process.env.REACT_APP_DB_HOST + "/api/banner", {
+          params: {
+            cate: "CATE",
+            code: cateid,
+          },
         })
       ).data
     );
@@ -47,7 +49,7 @@ const ProductsPage = () => {
     <S.MainLayout>
       <S.MainSection>
         <S.ProductBannerBox
-          img={bannerImg ? bannerImg.BANNER_IMAGE : noimg}
+          img={bannerImg ? bannerImg[0].BANNER_IMAGE : noimg}
         ></S.ProductBannerBox>
       </S.MainSection>
       <S.MainSection bgc="#fff">

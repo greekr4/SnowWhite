@@ -34,6 +34,8 @@ const {
   select_orderlist,
   select_order_item,
   select_mypage_info,
+  select_recent_delis,
+  update_cart_design,
 } = require("./snowwhite/controller/user");
 const { cate, subcate } = require("./snowwhite/controller/menu");
 const {
@@ -79,6 +81,7 @@ const {
   insert_option,
   update_option,
   delete_option,
+  select_admin_user,
 } = require("./snowwhite/controller/admin");
 const { upload, upload_design } = require("./snowwhite/controller/upload");
 const {
@@ -165,8 +168,6 @@ app.post("/api/cart/del", auth, delete_cart);
 app.post("/api/order", auth, select_order);
 
 app.put("/api/order", auth, insert_order);
-
-app.post("/api/banner", select_banner);
 
 ///////////////////////////////////////
 app.post("/api/admin/prods", auth, select_admin_prods);
@@ -259,6 +260,17 @@ app.post("/api/tosspay/confirm", tosspayConfirm);
 //mypage
 
 app.get("/api/mypage/info", auth, select_mypage_info);
+
+app.get("/api/order/recentDelis", auth, select_recent_delis);
+
+app.put("/api/cart/design", auth, update_cart_design);
+
+//배너
+
+app.get("/api/banner", select_banner);
+
+//어드민 유저
+app.get("/api/admin/user", auth, select_admin_user);
 
 app.listen("3030", () => {
   console.log("Server started");

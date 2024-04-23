@@ -337,10 +337,7 @@ export const MainBannerBox = styled.div`
   width: 100%;
   height: 500px;
   /* background-color: #abc; */
-  background-image: url("/asserts/banner/main_banner1.png");
-  background-repeat: no-repeat;
-  background-size: auto;
-  background-position: center;
+  background: url(${(props) => props.img}) 50% 0px / cover no-repeat;
 `;
 
 /**
@@ -1695,7 +1692,7 @@ export const CartMidProdBox = styled.div`
     padding-left: 1rem;
   }
   & th:nth-child(3) {
-    width: 350px;
+    width: 200px;
   }
   & th:nth-child(4) {
     width: 130px;
@@ -1704,7 +1701,10 @@ export const CartMidProdBox = styled.div`
     width: 130px;
   }
   & th:nth-child(6) {
-    width: 130px;
+    width: 135px;
+  }
+  & th:nth-child(7) {
+    width: 135px;
   }
 
   & td {
