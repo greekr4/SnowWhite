@@ -4026,3 +4026,17 @@ export const NoDelis = styled.div`
   padding: 3em 0 3em 0;
   border: 1px solid #eee;
 `;
+
+export const ImageView_Slider = styled.div`
+  visibility: visible;
+  margin: 10px auto;
+  width: 100%;
+  height: 420px;
+  background: url(${(props) => props.img}) 50% 0px / cover no-repeat;
+`;
+
+export const BannerTitle = styled.div`
+  text-align: center;
+  font-size: 2em;
+  font-weight: 550;
+`;

@@ -29,7 +29,9 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AdminDashBoard from "./AdminDashBoard";
+import ViewQuiltIcon from "@mui/icons-material/ViewQuilt";
 import AdminUser from "./AdminUser";
+import AdminBanner from "./AdminBanner";
 const drawerWidth = 240;
 
 const ResponsiveDrawer = (props) => {
@@ -208,6 +210,32 @@ const ResponsiveDrawer = (props) => {
           <ListItemText primary={"회원관리"} />
         </ListItemButton>
       </ListItem>
+
+      <Divider />
+      <Typography
+        variant="h6"
+        color="textSecondary"
+        fontSize="0.8em"
+        fontFamily="'Public Sans',sans-serif"
+        fontWeight="500"
+        padding="1em"
+      >
+        Design
+      </Typography>
+      <ListItem
+        key={"회원관리"}
+        disablePadding
+        onClick={(e) => {
+          setCurrentPgae(e.target.innerText);
+        }}
+      >
+        <ListItemButton>
+          <ListItemIcon>
+            <ViewQuiltIcon />
+          </ListItemIcon>
+          <ListItemText primary={"배너관리"} />
+        </ListItemButton>
+      </ListItem>
     </div>
   );
 
@@ -300,6 +328,8 @@ const ResponsiveDrawer = (props) => {
           <AdminOrder openPopup={openPopup} />
         ) : currentPage === "대시보드" ? (
           <AdminDashBoard />
+        ) : currentPage === "배너관리" ? (
+          <AdminBanner />
         ) : null}
       </Box>
     </Box>

@@ -82,8 +82,16 @@ const {
   update_option,
   delete_option,
   select_admin_user,
+  update_admin_user,
+  insert_banner,
+  delete_banner,
+  update_banner,
 } = require("./snowwhite/controller/admin");
-const { upload, upload_design } = require("./snowwhite/controller/upload");
+const {
+  upload,
+  upload_design,
+  upload_global,
+} = require("./snowwhite/controller/upload");
 const {
   select_review,
   insert_review,
@@ -238,6 +246,8 @@ app.post("/api/upload", auth, uploader.single("file"), upload);
 
 app.post("/api/upload_design", auth, uploader.single("file"), upload_design);
 
+app.post("/api/upload_global", auth, uploader.single("file"), upload_global);
+
 app.get("/api", () => {
   refreshVerify("123123", "a");
 });
@@ -268,9 +278,12 @@ app.put("/api/cart/design", auth, update_cart_design);
 //배너
 
 app.get("/api/banner", select_banner);
-
+app.post("/api/banner", auth, insert_banner);
+app.delete("/api/banner", auth, delete_banner);
+app.put("/api/banner", auth, update_banner);
 //어드민 유저
 app.get("/api/admin/user", auth, select_admin_user);
+app.put("/api/admin/user", auth, update_admin_user);
 
 app.listen("3030", () => {
   console.log("Server started");

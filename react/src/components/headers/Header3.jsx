@@ -179,7 +179,7 @@ const Header3 = ({ openPopup, queryClient }) => {
                   }}
                 >
                   <Link to={"/mypage"}>
-                    <S.HeaderMenuText>{userNm}님</S.HeaderMenuText>
+                    <S.HeaderMenuText>마이페이지</S.HeaderMenuText>
                     <GnbSubMenu
                       isVisible={menuShow.mymenu}
                       submenus={

@@ -11,10 +11,11 @@ exports.select_banner = async (req, res) => {
 
   const qry = `
 select
-	BANNER_SID,
+	BANNER_SID as id,
 	BANNER_CATE,
 	BANNER_CODE,
-	BANNER_IMAGE
+	BANNER_IMAGE,
+  BANNER_PRIORITY
 from
 	TB_BANNER TB
 where 

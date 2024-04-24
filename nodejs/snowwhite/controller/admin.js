@@ -803,3 +803,84 @@ group by
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row);
 };
+
+exports.update_admin_user = async (req, res) => {
+  const { row } = req.body;
+
+  const qry = `
+update
+	TB_USER
+set
+	USER_NM = '${row.USER_NM}',
+	USER_TEL0 = '${row.USER_TEL0}',
+	USER_POINT = ${row.USER_POINT},
+	USER_GRADE = ${row.USER_GRADE}
+where
+	USER_ID = '${row.USER_ID}';
+`;
+
+  console.log(qry);
+
+  const res_update = await getConnection(qry);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.insert_banner = async (req, res) => {
+  const { BANNER_CATE, BANNER_CODE, BANNER_IMAGE, BANNER_PRIORITY } = req.body;
+
+  const qry = `
+insert
+into
+	TB_BANNER (
+  BANNER_CATE,
+	BANNER_CODE,
+	BANNER_IMAGE,
+	BANNER_PRIORITY
+  )
+select
+	'${BANNER_CATE}',
+	'${BANNER_CODE}',
+	'${BANNER_IMAGE}',
+	MAX(BANNER_PRIORITY) + 1
+from
+	TB_BANNER
+where
+	BANNER_CATE = '${BANNER_CATE}';
+`;
+
+  const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.delete_banner = async (req, res) => {
+  const { BANNER_SID } = req.body;
+
+  const qry = `
+delete
+from
+  TB_BANNER
+where
+  BANNER_SID IN (?)
+  `;
+
+  const res_qry = await getConnection(qry, [BANNER_SID]);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_banner = async (req, res) => {
+  const { BANNER_SID, BANNER_PRIORITY } = req.body;
+  const qry = `
+update
+  TB_BANNER
+set
+  BANNER_PRIORITY = '${BANNER_PRIORITY}'
+where
+  BANNER_SID = '${BANNER_SID}'
+`;
+  const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
