@@ -157,9 +157,17 @@ const AdminProd = () => {
                 <p>{formatTime(el.PROD_REGDATE)}</p>
               </th>
               <th>
-                <Link to={`/admin/prod/${el.PROD_SID}`}>
-                  <S.Btn>상세보기</S.Btn>
-                </Link>
+                <S.Btn
+                  onClick={() => {
+                    window.open(
+                      `/admin/prod/${el.PROD_SID}`,
+                      "상품 상세",
+                      "width=1250,height=800,top=100,left=200"
+                    );
+                  }}
+                >
+                  상세보기
+                </S.Btn>
               </th>
             </tr>
           ))}

@@ -3883,19 +3883,20 @@ export const AdminProdImgBox = styled.div`
 `;
 
 export const AdminCateBox = styled.div`
-  width: 800px;
+  width: 100%;
   margin: 0 auto;
 `;
 
 export const AdminCateItem = styled.div`
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   text-align: center;
 
   & div {
     display: flex;
-    width: 200px;
+    width: 25%;
     height: 50px;
     border-bottom: 1px solid #ccc;
 

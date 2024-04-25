@@ -125,7 +125,6 @@ const AdminCate = () => {
   return (
     <S.MainLayout>
       <S.AdminWrapper>
-        카테고리 관리
         <S.AdminCateBox>
           <S.Btn onClick={handlePriority} margin="0.5rem 0">
             순서 저장

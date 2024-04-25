@@ -846,7 +846,9 @@ select
 from
 	TB_BANNER
 where
-	BANNER_CATE = '${BANNER_CATE}';
+	BANNER_CATE = '${BANNER_CATE}'
+  AND BANNER_CODE = '${BANNER_CODE}'
+  ;
 `;
 
   const res_qry = await getConnection(qry);

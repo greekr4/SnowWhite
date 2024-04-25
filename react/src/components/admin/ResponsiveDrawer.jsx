@@ -32,6 +32,8 @@ import AdminDashBoard from "./AdminDashBoard";
 import ViewQuiltIcon from "@mui/icons-material/ViewQuilt";
 import AdminUser from "./AdminUser";
 import AdminBanner from "./AdminBanner";
+import CategoryIcon from "@mui/icons-material/Category";
+import AdminCate from "./AdminCate";
 const drawerWidth = 240;
 
 const ResponsiveDrawer = (props) => {
@@ -157,6 +159,20 @@ const ResponsiveDrawer = (props) => {
               <AltRouteIcon />
             </ListItemIcon>
             <ListItemText primary={"옵션관리"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          key={"카테고리"}
+          disablePadding
+          onClick={(e) => {
+            setCurrentPgae(e.target.innerText);
+          }}
+        >
+          <ListItemButton>
+            <ListItemIcon>
+              <CategoryIcon />
+            </ListItemIcon>
+            <ListItemText primary={"카테고리"} />
           </ListItemButton>
         </ListItem>
       </List>
@@ -330,6 +346,8 @@ const ResponsiveDrawer = (props) => {
           <AdminDashBoard />
         ) : currentPage === "배너관리" ? (
           <AdminBanner />
+        ) : currentPage === "카테고리" ? (
+          <AdminCate />
         ) : null}
       </Box>
     </Box>

@@ -154,9 +154,13 @@ const AdminBanner_MainSlider = () => {
   };
 
   const handleUpdate = async (row) => {
-    console.log(row);
-    // row.id
-    // row.BANNER_PRIORITY
+    if (!row.BANNER_PRIORITY) {
+      setSnackbar({
+        children: "입력이 잘못되었습니다.",
+        severity: "info",
+      });
+      return false;
+    }
     const result = await axios.put(
       process.env.REACT_APP_DB_HOST + "/api/banner",
       {

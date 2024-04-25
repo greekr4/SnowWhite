@@ -22,6 +22,17 @@ exports.login = async (req, res) => {
     return `insert into tb_token values(?, ?) ON DUPLICATE KEY UPDATE token='${token}';`;
   };
 
+  const UpdateCount = (userid) => {
+    return `
+  update
+    TB_USER
+  set
+    LOGIN_CNT = LOGIN_CNT + 1
+  where
+    USER_ID = '${userid}'
+    `;
+  };
+
   const res_id = await getConnection(SelectUser(userid));
 
   // DB에러
@@ -39,7 +50,10 @@ exports.login = async (req, res) => {
     refreshToken,
   ]);
 
-  if (res_insert.state === false) return resstatus(401).send("DB Error.");
+  const res_update = await getConnection(UpdateCount(userid));
+
+  if (res_insert.state === false && res_update.state)
+    return resstatus(401).send("DB Error.");
 
   return res.status(200).send({ userid, accessToken, refreshToken });
 };

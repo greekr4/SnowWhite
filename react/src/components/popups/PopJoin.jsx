@@ -2,6 +2,16 @@ import { useId, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring, animated } from "react-spring";
 import axios from "axios";
+import {
+  Box,
+  Divider,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  TextField,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
   const [userid, setUserid] = useState();
@@ -25,46 +35,49 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
   };
 
   const handleJoin = () => {
-    const isInputEmpty = inputRefs.current.some((e) => {
-      if (!e.value) {
-        alert(`${e.placeholder}을(를) 입력해주세요`);
-        e.focus();
-        return true;
-      }
-      return false;
-    });
+    console.log(ckRefs.current);
 
-    const isCkEmpty = ckRefs.current.some((e) => {
-      if (!e.checked && !isInputEmpty) {
-        alert(`필수 약관 동의 부탁드립니다.`);
-        return true;
-      }
+    if (userid === undefined || userpw === undefined || usernm === undefined) {
+      alert("모두 입력해주세요");
       return false;
-    });
-
-    if (!isInputEmpty && !isCkEmpty) {
-      if (userpw != userpwck) {
-        alert("비밀번호를 확인해주세요.");
-        return false;
-      }
-      axios
-        .post(process.env.REACT_APP_DB_HOST + "/api/join", {
-          userid: userid,
-          userpw: userpw,
-          usernm: usernm,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log(res);
-            alert(res.data);
-            openPopup(0);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          alert(error.response.data);
-        });
     }
+
+    if (
+      emailError != null ||
+      pwError !== null ||
+      pwckError !== null ||
+      nmError !== null
+    ) {
+      alert("정확히 입력해주세요");
+      return false;
+    }
+
+    // let isck;
+
+    // ckRefs.current.map((el) => {
+    //   console.log(el.checked);
+    //   if (!el.checked) {
+    //     isck = false;
+    //   }
+    // });
+
+    axios
+      .post(process.env.REACT_APP_DB_HOST + "/api/join", {
+        userid: userid,
+        userpw: userpw,
+        usernm: usernm,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log(res);
+          alert(res.data);
+          openPopup(0);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.response.data);
+      });
   };
 
   const fadeInAnimation = useSpring({
@@ -72,6 +85,52 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
     from: { opacity: 0 },
     config: { tension: 200, friction: 20 },
   });
+
+  const [emailError, setEmailError] = useState();
+  const handleEmailChange = (e) => {
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!pattern.test(e.target.value)) {
+      setEmailError("유효하지 않은 이메일입니다.");
+    } else {
+      setEmailError(null);
+    }
+
+    setUserid(e.target.value);
+  };
+
+  const [pwError, setPwError] = useState();
+  const handlePwChange = (e) => {
+    if (e.target.value.length < 6) {
+      setPwError("6자리 이상 입력해주세요.");
+    } else {
+      setPwError(null);
+    }
+    setUserpw(e.target.value);
+  };
+
+  const [pwckError, setPwckError] = useState();
+  const handlePwckChange = (e) => {
+    if (e.target.value !== userpw) {
+      setPwckError("비밀번호가 올바르지 않습니다.");
+    } else {
+      setPwckError(null);
+    }
+    setUserpwck(e.target.value);
+  };
+
+  const [nmError, setNmError] = useState();
+  const handleNmChange = (e) => {
+    const pattern = /^[가-힣]*$/;
+
+    if (!pattern.test(e.target.value)) {
+      setNmError("이름을 정확히 입력해주세요.");
+    } else {
+      setNmError(null);
+    }
+
+    setUsernm(e.target.value);
+  };
+
   return (
     <>
       <S.Pop_overlay>
@@ -82,39 +141,50 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
             </S.Pop_Close_btn>
             <S.Pop_form>
               <S.Pop_Title>회원가입</S.Pop_Title>
-              <S.Pop_Input
-                placeholder="이메일 또는 아이디"
+              <TextField
+                fullWidth={true}
+                label="이메일"
+                defaultValue=""
+                helperText={emailError}
+                error={emailError ? true : false}
                 value={userid}
-                onChange={(e) => {
-                  setUserid(e.target.value);
-                }}
-                ref={(el) => (inputRefs.current[0] = el)}
+                onChange={handleEmailChange}
+                style={{ marginBottom: "0.6em" }}
               />
-              <S.Pop_Input
-                placeholder="비밀번호"
+
+              <TextField
+                fullWidth={true}
+                label="비밀번호"
                 type="password"
+                defaultValue=""
                 value={userpw}
-                onChange={(e) => {
-                  setUserpw(e.target.value);
-                }}
-                ref={(el) => (inputRefs.current[1] = el)}
-              ></S.Pop_Input>
-              <S.Pop_Input
-                placeholder="비밀번호 확인"
+                onChange={handlePwChange}
+                helperText={pwError}
+                error={pwError ? true : false}
+                style={{ marginBottom: "0.6em" }}
+              />
+
+              <TextField
+                fullWidth={true}
+                label="비밀번호 확인"
                 type="password"
+                defaultValue=""
                 value={userpwck}
-                onChange={(e) => {
-                  setUserpwck(e.target.value);
-                }}
-                ref={(el) => (inputRefs.current[2] = el)}
-              ></S.Pop_Input>
-              <S.Pop_Input
-                placeholder="이름"
+                onChange={handlePwckChange}
+                helperText={pwckError}
+                error={pwckError ? true : false}
+                style={{ marginBottom: "0.6em" }}
+              />
+              <TextField
+                fullWidth={true}
+                label="이름"
+                type="text"
+                defaultValue=""
                 value={usernm}
-                onChange={(e) => {
-                  setUsernm(e.target.value);
-                }}
-                ref={(el) => (inputRefs.current[3] = el)}
+                onChange={handleNmChange}
+                helperText={nmError}
+                error={nmError ? true : false}
+                style={{ marginBottom: "0.6em" }}
               />
 
               <S.Pop_Check>
