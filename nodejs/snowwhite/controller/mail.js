@@ -3,9 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { email_service, user, pass } = process.env;
 
-exports.sendMail = async (req, res) => {
-  const { mailto, title, text } = req.body;
-
+exports.sendMail = async (mailto, title, text, html) => {
   const transporter = nodemailer.createTransport({
     service: process.env.email_service,
     host: process.env.email_host,
@@ -21,6 +19,7 @@ exports.sendMail = async (req, res) => {
     to: `${mailto}`,
     subject: `${title}`,
     text: `${text}`,
+    html: `${html}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

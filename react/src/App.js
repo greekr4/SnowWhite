@@ -124,6 +124,7 @@ function App({ queryClient }) {
               element={<MyPage queryClient={queryClient} />}
             />
             <Route path="/intro0" element={<IntroPage0 />} />
+            <Route path="/*" element={<MainPage2 />} />
           </Route>
           <Route path="/editor" element={<TestKonva3 />} />
           <Route path="/test" element={<TestKonva />} />

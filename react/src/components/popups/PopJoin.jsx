@@ -3,21 +3,32 @@ import * as S from "../../styles/new_styles";
 import { useSpring, animated } from "react-spring";
 import axios from "axios";
 import {
+  Alert,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControl,
   IconButton,
   InputAdornment,
   OutlinedInput,
+  Snackbar,
   TextField,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { AccountCircle, Visibility, VisibilityOff } from "@mui/icons-material";
+import SendIcon from "@mui/icons-material/Send";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
   const [userid, setUserid] = useState();
   const [userpw, setUserpw] = useState();
   const [userpwck, setUserpwck] = useState();
   const [usernm, setUsernm] = useState();
+  const [snackbar, setSnackbar] = useState(false);
 
   const ckRefs = useRef([]);
   const inputRefs = useRef([]);
@@ -38,7 +49,10 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
     console.log(ckRefs.current);
 
     if (userid === undefined || userpw === undefined || usernm === undefined) {
-      alert("모두 입력해주세요");
+      setSnackbar({
+        children: "필수 항목을 모두 입력해주세요.",
+        severity: "info",
+      });
       return false;
     }
 
@@ -48,7 +62,29 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
       pwckError !== null ||
       nmError !== null
     ) {
-      alert("정확히 입력해주세요");
+      setSnackbar({
+        children: "필수 항목을 모두 입력해주세요.",
+        severity: "info",
+      });
+      return false;
+    }
+
+    if (authOk === false) {
+      setSnackbar({
+        children: "이메일 인증을 완료해주세요.",
+        severity: "info",
+      });
+      return false;
+    }
+    if (
+      ckRefs.current[0].checked === false ||
+      ckRefs.current[1].checked === false ||
+      ckRefs.current[2].checked === false
+    ) {
+      setSnackbar({
+        children: "필수 약관을 동의해주세요.",
+        severity: "info",
+      });
       return false;
     }
 
@@ -69,14 +105,14 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
       })
       .then((res) => {
         if (res.status === 200) {
-          console.log(res);
-          alert(res.data);
-          openPopup(0);
+          setDialogOpen(true);
         }
       })
       .catch((error) => {
-        console.log(error);
-        alert(error.response.data);
+        setSnackbar({
+          children: "회원 가입을 실패하였습니다.",
+          severity: "error",
+        });
       });
   };
 
@@ -131,8 +167,117 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
     setUsernm(e.target.value);
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [authInputShow, setAuthInputShow] = useState(false);
+  const [emailSendCk, setEamilSendCk] = useState(false);
+
+  const handleAuthEmail = async () => {
+    if (emailError !== null) {
+      setSnackbar({
+        children: "이메일을 정확히 입력해주세요.",
+        severity: "info",
+      });
+      return false;
+    }
+
+    const res_mail = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/join/auth",
+      {
+        email: userid,
+      }
+    );
+
+    if (res_mail.status === 200) {
+      setEamilSendCk(true);
+      setAuthInputShow(true);
+      setSnackbar({
+        children: "메일이 전송되었습니다.",
+        severity: "success",
+      });
+    } else if (res_mail.status === 201) {
+      setSnackbar({
+        children: "이미 가입된 이메일입니다.",
+        severity: "error",
+      });
+    } else {
+      setSnackbar({
+        children: "메일이 전송에 실패했습니다.",
+        severity: "error",
+      });
+    }
+  };
+
+  const [authOk, setAuthOk] = useState(false);
+  const [authNo, setAuthNo] = useState();
+
+  const handleAuthChange = (e) => {
+    setAuthNo(e.target.value);
+  };
+
+  const handleAuthButton = async () => {
+    const res_ck = await axios.get(
+      process.env.REACT_APP_DB_HOST + "/api/join/auth",
+      {
+        params: {
+          email: userid,
+          code: authNo,
+        },
+      }
+    );
+
+    if (res_ck.status === 200) {
+      setSnackbar({
+        children: "인증을 성공하였습니다.",
+        severity: "success",
+      });
+      setAuthOk(true);
+    } else {
+      setSnackbar({
+        children: "인증을 실패하였습니다.",
+        severity: "error",
+      });
+    }
+  };
+
+  const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          onClose={() => setSnackbar(false)}
+          autoHideDuration={3000}
+        >
+          <Alert {...snackbar} onClose={() => setSnackbar(false)} />
+        </Snackbar>
+      )}
+
+      <Dialog
+        open={dialogOpen}
+        onClose={() => {
+          // setDialogOpen(false);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Success"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            축하합니다! 스노우화이트 회원가입이 완료 되었습니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              openPopup(0);
+            }}
+            autoFocus
+          >
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
       <S.Pop_overlay>
         <animated.div style={fadeInAnimation}>
           <S.Pop_Container widthValue="440" heightValue="300">
@@ -150,24 +295,74 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
                 value={userid}
                 onChange={handleEmailChange}
                 style={{ marginBottom: "0.6em" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      {!emailSendCk && (
+                        <IconButton onClick={handleAuthEmail}>
+                          <SendIcon />
+                        </IconButton>
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
               />
+              {authInputShow && (
+                <TextField
+                  fullWidth={true}
+                  label="이메일 인증번호"
+                  defaultValue=""
+                  disabled={authOk ? true : false}
+                  value={authNo}
+                  onChange={handleAuthChange}
+                  style={{ marginBottom: "0.6em", transition: "1s ease" }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="start">
+                        {!authOk ? (
+                          <IconButton onClick={handleAuthButton}>
+                            <CheckCircleIcon />
+                          </IconButton>
+                        ) : (
+                          <IconButton>
+                            <CheckCircleIcon color="primary" />
+                          </IconButton>
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
 
               <TextField
                 fullWidth={true}
                 label="비밀번호"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 defaultValue=""
                 value={userpw}
                 onChange={handlePwChange}
                 helperText={pwError}
                 error={pwError ? true : false}
                 style={{ marginBottom: "0.6em" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        onClick={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <TextField
                 fullWidth={true}
                 label="비밀번호 확인"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 defaultValue=""
                 value={userpwck}
                 onChange={handlePwckChange}

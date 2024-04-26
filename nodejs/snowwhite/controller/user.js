@@ -1,11 +1,14 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const {
   makeToken,
   makeRefreshToken,
   refreshVerify,
   verify,
+  auth,
 } = require("../utils/authMiddleware");
 const { getConnection, Connection } = require("../utils/dbUtils");
+const { sendMail } = require("./mail");
 
 /**
  * 로그인
@@ -13,7 +16,7 @@ const { getConnection, Connection } = require("../utils/dbUtils");
  */
 exports.login = async (req, res) => {
   const { userid, userpw } = req.body;
-
+  const incode_pw = crypto.createHash("sha512").update(userpw).digest("base64");
   const SelectUser = (userid) => {
     return `select USER_ID,USER_PW from tb_user where USER_ID = '${userid}';`;
   };
@@ -38,9 +41,10 @@ exports.login = async (req, res) => {
   // DB에러
   if (res_id.state === false) return res.status(401).send("DB Error.");
   // 아이디 없음
-  if (res_id.row.length === 0) return res.status(401).send("ID Error");
+  if (res_id.row.length === 0) return res.status(201).send("ID Error");
   // 비밀번호 불일치
-  if (res_id.row[0].USER_PW != userpw) return res.status(401).send("PW Error");
+  if (res_id.row[0].USER_PW != incode_pw)
+    return res.status(201).send("PW Error");
 
   const accessToken = makeToken(userid);
   const refreshToken = makeRefreshToken();
@@ -177,13 +181,18 @@ where
 exports.join = async (req, res) => {
   const { userid, userpw, usernm } = req.body;
 
+  const incode_pw = crypto.createHash("sha512").update(userpw).digest("base64");
   const selectUser = `SELECT (1) FROM TB_USER WHERE USER_ID = '${userid}'`;
   const res_id = await getConnection(selectUser);
 
   if (res_id.row.length != 0) return res.status(401).send("ID 중복");
 
   const insertUser = `INSERT INTO tb_user (user_id, user_pw, user_nm) VALUES (?, ?, ?)`;
-  const res_insert = await getConnection(insertUser, [userid, userpw, usernm]);
+  const res_insert = await getConnection(insertUser, [
+    userid,
+    incode_pw,
+    usernm,
+  ]);
 
   if (res_insert.state === false) return res.status(401).send("DB Error.");
 
@@ -620,4 +629,82 @@ where
   const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row);
+};
+
+function generateRandomCode(n) {
+  let str = "";
+  for (let i = 0; i < n; i++) {
+    str += Math.floor(Math.random() * 10);
+  }
+  return str;
+}
+
+exports.email_auth_send = async (req, res) => {
+  const { email } = req.body;
+
+  const ck_qry = `
+select
+  COUNT(1) AS CNT
+from
+  TB_USER
+where
+  USER_ID = '${email}'
+  `;
+
+  const res_ck = await getConnection(ck_qry);
+
+  if (res_ck.row[0].CNT !== 0) {
+    return res.status(201).send("중복된 이메일");
+  }
+
+  const randomNumber = generateRandomCode(6);
+
+  const auth_qry = `
+insert
+	into
+	TB_EMAIL_AUTH (AUTH_EAMIL,
+	AUTH_CODE)
+values (
+'${email}',
+'${randomNumber}'
+)
+on
+DUPLICATE key
+update
+	AUTH_CODE = values(AUTH_CODE);
+  `;
+
+  const res_auth = await getConnection(auth_qry);
+
+  if (res_auth.state === false) return res.status(401).send("DB Error.");
+
+  const mailTitle = "[스노우화이트] 이메일 인증번호";
+  const mailContent = `
+<div style="text-align: center;"><br></div><div style="text-align: center;"><span style="font-family: &quot;Malgun Gothic&quot;, &quot;맑은 고딕&quot;, sans-serif; font-size: 24px; font-weight: bold; color: rgb(64, 159, 255);"><br></span></div><table style="margin: 0px; padding: 0px; letter-spacing: -0.5px; line-height: 1.6; font-variant-ligatures: normal; font-variant-caps: normal; orphans: 2; text-align: left; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; width: 600px; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;" data-workseditor="Table"><tbody><tr><td style="margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); white-space: normal;"><p style="margin: 15px 0px; padding: 0px; letter-spacing: -0.4px;"></p><div style="text-align: center;"><font style="font-family:Malgun Gothic, Lucida Grande, Lucida Sans, Lucida Sans Unicode, Arial, Helvetica, Verdana, sans-serif,color:#333333"><span style="font-weight: bold; font-family: &quot;Malgun Gothic&quot;, &quot;맑은 고딕&quot;, sans-serif; font-size: 24px; color: rgb(64, 159, 255);">스노우화이트</span></font></div><div style="text-align: center;"><font style="font-family:Malgun Gothic, Lucida Grande, Lucida Sans, Lucida Sans Unicode, Arial, Helvetica, Verdana, sans-serif,color:#333333"><br></font></div><div style="text-align: center;"><span style="font-size: 14px; font-style: normal; font-weight: 400; font-family: &quot;Malgun Gothic&quot;, &quot;Lucida Grande&quot;, &quot;Lucida Sans&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, Verdana, sans-serif; color: rgb(51, 51, 51);"><span style="font-family: &quot;Malgun Gothic&quot;, &quot;맑은 고딕&quot;, sans-serif;">스노우화이트 가입을 위한 인증번호 입니다.</span><br></span></div><div style="text-align: center;"><span style="font-size: 14px; font-style: normal; font-weight: 400; font-family: &quot;Malgun Gothic&quot;, &quot;맑은 고딕&quot;, sans-serif; color: rgb(51, 51, 51);">아래 인증번호 확인 후 이메일 인증을 완료해 주세요.</span></div><p></p><div style="margin: 24px 0px 72px; padding: 24px 32px; background-color: rgb(255, 250, 228);"><h2 style="margin: 0px 0px 15px; padding: 0px; line-height: 22px; text-align: center;"><span style="font-size: 18px; font-style: normal; font-weight: 400; font-family: &quot;Malgun Gothic&quot;, &quot;맑은 고딕&quot;, sans-serif; color: rgb(51, 51, 51);">인증 번호</span></h2><div style="text-align: center;"><strong style="display: block; font-size: 28px; font-weight: bold; color: rgb(64, 159, 255); letter-spacing: -0.6px; text-align: center; font-style: normal; font-family: &quot;Malgun Gothic&quot;, &quot;맑은 고딕&quot;, sans-serif;">${randomNumber}</strong></div></div></td></tr></tbody></table><br>
+`;
+  sendMail(email, mailTitle, "", mailContent);
+
+  return res.status(200).send("OK");
+};
+
+exports.email_auth_ck = async (req, res) => {
+  const email = req.query.email;
+  const code = req.query.code;
+
+  const ck_qry = `
+select
+	AUTH_CODE
+from
+	TB_EMAIL_AUTH
+where
+	AUTH_EAMIL = '${email}'
+`;
+
+  const res_ck = await getConnection(ck_qry);
+
+  if (code === res_ck.row[0].AUTH_CODE) {
+    return res.status(200).send("OK");
+  } else {
+    return res.status(201).send("Inconsistency");
+  }
 };

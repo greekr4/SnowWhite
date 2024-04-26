@@ -27,10 +27,11 @@ axios.interceptors.response.use(
     return response;
   },
   async (error) => {
-    // 전역적으로 401 오류를 처리합니다.
-    if (error.response.status === 419) {
-      console.log("리프레시 토큰 요청");
+    if (error.response.status === 401) {
+      window.location.href = "/";
+    }
 
+    if (error.response.status === 419) {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       const headers = {
@@ -52,8 +53,7 @@ axios.interceptors.response.use(
           window.location.replace("/");
         }
       } catch (error) {
-        console.log(error);
-        alert("토큰이 만료되었습니다.");
+        window.location.href = "/";
       }
     }
 

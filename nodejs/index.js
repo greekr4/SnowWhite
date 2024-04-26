@@ -36,6 +36,9 @@ const {
   select_mypage_info,
   select_recent_delis,
   update_cart_design,
+  email_auth,
+  email_auth_send,
+  email_auth_ck,
 } = require("./snowwhite/controller/user");
 const { cate, subcate } = require("./snowwhite/controller/menu");
 const {
@@ -284,6 +287,9 @@ app.put("/api/banner", auth, update_banner);
 //어드민 유저
 app.get("/api/admin/user", auth, select_admin_user);
 app.put("/api/admin/user", auth, update_admin_user);
+
+app.get("/api/join/auth", email_auth_ck);
+app.post("/api/join/auth", email_auth_send);
 
 app.listen("3030", () => {
   console.log("Server started");
