@@ -52,6 +52,7 @@ const {
   insert_custom_prod_and_cart,
   delete_cart,
   select_order,
+  select_paper,
 } = require("./snowwhite/controller/product");
 const {
   select_admin_prods,
@@ -290,6 +291,8 @@ app.put("/api/admin/user", auth, update_admin_user);
 
 app.get("/api/join/auth", email_auth_ck);
 app.post("/api/join/auth", email_auth_send);
+
+app.get("/api/paper", select_paper);
 
 app.listen("3030", () => {
   console.log("Server started");

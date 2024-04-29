@@ -1472,6 +1472,7 @@ export const Product_Detail_Option_Button = styled.div`
   height: 35px;
   line-height: 30px;
   text-align: center;
+  font-size: 12px;
 
   &:hover::before {
     content: "";
@@ -2421,6 +2422,12 @@ export const OrderListMidTextBox = styled.div``;
 
 export const OrderListMidProdBox = styled.div`
   margin-top: 2rem;
+
+  & button {
+    font-family: "Noto Sans KR";
+    font-weight: 400;
+  }
+
   & table {
     margin-bottom: 2rem;
     width: 100%;

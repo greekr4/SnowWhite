@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
 import { useSpring, animated } from "react-spring";
 import { formatDateAndTime } from "../../hooks/Utill";
+import { CircularProgress } from "@mui/material";
 
 const LogisItem = ({ data, index, lastindex }) => {
   return (
@@ -30,12 +31,16 @@ const LogisItem = ({ data, index, lastindex }) => {
 
 const PopLogisDetail = ({ openPopup, closePopup, popupData }) => {
   const [tarckData, setTrackData] = useState([]);
-
+  const [progress, setProgress] = useState(false);
   const fadeInAnimation = useSpring({
     to: { opacity: 1 },
     from: { opacity: 0 },
     config: { tension: 200, friction: 20 },
   });
+
+  useEffect(() => {
+    getLogisTrack();
+  }, []);
 
   const replaceLogisNm = (NM) => {
     switch (NM) {
@@ -71,8 +76,8 @@ const PopLogisDetail = ({ openPopup, closePopup, popupData }) => {
   };
 
   const getLogisTrack = async () => {
+    setProgress(true);
     const token = (await getToken()).access_token;
-    console.log("token", token);
     const url = "https://apis.tracker.delivery/graphql";
     const requestBody = {
       query:
@@ -99,12 +104,12 @@ const PopLogisDetail = ({ openPopup, closePopup, popupData }) => {
     } catch (error) {
       console.error("Error:", error);
     }
+    setProgress(false);
   };
 
   return (
     <>
       <S.Pop_overlay>
-        <S.Btn onClick={getLogisTrack}>test</S.Btn>
         <animated.div style={fadeInAnimation}>
           <S.Pop_Container
             widthValue="440"
@@ -153,6 +158,17 @@ const PopLogisDetail = ({ openPopup, closePopup, popupData }) => {
               </S.PopLogisIconBox>
               {/* {tarckData?.data?.track?.lastEvent.description} */}
               <S.PopLogisItemBox>
+                {progress && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "65%",
+                      left: "calc(50% - 20px)",
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                )}
                 {tarckData?.data?.track?.events?.edges
                   .reverse()
                   .map((el, index) => (

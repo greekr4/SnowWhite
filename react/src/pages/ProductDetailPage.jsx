@@ -36,7 +36,6 @@ const ProductDetailPage = ({ openPopup }) => {
         console.log(res);
         setProdDetail(res.data);
         setProdPrice(Math.round(res.data.PROD_PRICE));
-        setQty(res.data.PROD_QUANTITY.split(",")[0]);
       })
       .catch((error) => {
         console.log(error);
@@ -91,6 +90,24 @@ const ProductDetailPage = ({ openPopup }) => {
         })
       ).data
     );
+
+    const paperData = (
+      await axios.get(process.env.REACT_APP_DB_HOST + "/api/paper", {
+        params: {
+          PROD_SID: prod_sid,
+        },
+      })
+    ).data;
+
+    setPaper(paperData);
+
+    setPaperQty(paperData[0]?.PAPER_QTY);
+
+    setPaperAmt(paperData[0]?.PAPER_AMT);
+
+    setQty(paperData[0]?.PAPER_QTY.split(",")[0]);
+
+    setDefaultAmt(paperData[0]?.PAPER_AMT.split(",")[0]);
   };
 
   useEffect(() => {
@@ -242,6 +259,12 @@ const ProductDetailPage = ({ openPopup }) => {
     });
   };
 
+  const paperRef = useRef([]);
+  const [paper, setPaper] = useState([]);
+  const [paperQty, setPaperQty] = useState();
+  const [paperAmt, setPaperAmt] = useState();
+  const [defaultAmt, setDefaultAmt] = useState(0);
+
   return (
     <>
       <S.MainLayout>
@@ -277,14 +300,41 @@ const ProductDetailPage = ({ openPopup }) => {
                   <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
                 ))}
                 <S.Product_Detail_Option_ItemWrapper>
-                  {prodOptions?.map((options, index) => (
+                  <S.Product_Detail_Option_ItemText>
+                    용지
+                  </S.Product_Detail_Option_ItemText>
+                  <S.Product_Detail_Option_ButtonBox>
+                    {paper?.map((item, index) => (
+                      <S.Product_Detail_Option_Button
+                        key={index}
+                        ref={(el) => (paperRef.current[index] = el)}
+                        className={index === 0 ? "selected" : ""}
+                        onClick={() => {
+                          paperRef.current?.map((el, index) => {
+                            el.classList.remove("selected");
+                          });
+                          paperRef.current[index]?.classList.add("selected");
+
+                          //수량 설정
+                          setPaperQty(item.PAPER_QTY);
+                          setPaperAmt(item.PAPER_AMT);
+                          setQty(item.PAPER_QTY?.split(",")[0]);
+                          setDefaultAmt(item.PAPER_AMT?.split(",")[0]);
+                        }}
+                      >
+                        {item.PAPER_NM} {item.PAPER_WEIGHT}g
+                      </S.Product_Detail_Option_Button>
+                    ))}
+                  </S.Product_Detail_Option_ButtonBox>
+                  {/* {prodOptions?.map((options, index) => (
                     <OptionItem
                       Options={options}
                       seletedOptions={seletedOptions}
                       setSeletedOptions={setSeletedOptions}
                       calcPrice={calcPrice}
                     />
-                  ))}
+                  ))} */}
+
                   {/* 수량 */}
                   <S.Product_Detail_Option_ItemBox>
                     <S.Product_Detail_Option_ItemText>
@@ -299,17 +349,17 @@ const ProductDetailPage = ({ openPopup }) => {
                         </label>
                         <div className="content">
                           <ul>
-                            {prodDetail?.PROD_QUANTITY?.split(",").map(
-                              (el, index) => (
-                                <li
-                                  onClick={() => {
-                                    handleDropdown(el);
-                                  }}
-                                >
-                                  {el}
-                                </li>
-                              )
-                            )}
+                            {paperQty?.split(",").map((el, index) => (
+                              <li
+                                onClick={() => {
+                                  setQty(el);
+                                  setDefaultAmt(paperAmt.split(",")[index]);
+                                  DropDown.current.checked = false;
+                                }}
+                              >
+                                {el}
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -349,7 +399,7 @@ const ProductDetailPage = ({ openPopup }) => {
                 <S.ProdDetailPayBox>
                   <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
                   <S.ProdDetailPriceValue>
-                    {Math.round(prodPrice).toLocaleString("ko-KR")}원
+                    {Math.round(defaultAmt).toLocaleString("ko-KR")}원
                   </S.ProdDetailPriceValue>
                 </S.ProdDetailPayBox>
                 {/* <Link to="/order"> */}

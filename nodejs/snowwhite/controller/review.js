@@ -41,13 +41,13 @@ left outer join TB_PRODUCT T4
   `;
 
   if (prod_sid) {
-    where_qry += create_where(where_qry, `T1.PROD_SID = ${prod_sid}`);
+    where_qry += create_where(where_qry, `T1.PROD_SID = '${prod_sid}'`);
   }
   if (cate_sid) {
-    where_qry += create_where(where_qry, `T1.CATE_SID = ${cate_sid}`);
+    where_qry += create_where(where_qry, `T1.CATE_SID = '${cate_sid}'`);
   }
   if (review_sid) {
-    where_qry += create_where(where_qry, `T1.REVIEW_SID = ${cate_sid}`);
+    where_qry += create_where(where_qry, `T1.REVIEW_SID = '${cate_sid}'`);
   }
   if (order_sid) {
     where_qry += create_where(where_qry, `T1.ORDER_SID = '${order_sid}'`);

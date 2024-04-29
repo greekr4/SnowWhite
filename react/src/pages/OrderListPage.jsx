@@ -9,6 +9,11 @@ import { formatDate } from "../hooks/Utill";
 import Pagination from "react-js-pagination";
 import arrow_left from "../assets/icons/arrow_left.png";
 import arrow_right from "../assets/icons/arrow_right.png";
+import { Button } from "@mui/material";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import CancelIcon from "@mui/icons-material/Cancel";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const CustomDatePickerHeader = ({
   date,
@@ -272,9 +277,18 @@ const OrderListPage = ({ openPopup }) => {
                       <td>{renderStatus(el.ORDER_STATUS)}</td>
                       <td>
                         {el.ORDER_STATUS < 4 ? (
-                          <S.Btn>취소요청</S.Btn>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<CancelIcon />}
+                          >
+                            취소요청
+                          </Button>
                         ) : el.ORDER_STATUS === 4 ? (
-                          <S.Btn
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<LocalShippingIcon />}
                             onClick={() => {
                               openPopup("logisDetail", {
                                 ORDER_LOGIS_NM: el.ORDER_LOGIS_NM,
@@ -283,13 +297,12 @@ const OrderListPage = ({ openPopup }) => {
                             }}
                           >
                             배송추적
-                          </S.Btn>
+                          </Button>
                         ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === "N" ? (
-                          <S.Btn
-                            btnBgc="#469cff"
-                            fontColor="#fff"
-                            btnBgcHover="#7cb9ff"
-                            borderCHover="none"
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<RateReviewIcon />}
                             onClick={() => {
                               openPopup("reviewForm", {
                                 ORDER_SID: el.ORDER_SID,
@@ -303,9 +316,12 @@ const OrderListPage = ({ openPopup }) => {
                             }}
                           >
                             리뷰작성
-                          </S.Btn>
+                          </Button>
                         ) : (
-                          <S.Btn
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<VisibilityIcon />}
                             onClick={() => {
                               openPopup("reviewDetail", {
                                 order_sid: el.ORDER_SID,
@@ -313,7 +329,7 @@ const OrderListPage = ({ openPopup }) => {
                             }}
                           >
                             리뷰확인
-                          </S.Btn>
+                          </Button>
                         )}
                       </td>
                     </tr>
