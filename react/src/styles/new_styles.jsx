@@ -1394,11 +1394,11 @@ export const Product_Detail_Option_ItemWrapper = styled.div`
 
 export const Product_Detail_Option_ItemBox = styled.div`
   margin-top: 1rem;
-  margin-right: 2rem;
 `;
 export const Product_Detail_Option_ItemText = styled.div`
   color: #333;
   font-size: 0.8rem;
+  margin-bottom: 1em;
 `;
 export const Product_Detail_Option_ButtonBox = styled.div`
   display: inline-block;
@@ -1468,12 +1468,12 @@ export const Product_Detail_Option_Button = styled.div`
   border-bottom: 1px solid #ddd;
   background: none;
   color: #333;
-  width: 92px;
+  width: 33.334%;
   height: 35px;
   line-height: 30px;
   text-align: center;
   font-size: 12px;
-
+  overflow: hidden;
   &:hover::before {
     content: "";
     position: absolute;
@@ -4047,4 +4047,95 @@ export const BannerTitle = styled.div`
   text-align: center;
   font-size: 2em;
   font-weight: 550;
+`;
+
+export const OptionBtns = styled.div`
+  & .group {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  & button {
+    text-transform: none;
+    border-radius: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    overflow: hidden;
+    width: 155px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    &:nth-child(1) {
+      margin-left: -1px;
+    }
+    &:nth-child(n + 3) {
+      border-top: none;
+      border-left: 1px solid #ccc;
+    }
+    &:nth-child(2n) {
+      border-left: none;
+    }
+  }
+`;
+
+export const OptionBtns2 = styled.div`
+  & .group {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  & button {
+    text-transform: none;
+    border-radius: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    overflow: hidden;
+    width: 33.334%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    &:nth-child(1) {
+      margin-left: -1px;
+    }
+    &:nth-child(n + 4) {
+      border-top: none;
+      border-left: 1px solid #ccc;
+    }
+    &:nth-child(3n) {
+      border-left: none;
+    }
+  }
+`;
+
+export const OptionBtns3 = styled.div`
+  & .group {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  & button {
+    text-transform: none;
+    border-radius: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    overflow: hidden;
+    width: 25%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    &:nth-child(1) {
+      margin-left: -1px;
+    }
+    &:nth-child(n + 5) {
+      border-top: none;
+      border-left: 1px solid #ccc;
+    }
+    &:nth-child(3n) {
+      border-left: none;
+    }
+  }
+`;
+
+export const CheckBoxWrapper = styled.div`
+  & span {
+    font-size: 12px;
+    padding: 6px;
+  }
 `;

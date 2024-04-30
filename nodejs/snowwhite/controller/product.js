@@ -340,6 +340,7 @@ from
 	TB_PAPER
 where
 	PROD_SID = '${PROD_SID}'  
+order by PAPER_PRIORITY
   `;
 
   const res_data = await getConnection(qry);

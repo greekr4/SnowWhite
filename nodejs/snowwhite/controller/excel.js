@@ -17,17 +17,12 @@ async function readExcel() {
   const PAPER_WEIGHTS = [];
   const PAPER_QTYS = [];
   const PAPER_AMTS = [];
-
+  const PRIORITYS = [];
   const QRYS = [];
+  let index = 1;
 
   // 각 행을 반복하며 데이터 읽기
   worksheet.eachRow((row, rowNumber) => {
-    // const rowData = [];
-    // row.eachCell((cell, colNumber) => {
-    //   rowData.push(cell.value);
-    // });
-    // console.log(`Row ${rowNumber}: ${rowData.join(", ")}`);
-
     // 용지 이름
     if (rowNumber >= 3 && rowNumber % 2 !== 0) {
       let NM = "";
@@ -50,6 +45,8 @@ async function readExcel() {
       PAPER_NMS.push(NM);
       PAPER_WEIGHTS.push(WEIGHT);
       PAPER_QTYS.push(QTY);
+      PRIORITYS.push(index);
+      index++;
     }
 
     if (rowNumber >= 3 && rowNumber % 2 === 0) {
@@ -79,7 +76,9 @@ INSERT INTO tb_paper
     PAPER_NM, 
     PAPER_WEIGHT, 
     PAPER_QTY, 
-    PAPER_AMT)
+    PAPER_AMT,
+    PAPER_PRIORITY
+  )
 VALUES
 (
     ?,
@@ -88,7 +87,9 @@ VALUES
     ?,
     ?,
     ?,
-    ?)
+    ?,
+    ?
+)
 `;
 
   for (let i = 0; i < PAPER_SID.length; i++) {
@@ -98,6 +99,7 @@ VALUES
       PAPER_WEIGHTS[i],
       PAPER_QTYS[i].toString(),
       PAPER_AMTS[i].toString(),
+      PRIORITYS[i],
     ]);
   }
 }
