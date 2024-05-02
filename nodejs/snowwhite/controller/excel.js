@@ -61,17 +61,11 @@ async function readExcel() {
       PAPER_AMTS.push(AMT);
     }
   });
-  console.log(PAPER_SID);
-  console.log(PAPER_NMS);
-  console.log(PAPER_WEIGHTS);
-  console.log(PAPER_QTYS);
-  console.log(PAPER_AMTS);
 
   const qry = `
 INSERT INTO tb_paper
 (
     PAPER_SID, 
-    PROD_SID, 
     PAPER_CATE, 
     PAPER_NM, 
     PAPER_WEIGHT, 
@@ -82,7 +76,6 @@ INSERT INTO tb_paper
 VALUES
 (
     ?,
-    'PROD_00000021',
     '명함',
     ?,
     ?,

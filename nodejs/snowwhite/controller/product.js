@@ -333,14 +333,51 @@ order by ITEM_REGDATE desc
 exports.select_paper = async (req, res) => {
   const { PROD_SID } = req.query;
 
+  //   const qry = `
+  // select
+  // 	T1.*,
+  //   row_number() over (
+  //     order by
+  //       T1.PAPER_PRIORITY) as id
+  // from
+  // 	TB_PAPER T1
+  // where
+  // 	PROD_SID = '${PROD_SID}'
+  // order by PAPER_PRIORITY
+  //   `;
+
   const qry = `
 select
-	*
+	T1.*
 from
-	TB_PAPER
+	TB_PAPER T1
+inner join TB_PRODUCT_PAPER T2
+on
+	T1.PAPER_SID = T2.PAPER_SID
 where
-	PROD_SID = '${PROD_SID}'  
-order by PAPER_PRIORITY
+	T2.PROD_SID = '${PROD_SID}'
+order by PAPER_PRIORITY  
+`;
+
+  const res_data = await getConnection(qry);
+
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};
+
+exports.select_option_price = async (req, res) => {
+  const { PROD_SID } = req.query;
+
+  const qry = `
+select
+	T1.*
+from
+	TB_OPTION_PRICE T1
+inner join TB_PRODUCT_OPTION T2
+on
+	T1.OPTION_SID = T2.OPTION_SID
+where
+	T2.PROD_SID = '${PROD_SID}'  
   `;
 
   const res_data = await getConnection(qry);

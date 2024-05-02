@@ -53,6 +53,7 @@ const {
   delete_cart,
   select_order,
   select_paper,
+  select_option_price,
 } = require("./snowwhite/controller/product");
 const {
   select_admin_prods,
@@ -90,6 +91,9 @@ const {
   insert_banner,
   delete_banner,
   update_banner,
+  select_admin_paper,
+  update_admin_paper,
+  select_admin_option_price,
 } = require("./snowwhite/controller/admin");
 const {
   upload,
@@ -289,10 +293,22 @@ app.put("/api/banner", auth, update_banner);
 app.get("/api/admin/user", auth, select_admin_user);
 app.put("/api/admin/user", auth, update_admin_user);
 
+//회원가입
 app.get("/api/join/auth", email_auth_ck);
 app.post("/api/join/auth", email_auth_send);
 
+//용지
 app.get("/api/paper", select_paper);
+
+//후가공 가격
+app.get("/api/option_price", select_option_price);
+
+//어드민 용지
+app.get("/api/admin/paper", auth, select_admin_paper);
+app.put("/api/admin/paper", auth, update_admin_paper);
+
+//어드민 옵션 가격 테이블
+app.get("/api/admin/option_price", auth, select_admin_option_price);
 
 app.listen("3030", () => {
   console.log("Server started");

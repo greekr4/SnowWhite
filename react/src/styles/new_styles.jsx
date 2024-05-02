@@ -128,11 +128,11 @@ export const HeaderGnbRows = styled.div`
 
 export const HeaderLogoBox = styled.div`
   display: block;
-  width: 100px;
+  width: 150px;
   height: ${(props) => (props.height ? props.height : "80px")};
   background-image: url(${(props) => (props.img ? props.img : "")});
   background-position: center;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   cursor: pointer;
 `;
@@ -4137,5 +4137,11 @@ export const CheckBoxWrapper = styled.div`
   & span {
     font-size: 12px;
     padding: 6px;
+  }
+`;
+
+export const CustomBox = styled.div`
+  & td {
+    border: 1px solid #ddd;
   }
 `;

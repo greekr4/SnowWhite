@@ -34,6 +34,9 @@ import AdminUser from "./AdminUser";
 import AdminBanner from "./AdminBanner";
 import CategoryIcon from "@mui/icons-material/Category";
 import AdminCate from "./AdminCate";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import AdminPaper from "./AdminPaper";
+import AdminOptionPrice from "./AdminOptionPrice";
 const drawerWidth = 240;
 
 const ResponsiveDrawer = (props) => {
@@ -147,8 +150,24 @@ const ResponsiveDrawer = (props) => {
             <ListItemText primary={"상품관리"} />
           </ListItemButton>
         </ListItem>
+        {/* 용지관리 */}
         <ListItem
-          key={"옵션관리"}
+          key={"용지관리"}
+          disablePadding
+          onClick={(e) => {
+            setCurrentPgae(e.target.innerText);
+          }}
+        >
+          <ListItemButton>
+            <ListItemIcon>
+              <ReceiptLongIcon />
+            </ListItemIcon>
+            <ListItemText primary={"용지관리"} />
+          </ListItemButton>
+        </ListItem>
+        {/* 후가공관리 */}
+        <ListItem
+          key={"후가공관리"}
           disablePadding
           onClick={(e) => {
             setCurrentPgae(e.target.innerText);
@@ -158,9 +177,10 @@ const ResponsiveDrawer = (props) => {
             <ListItemIcon>
               <AltRouteIcon />
             </ListItemIcon>
-            <ListItemText primary={"옵션관리"} />
+            <ListItemText primary={"후가공관리"} />
           </ListItemButton>
         </ListItem>
+        {/* 카테고리 */}
         <ListItem
           key={"카테고리"}
           disablePadding
@@ -348,6 +368,10 @@ const ResponsiveDrawer = (props) => {
           <AdminBanner />
         ) : currentPage === "카테고리" ? (
           <AdminCate />
+        ) : currentPage === "용지관리" ? (
+          <AdminPaper />
+        ) : currentPage === "후가공관리" ? (
+          <AdminOptionPrice />
         ) : null}
       </Box>
     </Box>

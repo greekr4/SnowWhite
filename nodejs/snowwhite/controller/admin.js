@@ -886,3 +886,59 @@ where
   if (res_qry.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
+
+exports.select_admin_paper = async (req, res) => {
+  const qry = `
+  select
+  	T1.*,
+    row_number() over (
+      order by
+        T1.PAPER_PRIORITY) as id
+  from
+  	TB_PAPER T1
+  order by PAPER_PRIORITY
+    `;
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};
+
+exports.update_admin_paper = async (req, res) => {
+  const { row } = req.body;
+
+  const qry = `
+update
+	TB_PAPER
+set
+	PAPER_CATE = '${row.PAPER_CATE}',
+	PAPER_NM = '${row.PAPER_NM}',
+	PAPER_WEIGHT = '${row.PAPER_WEIGHT}',
+	PAPER_QTY = '${row.PAPER_QTY}',
+	PAPER_AMT = '${row.PAPER_AMT}',
+	PAPER_MODIDATE = now(),
+	PAPER_PRIORITY = ${row.PAPER_PRIORITY}
+where
+	PAPER_SID = '${row.PAPER_SID}';
+  `;
+
+  const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.select_admin_option_price = async (req, res) => {
+  const qry = `
+select
+T1.*,
+row_number() over (
+  order by
+    T1.OPTION_NM) as id
+from
+TB_OPTION_PRICE T1
+order by OPTION_NM
+`;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};

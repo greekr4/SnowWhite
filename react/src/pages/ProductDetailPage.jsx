@@ -108,6 +108,14 @@ const ProductDetailPage = ({ openPopup }) => {
       })
     ).data;
 
+    const optionPriceData = (
+      await axios.get(process.env.REACT_APP_DB_HOST + "/api/option_price", {
+        params: {
+          PROD_SID: prod_sid,
+        },
+      })
+    ).data;
+
     setPaper(paperData);
 
     setPaperQty(paperData[0]?.PAPER_QTY);
@@ -117,6 +125,8 @@ const ProductDetailPage = ({ openPopup }) => {
     setQty(paperData[0]?.PAPER_QTY.split(",")[0]);
 
     setDefaultAmt(paperData[0]?.PAPER_AMT.split(",")[0]);
+
+    setOptionPriceTable(optionPriceData);
   };
 
   useEffect(() => {
@@ -284,6 +294,7 @@ const ProductDetailPage = ({ openPopup }) => {
   //옵션 종합
 
   const [selOption, setSelOption] = useState({});
+  const [optionPriceTable, setOptionPriceTable] = useState([]);
 
   const testOptionTable = [
     {
@@ -330,6 +341,11 @@ const ProductDetailPage = ({ openPopup }) => {
 
   // 옵션 가격 계산 함수
   const calculateOptionPrice = (qty, option) => {
+    if (!option) {
+      alert(`가격 테이블이 설정되지 않았습니다.`);
+      return false;
+    }
+
     if (qty < option.OPTION_DEFAULT_QTY) {
       // OPTION_DEFAULT_QTY보다 작은 경우 기본 가격 반환
       return option.OPTION_DEFAULT_AMT;
@@ -348,18 +364,19 @@ const ProductDetailPage = ({ openPopup }) => {
     let amt = 0;
 
     if (selOption.earDori === true) {
-      let test = testOptionTable.find(
+      let test = optionPriceTable.find(
         (option) => option.OPTION_NM === "귀도리"
       );
       amt += calculateOptionPrice(qty, test);
     }
 
     if (selOption.perforated === true) {
-      let test = testOptionTable.find(
+      let test = optionPriceTable.find(
         (option) =>
           option.OPTION_NM === "타공" &&
           option.OPTION_DETAIL === selOption.perforatedQty
       );
+
       amt += calculateOptionPrice(qty, test);
     }
 
@@ -408,7 +425,6 @@ const ProductDetailPage = ({ openPopup }) => {
                   <S.Product_Detail_Option_ItemBox>
                     <S.Product_Detail_Option_ItemText>
                       용지
-                      <Button onClick={updateOptionAmt}>dd</Button>
                     </S.Product_Detail_Option_ItemText>
                     <S.OptionBtns>
                       <ToggleButtonGroup
@@ -447,18 +463,15 @@ const ProductDetailPage = ({ openPopup }) => {
                   {/* 수량 */}
 
                   {/* 후가공 옵션 */}
-                  <OptionToggle
-                    type={"귀도리"}
-                    selOption={selOption}
-                    setSelOption={setSelOption}
-                    updateOptionAmt={updateOptionAmt}
-                  />
-                  <OptionToggle
-                    type={"타공"}
-                    selOption={selOption}
-                    setSelOption={setSelOption}
-                    updateOptionAmt={updateOptionAmt}
-                  />
+
+                  {prodDetail?.PROD_OPTIONS?.split("|")?.map((el, index) => (
+                    <OptionToggle
+                      type={el}
+                      selOption={selOption}
+                      setSelOption={setSelOption}
+                      updateOptionAmt={updateOptionAmt}
+                    />
+                  ))}
 
                   <S.Product_Detail_Option_ItemBox>
                     <S.Product_Detail_Option_ItemText>
@@ -470,7 +483,7 @@ const ProductDetailPage = ({ openPopup }) => {
                       inputProps={{ "aria-label": "Without label" }}
                       autoWidth={true}
                     >
-                      {paperQty?.split(",").map((el, index) => (
+                      {paperQty?.split(",")?.map((el, index) => (
                         <MenuItem
                           value={el}
                           onClick={() => {
