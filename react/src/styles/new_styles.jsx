@@ -4141,7 +4141,29 @@ export const CheckBoxWrapper = styled.div`
 `;
 
 export const CustomBox = styled.div`
-  & td {
+  & td,
+  th {
     border: 1px solid #ddd;
+    text-align: center;
+  }
+
+  & th {
+    font-weight: 550;
+  }
+
+  & input {
+    text-align: center;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  & input[type="number"]::-webkit-inner-spin-button,
+  & input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  & input[type="number"] {
+    -moz-appearance: textfield;
   }
 `;

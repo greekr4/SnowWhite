@@ -94,6 +94,8 @@ const {
   select_admin_paper,
   update_admin_paper,
   select_admin_option_price,
+  insert_admin_paper,
+  delete_admin_paper,
 } = require("./snowwhite/controller/admin");
 const {
   upload,
@@ -111,6 +113,7 @@ const {
   update_board,
 } = require("./snowwhite/controller/board");
 const { tosspayConfirm } = require("./snowwhite/controller/tosspay");
+const { paperExcelUpload } = require("./snowwhite/controller/excel");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -305,10 +308,14 @@ app.get("/api/option_price", select_option_price);
 
 //어드민 용지
 app.get("/api/admin/paper", auth, select_admin_paper);
+app.post("/api/admin/paper", auth, insert_admin_paper);
 app.put("/api/admin/paper", auth, update_admin_paper);
+app.delete("/api/admin/paper", auth, delete_admin_paper);
 
 //어드민 옵션 가격 테이블
 app.get("/api/admin/option_price", auth, select_admin_option_price);
+
+app.post("/api/paper_excel", auth, paperExcelUpload);
 
 app.listen("3030", () => {
   console.log("Server started");

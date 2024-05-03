@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   CircularProgress,
+  Container,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -14,6 +15,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
@@ -28,7 +30,15 @@ import Dialog from "@mui/material/Dialog";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Add,
+  DeleteForever,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
+import UploadIcon from "@mui/icons-material/Upload";
+import DownloadIcon from "@mui/icons-material/Download";
+import AddIcon from "@mui/icons-material/Add";
 const AdminPaper = () => {
   const columns = [
     { field: "id", headerName: "순번", width: 150 },
@@ -162,6 +172,85 @@ const AdminPaper = () => {
 
   const [selectedRows, setSelectedRows] = useState([]);
 
+  const handleDelete = async () => {
+    const PAPER_SIDS = [];
+    Array.from(apiRef.current.getSelectedRows().values()).map((el, index) => {
+      PAPER_SIDS.push(el.PAPER_SID);
+    });
+
+    const res = await axios.delete(
+      process.env.REACT_APP_DB_HOST + "/api/admin/paper",
+      {
+        data: {
+          PAPER_SIDS: PAPER_SIDS,
+        },
+      }
+    );
+    if (res.status === 200) {
+      setSnackbar({
+        children: "삭제를 완료하였습니다.",
+        severity: "success",
+      });
+      initdb();
+    } else {
+      setSnackbar({
+        children: "삭제를 실패하였습니다.",
+        severity: "error",
+      });
+    }
+  };
+
+  const handleUpload = async () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "pdf/*");
+    input.click();
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("dir", "excel");
+      formData.append("userid", "admin");
+      formData.append("fulldir", true);
+
+      try {
+        const result = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/upload_global",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        const fileUrl = result.data;
+
+        const result2 = await axios.post(
+          process.env.REACT_APP_DB_HOST + "/api/paper_excel",
+          {
+            filePath: fileUrl,
+          }
+        );
+
+        if (result2.status === 200) {
+          initdb();
+
+          setSnackbar({
+            children: "업로드 완료하였습니다.",
+            severity: "success",
+          });
+        } else {
+          setSnackbar({
+            children: "실패하였습니다.",
+            severity: "error",
+          });
+        }
+      } catch (error) {
+        console.log("실패");
+      }
+    });
+  };
+
   return (
     <>
       <S.MainLayout>
@@ -170,43 +259,83 @@ const AdminPaper = () => {
       {/* <div style={{ margin: "10em auto", width: "100px" }}>
           <CircularProgress />
         </div> */}
-      <Button
-        variant="outlined"
-        startIcon={<Visibility />}
-        style={{ marginBottom: "0.5em" }}
-        onClick={() => {
-          setSelectedRows(
-            Array.from(apiRef.current.getSelectedRows().values())
-          );
-        }}
+      <Box
+        textAlign={"left"}
+        width={"50%"}
+        display={"inline-block"}
+        marginBottom={"8px"}
       >
-        표로 보기
-      </Button>
-      {selectedRows.length > 0 && (
         <Button
           variant="outlined"
-          startIcon={<VisibilityOff />}
-          style={{ margin: "0 0 0.5em 0.5em" }}
+          startIcon={<Add />}
           onClick={() => {
-            setSelectedRows([]);
+            setAddOpen(true);
           }}
         >
-          닫기
+          추가하기
         </Button>
-      )}
-      <Button
-        variant="outlined"
-        startIcon={<Visibility />}
-        style={{ marginBottom: "0.5em" }}
-        onClick={() => {
-          setAddOpen(true);
-        }}
+        <Button
+          variant="outlined"
+          startIcon={<GridDeleteIcon />}
+          style={{ marginLeft: "6px" }}
+          onClick={handleDelete}
+        >
+          선택 삭제
+        </Button>
+
+        <Button
+          variant="outlined"
+          startIcon={<Visibility />}
+          style={{ marginLeft: "6px" }}
+          onClick={() => {
+            setSelectedRows(
+              Array.from(apiRef.current.getSelectedRows().values())
+            );
+          }}
+        >
+          표로 보기
+        </Button>
+        {selectedRows.length > 0 && (
+          <Button
+            variant="outlined"
+            startIcon={<VisibilityOff />}
+            style={{ marginLeft: "6px" }}
+            onClick={() => {
+              setSelectedRows([]);
+            }}
+          >
+            닫기
+          </Button>
+        )}
+      </Box>
+      <Box
+        textAlign={"right"}
+        width={"50%"}
+        display={"inline-block"}
+        marginBottom={"8px"}
       >
-        표로 보기
-      </Button>
+        <Button
+          variant="outlined"
+          startIcon={<DownloadIcon />}
+          style={{ marginLeft: "6px" }}
+          onClick={() => {
+            window.open("/download/용지관리_양식.xlsx");
+          }}
+        >
+          양식 다운로드
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<UploadIcon />}
+          style={{ marginLeft: "6px" }}
+          onClick={handleUpload}
+        >
+          엑셀 업로드
+        </Button>
+      </Box>
       {selectedRows.length > 0 && (
         <TableContainer component={Paper} sx={{ marginBottom: "2em" }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table" size="small">
             <TableHead>
               <TableRow>
                 <TableCell
@@ -358,6 +487,7 @@ const AdminPaper = () => {
         open={addOpen}
         onClose={handleClose}
         setSnackbar={setSnackbar}
+        initdb={initdb}
       />
     </>
   );
@@ -395,9 +525,7 @@ const ChoiceDialog = (props) => {
     onClose();
   };
 
-  const handleListItemClick = (value) => {
-    onClose(value);
-  };
+  const qtyRef = useRef(null);
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -433,46 +561,45 @@ const ChoiceDialog = (props) => {
 };
 
 const AddDialog = (props) => {
-  const { onClose, selectedValue, open, setSnackbar } = props;
+  const { onClose, selectedValue, open, setSnackbar, initdb } = props;
 
   const handleClose = () => {
     onClose();
     setSnackbar({
-      children: "변경을 취소하였습니다.",
+      children: "추가를 취소하였습니다.",
       severity: "info",
     });
-  };
-
-  const handleYes = async () => {
-    const res = await axios.put(
-      process.env.REACT_APP_DB_HOST + "/api/admin/paper",
-      {
-        row: selectedValue,
-      }
-    );
-    if (res.status === 200) {
-      setSnackbar({
-        children: "변경을 완료하였습니다.",
-        severity: "success",
-      });
-    } else {
-      setSnackbar({
-        children: "변경을 실패하였습니다.",
-        severity: "error",
-      });
-    }
-    onClose();
   };
 
   const handleListItemClick = (value) => {
     onClose(value);
   };
 
+  const [paperCate, setPaperCate] = useState();
+  const [paperNm, setPaperNm] = useState();
+  const [paperWeight, setPaperWeight] = useState();
+  const [qtyData, setQtyData] = useState(Array(10).fill(""));
+  const [amtData, setAmtData] = useState(Array(10).fill(""));
+
+  const handleChange_qty = (index, value) => {
+    const newData = [...qtyData];
+    newData[index] = value;
+    setQtyData(newData);
+  };
+  const handleChange_amt = (index, value) => {
+    const newData = [...amtData];
+    newData[index] = value;
+    setAmtData(newData);
+  };
+
   return (
     <Dialog onClose={handleClose} open={open} maxWidth={800}>
       {/* <DialogTitle id="alert-dialog-title">알림</DialogTitle> */}
-      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-        용지 추가하기
+      <DialogTitle
+        sx={{ m: 0, p: 2, textAlign: "center" }}
+        id="customized-dialog-title"
+      >
+        용지 추가
       </DialogTitle>
       <IconButton
         aria-label="close"
@@ -495,52 +622,140 @@ const AddDialog = (props) => {
               aria-label="a dense table"
             >
               <TableBody>
-                <TableRow>
-                  <TableCell align="center">카테고리</TableCell>
-                  <TableCell colSpan={"100%"}>
-                    <input type="text" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="center">판형</TableCell>
-                  <TableCell colSpan={"100%"}>
-                    <input type="text" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="center">평량</TableCell>
-                  <TableCell colSpan={"100%"}>
-                    <input type="text" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="center">수량</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="center">금액</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>100</TableCell>
-                </TableRow>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>카테고리</TableCell>
+                    <TableCell>판형</TableCell>
+                    <TableCell>평량</TableCell>
+                    <TableCell colSpan={"100%"}>비고</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell rowSpan={2}>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="명함"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperCate}
+                        onChange={(e) => {
+                          setPaperCate(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell rowSpan={2}>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="스노우"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperNm}
+                        onChange={(e) => {
+                          setPaperNm(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell rowSpan={2}>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="210"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        type="number"
+                        value={paperWeight}
+                        onChange={(e) => {
+                          setPaperWeight(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "550" }}>수량</TableCell>
+                    {qtyData.map((el, index) => (
+                      <TableCell>
+                        <TextField
+                          id="standard-basic"
+                          variant="standard"
+                          placeholder={(index + 1) * 100}
+                          size="small"
+                          sx={{ width: "50px" }}
+                          type="number"
+                          value={el}
+                          onChange={(e) =>
+                            handleChange_qty(index, e.target.value)
+                          }
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "550" }}>가격</TableCell>
+                    {amtData.map((el, index) => (
+                      <TableCell>
+                        <TextField
+                          id="standard-basic"
+                          variant="standard"
+                          placeholder={(index + 1) * 5000}
+                          size="small"
+                          sx={{ width: "50px" }}
+                          type="number"
+                          value={el}
+                          onChange={(e) =>
+                            handleChange_amt(index, e.target.value)
+                          }
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableBody>
               </TableBody>
             </Table>
           </TableContainer>
         </S.CustomBox>
+        <Box margin={"1em 0 0 0"} width={"100%"} textAlign={"center"}>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              const PAPER_QTY = [];
+              const PAPER_AMT = [];
+              qtyData.map((el, index) => {
+                if (el !== "") PAPER_QTY.push(el);
+              });
+              amtData.map((el, index) => {
+                if (el !== "") PAPER_AMT.push(el);
+              });
+
+              const res = await axios.post(
+                process.env.REACT_APP_DB_HOST + "/api/admin/paper",
+                {
+                  PAPER_CATE: paperCate,
+                  PAPER_NM: paperNm,
+                  PAPER_WEIGHT: paperWeight,
+                  PAPER_QTY: PAPER_QTY.toString(),
+                  PAPER_AMT: PAPER_AMT.toString(),
+                }
+              );
+
+              if (res.status === 200) {
+                setSnackbar({
+                  children: "추가를 완료하였습니다.",
+                  severity: "success",
+                });
+                initdb();
+              } else {
+                setSnackbar({
+                  children: "추가를 실패하였습니다.",
+                  severity: "error",
+                });
+              }
+              onClose();
+            }}
+          >
+            추가
+          </Button>
+        </Box>
       </DialogContent>
     </Dialog>
   );

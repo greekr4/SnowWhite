@@ -7,15 +7,25 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "../../styles/new_styles";
-import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid, GridDeleteIcon, useGridApiRef } from "@mui/x-data-grid";
 import Snackbar from "@mui/material/Snackbar";
 import Dialog from "@mui/material/Dialog";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
+import { Add } from "@mui/icons-material";
 const AdminOptionPrice = () => {
   const columns = [
     { field: "id", headerName: "순번", width: 150 },
@@ -159,8 +169,11 @@ const AdminOptionPrice = () => {
 
   const handleClose = (value) => {
     setOpen(false);
+    setAddOpen(false);
   };
   const apiRef = useGridApiRef();
+
+  const [addOpen, setAddOpen] = useState(false);
   return (
     <>
       <S.MainLayout>
@@ -169,6 +182,30 @@ const AdminOptionPrice = () => {
       {/* <div style={{ margin: "10em auto", width: "100px" }}>
           <CircularProgress />
         </div> */}
+      <Box
+        textAlign={"left"}
+        width={"50%"}
+        display={"inline-block"}
+        marginBottom={"8px"}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={() => {
+            setAddOpen(true);
+          }}
+        >
+          추가하기
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<GridDeleteIcon />}
+          style={{ marginLeft: "6px" }}
+        >
+          선택 삭제
+        </Button>
+      </Box>
+
       <Box sx={{ height: 750, width: "100%" }}>
         <DataGrid
           apiRef={apiRef}
@@ -210,6 +247,14 @@ const AdminOptionPrice = () => {
         open={open}
         onClose={handleClose}
         setSnackbar={setSnackbar}
+      />
+
+      <AddDialog
+        selectedValue={selectedValue}
+        open={addOpen}
+        onClose={handleClose}
+        setSnackbar={setSnackbar}
+        initdb={initdb}
       />
     </>
   );
@@ -283,4 +328,334 @@ const ChoiceDialog = (props) => {
     </Dialog>
   );
 };
+
+const AddDialog = (props) => {
+  const { onClose, selectedValue, open, setSnackbar, initdb } = props;
+
+  const handleClose = () => {
+    onClose();
+    setSnackbar({
+      children: "추가를 취소하였습니다.",
+      severity: "info",
+    });
+  };
+
+  const handleListItemClick = (value) => {
+    onClose(value);
+  };
+
+  const [paperCate, setPaperCate] = useState();
+  const [paperNm, setPaperNm] = useState();
+  const [paperWeight, setPaperWeight] = useState();
+  const [qtyData, setQtyData] = useState(Array(10).fill(""));
+  const [amtData, setAmtData] = useState(Array(10).fill(""));
+
+  const handleChange_qty = (index, value) => {
+    const newData = [...qtyData];
+    newData[index] = value;
+    setQtyData(newData);
+  };
+  const handleChange_amt = (index, value) => {
+    const newData = [...amtData];
+    newData[index] = value;
+    setAmtData(newData);
+  };
+
+  const options = [
+    {
+      value: "오시",
+      label: "오시",
+      sub: [
+        {
+          value: "1줄",
+          label: "1줄",
+        },
+        {
+          value: "2줄",
+          label: "2줄",
+        },
+        {
+          value: "3줄",
+          label: "3줄",
+        },
+      ],
+    },
+    {
+      value: "미싱",
+      label: "미싱",
+    },
+    {
+      value: "코팅",
+      label: "코팅",
+    },
+    {
+      value: "도무송",
+      label: "도무송",
+    },
+    {
+      value: "박",
+      label: "박",
+    },
+    {
+      value: "형압",
+      label: "형압",
+    },
+    {
+      value: "타공",
+      label: "타공",
+    },
+    {
+      value: "접지",
+      label: "접지",
+    },
+    {
+      value: "접착",
+      label: "접착",
+    },
+    {
+      value: "귀도리",
+      label: "귀도리",
+      sub: [
+        {
+          value: "둥근 모서리",
+          label: "둥근 모서리",
+        },
+      ],
+    },
+    {
+      value: "부분코팅",
+      label: "부분코팅",
+    },
+    {
+      value: "에폭시",
+      label: "에폭시",
+    },
+  ];
+
+  const [selectedOptionNm, setSelectedOptionNm] = useState();
+  const [optionDetails, setOptionDetails] = useState([]);
+
+  // useEffect(() => {
+  //   if (selectedOptionNm === undefined) {
+  //     return false;
+  //   }
+  //   const updated = [...options];
+  //   if (!updated.find((option) => option.value === selectedOptionNm).sub) {
+  //     return false;
+  //   }
+  //   setOptionDetails(
+  //     updated.find((option) => option.value === selectedOptionNm).sub
+  //   );
+  //   console.log(
+  //     updated.find((option) => option.value === selectedOptionNm).sub
+  //   );
+  // }, [selectedOptionNm]);
+
+  return (
+    <Dialog onClose={handleClose} open={open} maxWidth={800}>
+      {/* <DialogTitle id="alert-dialog-title">알림</DialogTitle> */}
+      <DialogTitle
+        sx={{ m: 0, p: 2, textAlign: "center" }}
+        id="customized-dialog-title"
+      >
+        후가공 옵션 추가
+      </DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleClose}
+        sx={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+          color: (theme) => theme.palette.grey[500],
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
+      <DialogContent>
+        <S.CustomBox>
+          <TableContainer component={Paper}>
+            <Table
+              sx={{ minWidth: 400 }}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableBody>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>옵션이름</TableCell>
+                    <TableCell>옵션상세</TableCell>
+                    <TableCell>기본수량</TableCell>
+                    <TableCell>기본금액</TableCell>
+                    <TableCell>추가수량</TableCell>
+                    <TableCell>추가금액</TableCell>
+                    <TableCell>비고</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <TextField
+                        id="outlined-select-currency"
+                        select
+                        sx={{ width: "120px" }}
+                        value={selectedOptionNm}
+                        onChange={(e) => {
+                          setSelectedOptionNm(e.target.value);
+                          const updated = [...options];
+                          console.log(
+                            updated.find(
+                              (option) => option.value === e.target.value
+                            ).sub
+                          );
+                          setOptionDetails(
+                            updated.find(
+                              (option) => option.value === e.target.value
+                            ).sub
+                          );
+                        }}
+                      >
+                        {options?.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="outlined-select-currency"
+                        select
+                        sx={{ width: "180px" }}
+                        value={selectedOptionNm}
+                        onChange={(e) => {
+                          setSelectedOptionNm(e.target.value);
+                          console.log(e.target.value);
+                        }}
+                      >
+                        {optionDetails?.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="명함"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperCate}
+                        onChange={(e) => {
+                          setPaperCate(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="명함"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperCate}
+                        onChange={(e) => {
+                          setPaperCate(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="명함"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperCate}
+                        onChange={(e) => {
+                          setPaperCate(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="명함-귀도리"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperCate}
+                        onChange={(e) => {
+                          setPaperCate(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="명함-귀도리"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={paperCate}
+                        onChange={(e) => {
+                          setPaperCate(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </S.CustomBox>
+        <Box margin={"1em 0 0 0"} width={"100%"} textAlign={"center"}>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              const PAPER_QTY = [];
+              const PAPER_AMT = [];
+              qtyData.map((el, index) => {
+                if (el !== "") PAPER_QTY.push(el);
+              });
+              amtData.map((el, index) => {
+                if (el !== "") PAPER_AMT.push(el);
+              });
+
+              const res = await axios.post(
+                process.env.REACT_APP_DB_HOST + "/api/admin/paper",
+                {
+                  PAPER_CATE: paperCate,
+                  PAPER_NM: paperNm,
+                  PAPER_WEIGHT: paperWeight,
+                  PAPER_QTY: PAPER_QTY.toString(),
+                  PAPER_AMT: PAPER_AMT.toString(),
+                }
+              );
+
+              if (res.status === 200) {
+                setSnackbar({
+                  children: "추가를 완료하였습니다.",
+                  severity: "success",
+                });
+                initdb();
+              } else {
+                setSnackbar({
+                  children: "추가를 실패하였습니다.",
+                  severity: "error",
+                });
+              }
+              onClose();
+            }}
+          >
+            추가
+          </Button>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export default AdminOptionPrice;

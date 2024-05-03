@@ -1,6 +1,7 @@
 const { v1: uuidv1 } = require("uuid");
 const fs = require("fs");
 const os = require("os");
+const path = require("path");
 
 exports.upload = async (req, res) => {
   const { type, userid } = req.body;
@@ -105,7 +106,7 @@ exports.upload_design = async (req, res) => {
 };
 
 exports.upload_global = async (req, res) => {
-  const { type, userid, dir } = req.body;
+  const { type, userid, dir, fulldir } = req.body;
   const file = req.file;
 
   const fileExtension = `.${file.originalname.split(".").pop()}`;
@@ -150,7 +151,12 @@ exports.upload_global = async (req, res) => {
   // 파일 이동
 
   console.log(`File ${fileName} uploaded successfully`);
-  res.send(`/upload/${dir}/${userid}/${fileName}`);
+
+  if (fulldir) {
+    res.send(`${saveTo}`);
+  } else {
+    res.send(`/upload/${dir}/${userid}/${fileName}`);
+  }
 
   console.log(type, file);
 };

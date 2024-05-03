@@ -1,3 +1,4 @@
+const { generateKey } = require("../utils/Utils");
 const { getConnection, Connection } = require("../utils/dbUtils");
 
 exports.select_admin_prods = async (req, res) => {
@@ -893,10 +894,11 @@ exports.select_admin_paper = async (req, res) => {
   	T1.*,
     row_number() over (
       order by
-        T1.PAPER_PRIORITY) as id
+        T1.PAPER_CATE,T1.PAPER_PRIORITY) as id
   from
   	TB_PAPER T1
-  order by PAPER_PRIORITY
+  where PAPER_DELETE is NULL or PAPER_DELETE != 'Y'
+  order by PAPER_CATE,PAPER_PRIORITY
     `;
   const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
@@ -922,6 +924,74 @@ where
   `;
 
   const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.insert_admin_paper = async (req, res) => {
+  const { PAPER_CATE, PAPER_NM, PAPER_WEIGHT, PAPER_QTY, PAPER_AMT } = req.body;
+
+  const index_qry = `
+select count(1) as CNT from TB_PAPER
+`;
+
+  const priority_qry = `
+  select
+	case
+		when MAX(PAPER_PRIORITY) is null then 0
+		else MAX(PAPER_PRIORITY)
+	end as MAX_PRIORITY
+from
+	TB_PAPER
+where
+	PAPER_CATE = '${PAPER_CATE}'
+`;
+  const key = generateKey();
+  const index = parseInt((await getConnection(index_qry)).row[0].CNT) + 1;
+  const priority =
+    parseInt((await getConnection(priority_qry)).row[0].MAX_PRIORITY) + 1;
+
+  const qry = `
+insert
+	into
+	TB_PAPER (
+  PAPER_SID,
+	PAPER_CATE,
+	PAPER_NM,
+	PAPER_WEIGHT,
+	PAPER_QTY,
+	PAPER_AMT,
+	PAPER_REGDATE,
+	PAPER_PRIORITY)
+values(
+'${key}${index}',
+'${PAPER_CATE}',
+'${PAPER_NM}',
+'${PAPER_WEIGHT}',
+'${PAPER_QTY}',
+'${PAPER_AMT}',
+now(),
+${priority});
+  `;
+
+  const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.delete_admin_paper = async (req, res) => {
+  const { PAPER_SIDS } = req.body;
+
+  const qry = `
+update
+	TB_PAPER
+set
+  PAPER_DELETE = 'Y'
+where
+	PAPER_SID IN (?)
+  `;
+
+  const res_qry = await getConnection(qry, [PAPER_SIDS]);
   if (res_qry.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
 };
