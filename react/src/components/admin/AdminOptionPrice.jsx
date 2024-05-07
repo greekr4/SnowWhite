@@ -31,13 +31,13 @@ const AdminOptionPrice = () => {
     { field: "id", headerName: "순번", width: 150 },
     {
       field: "OPTION_NM",
-      headerName: "옵션이름",
+      headerName: "후가공이름",
       width: 150,
       editable: true,
     },
     {
       field: "OPTION_DETAIL",
-      headerName: "옵션상세",
+      headerName: "후가공상세",
       width: 200,
       editable: true,
     },
@@ -174,6 +174,35 @@ const AdminOptionPrice = () => {
   const apiRef = useGridApiRef();
 
   const [addOpen, setAddOpen] = useState(false);
+
+  const handleDelete = async () => {
+    const OPTION_SIDS = [];
+    Array.from(apiRef.current.getSelectedRows().values()).map((el, index) => {
+      OPTION_SIDS.push(el.OPTION_SID);
+    });
+
+    const res = await axios.delete(
+      process.env.REACT_APP_DB_HOST + "/api/admin/option_price",
+      {
+        data: {
+          OPTION_SIDS: OPTION_SIDS,
+        },
+      }
+    );
+    if (res.status === 200) {
+      setSnackbar({
+        children: "삭제를 완료하였습니다.",
+        severity: "success",
+      });
+      initdb();
+    } else {
+      setSnackbar({
+        children: "삭제를 실패하였습니다.",
+        severity: "error",
+      });
+    }
+  };
+
   return (
     <>
       <S.MainLayout>
@@ -201,6 +230,7 @@ const AdminOptionPrice = () => {
           variant="outlined"
           startIcon={<GridDeleteIcon />}
           style={{ marginLeft: "6px" }}
+          onClick={handleDelete}
         >
           선택 삭제
         </Button>
@@ -273,7 +303,7 @@ const ChoiceDialog = (props) => {
 
   const handleYes = async () => {
     const res = await axios.put(
-      process.env.REACT_APP_DB_HOST + "/api/admin/paper",
+      process.env.REACT_APP_DB_HOST + "/api/admin/option_price",
       {
         row: selectedValue,
       }
@@ -383,34 +413,234 @@ const AddDialog = (props) => {
     {
       value: "미싱",
       label: "미싱",
+      sub: [
+        {
+          value: "1줄",
+          label: "1줄",
+        },
+        {
+          value: "2줄",
+          label: "2줄",
+        },
+        {
+          value: "3줄",
+          label: "3줄",
+        },
+      ],
     },
     {
       value: "코팅",
       label: "코팅",
+      sub: [
+        {
+          value: "단면유광코팅",
+          label: "단면유광코팅",
+        },
+        {
+          value: "단면무광코팅",
+          label: "단면무광코팅",
+        },
+        {
+          value: "양면유광코팅",
+          label: "양면유광코팅",
+        },
+        {
+          value: "양면무광코팅",
+          label: "양면무광코팅",
+        },
+      ],
     },
     {
       value: "도무송",
       label: "도무송",
+      sub: [
+        {
+          value: "1개",
+          label: "1개",
+        },
+        {
+          value: "2개",
+          label: "2개",
+        },
+        {
+          value: "3개",
+          label: "3개",
+        },
+        {
+          value: "4개",
+          label: "4개",
+        },
+      ],
     },
     {
       value: "박",
       label: "박",
+      sub: [
+        {
+          value: "금박(유광)",
+          label: "금박(유광)",
+        },
+        {
+          value: "금박(무광)",
+          label: "금박(무광)",
+        },
+        {
+          value: "은박(유광)",
+          label: "은박(유광)",
+        },
+        {
+          value: "은박(무광)",
+          label: "은박(무광)",
+        },
+        {
+          value: "청박(유광)",
+          label: "청박(유광)",
+        },
+        {
+          value: "적박(유광)",
+          label: "적박(유광)",
+        },
+        {
+          value: "녹박(유광)",
+          label: "녹박(유광)",
+        },
+        {
+          value: "먹박(유광)",
+          label: "먹박(유광)",
+        },
+        {
+          value: "펄박(유광)",
+          label: "펄박(유광)",
+        },
+        {
+          value: "홀로그램박(은펄)",
+          label: "홀로그램박(은펄)",
+        },
+        {
+          value: "홀로그램박(별)",
+          label: "홀로그램박(별)",
+        },
+        {
+          value: "홀로그램박(물방울)",
+          label: "홀로그램박(물방울)",
+        },
+        {
+          value: "로즈골드박(유광)",
+          label: "로즈골드박(유광)",
+        },
+        {
+          value: "퍼플박(유광)",
+          label: "퍼플박(유광)",
+        },
+        {
+          value: "백박(무광)",
+          label: "백박(무광)",
+        },
+      ],
     },
     {
       value: "형압",
       label: "형압",
+      sub: [
+        {
+          value: "앞",
+          label: "앞",
+        },
+        {
+          value: "뒤",
+          label: "뒤",
+        },
+      ],
     },
     {
       value: "타공",
       label: "타공",
+      sub: [
+        { value: "1개", label: "1개" },
+        { value: "2개", label: "2개" },
+        { value: "3개", label: "3개" },
+        { value: "4개", label: "4개" },
+      ],
     },
     {
       value: "접지",
       label: "접지",
+      sub: [
+        {
+          value: "반접지",
+          label: "반접지",
+        },
+        {
+          value: "3단접지",
+          label: "3단접지",
+        },
+        {
+          value: "4단접지",
+          label: "4단접지",
+        },
+        {
+          value: "N접지",
+          label: "N접지",
+        },
+        // {
+        //   value: "4단병풍접지",
+        //   label: "4단병풍접지",
+        // },
+        // {
+        //   value: "5단병풍접지",
+        //   label: "5단병풍접지",
+        // },
+        // {
+        //   value: "6단병풍접지",
+        //   label: "6단병풍접지",
+        // },
+        // {
+        //   value: "십자접지",
+        //   label: "십자접지",
+        // },
+        // {
+        //   value: "N접지후반접지",
+        //   label: "N접지후반접지",
+        // },
+        // {
+        //   value: "반접고3단접지",
+        //   label: "반접고3단접지",
+        // },
+        // {
+        //   value: "4단접지후반접지",
+        //   label: "4단접지후반접지",
+        // },
+        // {
+        //   value: "4단병풍후반접지",
+        //   label: "4단병풍후반접지",
+        // },
+        // {
+        //   value: "3단접지후반접지",
+        //   label: "3단접지후반접지",
+        // },
+      ],
     },
     {
       value: "접착",
       label: "접착",
+      sub: [
+        {
+          value: "1면접착",
+          label: "1면접착",
+        },
+        {
+          value: "2면접착",
+          label: "2면접착",
+        },
+        // {
+        //   value: "양면테잎1개",
+        //   label: "양면테잎1개",
+        // },
+        // {
+        //   value: "양면테잎2개",
+        //   label: "양면테잎2개",
+        // },
+      ],
     },
     {
       value: "귀도리",
@@ -422,18 +652,38 @@ const AddDialog = (props) => {
         },
       ],
     },
-    {
-      value: "부분코팅",
-      label: "부분코팅",
-    },
+    // {
+    //   value: "부분코팅",
+    //   label: "부분코팅",
+    // },
     {
       value: "에폭시",
       label: "에폭시",
+      sub: [
+        {
+          value: "앞",
+          label: "앞",
+        },
+        {
+          value: "뒤",
+          label: "뒤",
+        },
+        {
+          value: "양면",
+          label: "양면",
+        },
+      ],
     },
   ];
 
   const [selectedOptionNm, setSelectedOptionNm] = useState();
+  const [selectedOptionDetail, setSelectedOptionDetail] = useState();
   const [optionDetails, setOptionDetails] = useState([]);
+  const [OPTION_DEFAULT_QTY, setOPTION_DEFAULT_QTY] = useState();
+  const [OPTION_DEFAULT_AMT, setOPTION_DEFAULT_AMT] = useState();
+  const [OPTION_ADD_QTY, setOPTION_ADD_QTY] = useState();
+  const [OPTION_ADD_AMT, setOPTION_ADD_AMT] = useState();
+  const [OPTION_ETC, setOPTION_ETC] = useState();
 
   // useEffect(() => {
   //   if (selectedOptionNm === undefined) {
@@ -483,8 +733,8 @@ const AddDialog = (props) => {
               <TableBody>
                 <TableHead>
                   <TableRow>
-                    <TableCell>옵션이름</TableCell>
-                    <TableCell>옵션상세</TableCell>
+                    <TableCell>후가공이름</TableCell>
+                    <TableCell>후가공상세</TableCell>
                     <TableCell>기본수량</TableCell>
                     <TableCell>기본금액</TableCell>
                     <TableCell>추가수량</TableCell>
@@ -527,9 +777,9 @@ const AddDialog = (props) => {
                         id="outlined-select-currency"
                         select
                         sx={{ width: "180px" }}
-                        value={selectedOptionNm}
+                        value={selectedOptionDetail}
                         onChange={(e) => {
-                          setSelectedOptionNm(e.target.value);
+                          setSelectedOptionDetail(e.target.value);
                           console.log(e.target.value);
                         }}
                       >
@@ -544,12 +794,12 @@ const AddDialog = (props) => {
                       <TextField
                         id="standard-basic"
                         variant="standard"
-                        placeholder="명함"
+                        placeholder="499"
                         size="small"
                         sx={{ width: "90px" }}
-                        value={paperCate}
+                        value={OPTION_DEFAULT_QTY}
                         onChange={(e) => {
-                          setPaperCate(e.target.value);
+                          setOPTION_DEFAULT_QTY(e.target.value);
                         }}
                       />
                     </TableCell>
@@ -557,12 +807,12 @@ const AddDialog = (props) => {
                       <TextField
                         id="standard-basic"
                         variant="standard"
-                        placeholder="명함"
+                        placeholder="2000"
                         size="small"
                         sx={{ width: "90px" }}
-                        value={paperCate}
+                        value={OPTION_DEFAULT_AMT}
                         onChange={(e) => {
-                          setPaperCate(e.target.value);
+                          setOPTION_DEFAULT_AMT(e.target.value);
                         }}
                       />
                     </TableCell>
@@ -570,12 +820,25 @@ const AddDialog = (props) => {
                       <TextField
                         id="standard-basic"
                         variant="standard"
-                        placeholder="명함"
+                        placeholder="150"
                         size="small"
                         sx={{ width: "90px" }}
-                        value={paperCate}
+                        value={OPTION_ADD_QTY}
                         onChange={(e) => {
-                          setPaperCate(e.target.value);
+                          setOPTION_ADD_QTY(e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id="standard-basic"
+                        variant="standard"
+                        placeholder="1000"
+                        size="small"
+                        sx={{ width: "90px" }}
+                        value={OPTION_ADD_AMT}
+                        onChange={(e) => {
+                          setOPTION_ADD_AMT(e.target.value);
                         }}
                       />
                     </TableCell>
@@ -586,22 +849,9 @@ const AddDialog = (props) => {
                         placeholder="명함-귀도리"
                         size="small"
                         sx={{ width: "90px" }}
-                        value={paperCate}
+                        value={OPTION_ETC}
                         onChange={(e) => {
-                          setPaperCate(e.target.value);
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        id="standard-basic"
-                        variant="standard"
-                        placeholder="명함-귀도리"
-                        size="small"
-                        sx={{ width: "90px" }}
-                        value={paperCate}
-                        onChange={(e) => {
-                          setPaperCate(e.target.value);
+                          setOPTION_ETC(e.target.value);
                         }}
                       />
                     </TableCell>
@@ -615,23 +865,16 @@ const AddDialog = (props) => {
           <Button
             variant="contained"
             onClick={async () => {
-              const PAPER_QTY = [];
-              const PAPER_AMT = [];
-              qtyData.map((el, index) => {
-                if (el !== "") PAPER_QTY.push(el);
-              });
-              amtData.map((el, index) => {
-                if (el !== "") PAPER_AMT.push(el);
-              });
-
               const res = await axios.post(
-                process.env.REACT_APP_DB_HOST + "/api/admin/paper",
+                process.env.REACT_APP_DB_HOST + "/api/admin/option_price",
                 {
-                  PAPER_CATE: paperCate,
-                  PAPER_NM: paperNm,
-                  PAPER_WEIGHT: paperWeight,
-                  PAPER_QTY: PAPER_QTY.toString(),
-                  PAPER_AMT: PAPER_AMT.toString(),
+                  OPTION_NM: selectedOptionNm,
+                  OPTION_DETAIL: selectedOptionDetail,
+                  OPTION_DEFAULT_QTY: OPTION_DEFAULT_QTY,
+                  OPTION_DEFAULT_AMT: OPTION_DEFAULT_AMT,
+                  OPTION_ADD_QTY: OPTION_ADD_QTY,
+                  OPTION_ADD_AMT: OPTION_ADD_AMT,
+                  OPTION_ETC: OPTION_ETC,
                 }
               );
 

@@ -117,6 +117,9 @@ const ProductDetailPage = ({ openPopup }) => {
     ).data;
 
     setPaper(paperData);
+    console.log(paperData);
+
+    setAlignment(paperData[0].PAPER_NM + paperData[0].PAPER_WEIGHT);
 
     setPaperQty(paperData[0]?.PAPER_QTY);
 
@@ -296,49 +299,6 @@ const ProductDetailPage = ({ openPopup }) => {
   const [selOption, setSelOption] = useState({});
   const [optionPriceTable, setOptionPriceTable] = useState([]);
 
-  const testOptionTable = [
-    {
-      OPTION_NM: "귀도리",
-      OPTION_DETAIL: "둥근 모서리",
-      OPTION_DEFAULT_QTY: 200,
-      OPTION_DEFAULT_AMT: 2000,
-      OPTION_ADD_QTY: 200,
-      OPTION_ADD_AMT: 1000,
-    },
-    {
-      OPTION_NM: "타공",
-      OPTION_DETAIL: "1개",
-      OPTION_DEFAULT_QTY: 200,
-      OPTION_DEFAULT_AMT: 2000,
-      OPTION_ADD_QTY: 300,
-      OPTION_ADD_AMT: 1000,
-    },
-    {
-      OPTION_NM: "타공",
-      OPTION_DETAIL: "2개",
-      OPTION_DEFAULT_QTY: 200,
-      OPTION_DEFAULT_AMT: 3000,
-      OPTION_ADD_QTY: 250,
-      OPTION_ADD_AMT: 1000,
-    },
-    {
-      OPTION_NM: "타공",
-      OPTION_DETAIL: "3개",
-      OPTION_DEFAULT_QTY: 200,
-      OPTION_DEFAULT_AMT: 4000,
-      OPTION_ADD_QTY: 200,
-      OPTION_ADD_AMT: 1000,
-    },
-    {
-      OPTION_NM: "타공",
-      OPTION_DETAIL: "4개",
-      OPTION_DEFAULT_QTY: 200,
-      OPTION_DEFAULT_AMT: 5000,
-      OPTION_ADD_QTY: 300,
-      OPTION_ADD_AMT: 1000,
-    },
-  ];
-
   // 옵션 가격 계산 함수
   const calculateOptionPrice = (qty, option) => {
     if (!option) {
@@ -478,7 +438,7 @@ const ProductDetailPage = ({ openPopup }) => {
                       수량
                     </S.Product_Detail_Option_ItemText>
                     <Select
-                      value={qty}
+                      value={qty ? qty : 100}
                       displayEmpty
                       inputProps={{ "aria-label": "Without label" }}
                       autoWidth={true}

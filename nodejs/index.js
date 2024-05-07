@@ -96,6 +96,11 @@ const {
   select_admin_option_price,
   insert_admin_paper,
   delete_admin_paper,
+  insert_admin_option_price,
+  delete_admin_option_price,
+  update_admin_option_price,
+  insert_products_option,
+  insert_products_paper,
 } = require("./snowwhite/controller/admin");
 const {
   upload,
@@ -314,8 +319,15 @@ app.delete("/api/admin/paper", auth, delete_admin_paper);
 
 //어드민 옵션 가격 테이블
 app.get("/api/admin/option_price", auth, select_admin_option_price);
+app.post("/api/admin/option_price", auth, insert_admin_option_price);
+app.put("/api/admin/option_price", auth, update_admin_option_price);
+app.delete("/api/admin/option_price", auth, delete_admin_option_price);
 
 app.post("/api/paper_excel", auth, paperExcelUpload);
+
+app.post("/api/admin/prod_option", auth, insert_products_option);
+
+app.post("/api/admin/prod_paper", auth, insert_products_paper);
 
 app.listen("3030", () => {
   console.log("Server started");

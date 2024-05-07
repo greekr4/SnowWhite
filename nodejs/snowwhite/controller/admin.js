@@ -1002,13 +1002,184 @@ select
 T1.*,
 row_number() over (
   order by
-    T1.OPTION_NM) as id
+    T1.OPTION_NM,T1.OPTION_DETAIL) as id
 from
 TB_OPTION_PRICE T1
-order by OPTION_NM
+where OPTION_DELETE = 'N'
+order by OPTION_NM,OPTION_DETAIL
 `;
 
   const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row);
+};
+
+exports.insert_admin_option_price = async (req, res) => {
+  const {
+    OPTION_NM,
+    OPTION_DETAIL,
+    OPTION_DEFAULT_QTY,
+    OPTION_DEFAULT_AMT,
+    OPTION_ADD_QTY,
+    OPTION_ADD_AMT,
+    OPTION_ETC,
+  } = req.body;
+
+  const index_qry = `
+  select count(1) as CNT from TB_OPTION_PRICE
+  `;
+
+  const index = parseInt((await getConnection(index_qry)).row[0].CNT) + 1;
+  const key = generateKey();
+
+  const insert_qry = `
+insert
+	into
+TB_OPTION_PRICE (
+  OPTION_SID,
+	OPTION_NM,
+	OPTION_DETAIL,
+	OPTION_DEFAULT_QTY,
+	OPTION_DEFAULT_AMT,
+	OPTION_ADD_QTY,
+	OPTION_ADD_AMT,
+	OPTION_ETC,
+	OPTION_REGDATE
+  )
+values(
+'${key}-${index}',
+'${OPTION_NM}',
+'${OPTION_DETAIL}',
+${OPTION_DEFAULT_QTY},
+${OPTION_DEFAULT_AMT},
+${OPTION_ADD_QTY},
+${OPTION_ADD_AMT},
+'${OPTION_ETC}',
+now()
+);
+`;
+
+  const res_qry = await getConnection(insert_qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.delete_admin_option_price = async (req, res) => {
+  const { OPTION_SIDS } = req.body;
+
+  const qry = `
+update
+	TB_OPTION_PRICE
+set
+  OPTION_DELETE = 'Y'
+where
+	OPTION_SID IN (?)
+  `;
+
+  const res_qry = await getConnection(qry, [OPTION_SIDS]);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_admin_option_price = async (req, res) => {
+  const { row } = req.body;
+
+  const qry = `
+update
+	TB_OPTION_PRICE
+set
+	OPTION_NM = '${row.OPTION_NM}',
+	OPTION_DETAIL = '${row.OPTION_DETAIL}',
+	OPTION_DEFAULT_QTY = '${row.OPTION_DEFAULT_QTY}',
+	OPTION_DEFAULT_AMT = '${row.OPTION_DEFAULT_AMT}',
+	OPTION_ADD_QTY = '${row.OPTION_ADD_QTY}',
+	OPTION_ADD_AMT = '${row.OPTION_ADD_AMT}',
+	OPTION_ETC = '${row.OPTION_ETC}',
+	OPTION_MODIDATE = now()
+where
+	OPTION_SID = '${row.OPTION_SID}';
+  `;
+
+  const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.insert_products_option = async (req, res) => {
+  const { PROD_SID, OPTION_SIDS } = req.body;
+
+  const delete_qry = `
+delete
+from
+  TB_PRODUCT_OPTION
+where
+  PROD_SID = '${PROD_SID}'
+  `;
+
+  await getConnection(delete_qry);
+
+  const key = generateKey();
+
+  OPTION_SIDS.map(async (el, index) => {
+    const insert_qry = `
+    insert
+    into
+      TB_PRODUCT_OPTION
+    (
+      PROD_OPTION_SID,
+      OPTION_SID,
+      PROD_SID
+    )
+    values(
+    '${key}-${index}',
+    '${el}',
+    '${PROD_SID}'
+    );
+  `;
+
+    const res_insert = await getConnection(insert_qry);
+    if (res_insert.state === false) return res.status(401).send("DB Error.");
+  });
+
+  return res.status(200).send("OK");
+};
+
+exports.insert_products_paper = async (req, res) => {
+  const { PROD_SID, PAPER_SIDS } = req.body;
+
+  const delete_qry = `
+delete
+from
+  TB_PRODUCT_PAPER
+where
+  PROD_SID = '${PROD_SID}'
+  `;
+
+  await getConnection(delete_qry);
+
+  const key = generateKey();
+
+  PAPER_SIDS.map(async (el, index) => {
+    const insert_qry = `
+    insert
+    into
+      TB_PRODUCT_PAPER
+    (
+      PROD_PAPER_SID,
+      PAPER_SID,
+      PROD_SID
+    )
+    values(
+    '${key}-${index}',
+    '${el}',
+    '${PROD_SID}'
+    );
+  `;
+
+    console.log(insert_qry);
+    const res_insert = await getConnection(insert_qry);
+    if (res_insert.state === false) return res.status(401).send("DB Error.");
+  });
+
+  return res.status(200).send("OK");
 };

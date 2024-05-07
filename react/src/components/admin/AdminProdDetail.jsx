@@ -4,6 +4,16 @@ import { useParams } from "react-router-dom";
 import * as S from "../../styles/new_styles";
 import GlobProdItem from "../products/GlobProdItem";
 import CustomQuill from "../global/CustomQuill";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 
 const AdminProdDetail = () => {
   const { prod_sid } = useParams();
@@ -45,7 +55,7 @@ const AdminProdDetail = () => {
     return -1; // 찾지 못한 경우
   };
 
-  const initdb = () => {
+  const initdb = async () => {
     axios
       .post(process.env.REACT_APP_DB_HOST + "/api/admin/prods/detail", {
         prod_sid: prod_sid,
@@ -86,6 +96,16 @@ const AdminProdDetail = () => {
       .catch((e) => {
         console.log(e);
       });
+
+    const res_option_price = (
+      await axios.get(process.env.REACT_APP_DB_HOST + "/api/admin/option_price")
+    ).data;
+    setOptions_DataRows(res_option_price);
+
+    const res_paper = (
+      await axios.get(process.env.REACT_APP_DB_HOST + "/api/admin/paper")
+    ).data;
+    setPaper_DataRows(res_paper);
   };
 
   useEffect(() => {
@@ -349,6 +369,189 @@ const AdminProdDetail = () => {
 
   ///////////////////////
 
+  const options_columns = [
+    { field: "id", headerName: "순번", width: 150 },
+    {
+      field: "OPTION_NM",
+      headerName: "후가공이름",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "OPTION_DETAIL",
+      headerName: "후가공상세",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "OPTION_DEFAULT_QTY",
+      headerName: "기본수량",
+      width: 150,
+      editable: true,
+      renderCell: (params) => (
+        <>{new Intl.NumberFormat("ko-KR").format(params.value)}</>
+      ),
+    },
+    {
+      field: "OPTION_DEFAULT_AMT",
+      headerName: "기본금액",
+      width: 150,
+      editable: true,
+      renderCell: (params) => (
+        <>{new Intl.NumberFormat("ko-KR").format(params.value)}</>
+      ),
+    },
+    {
+      field: "OPTION_ADD_QTY",
+      headerName: "추가수량",
+      width: 150,
+      editable: true,
+      renderCell: (params) => (
+        <>{new Intl.NumberFormat("ko-KR").format(params.value)}</>
+      ),
+    },
+    {
+      field: "OPTION_ADD_AMT",
+      headerName: "추가금액",
+      width: 150,
+      editable: true,
+      renderCell: (params) => (
+        <>{new Intl.NumberFormat("ko-KR").format(params.value)}</>
+      ),
+    },
+    {
+      field: "OPTION_ETC",
+      headerName: "비고",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "OPTION_REGDATE",
+      headerName: "추가일",
+      // type: "number",
+      width: 150,
+      editable: false,
+      renderCell: (params) => {
+        const date = new Date(params.value);
+        const formattedDate = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        const formattedTime = `${String(date.getHours()).padStart(
+          2,
+          "0"
+        )}:${String(date.getMinutes()).padStart(2, "0")}:${String(
+          date.getSeconds()
+        ).padStart(2, "0")}`;
+        return <span>{formattedDate}</span>;
+      },
+    },
+    {
+      field: "OPTION_MODIDATE",
+      headerName: "수정일",
+      // type: "number",
+      width: 150,
+      editable: false,
+      renderCell: (params) => {
+        const date = new Date(params.value);
+        const formattedDate = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        const formattedTime = `${String(date.getHours()).padStart(
+          2,
+          "0"
+        )}:${String(date.getMinutes()).padStart(2, "0")}:${String(
+          date.getSeconds()
+        ).padStart(2, "0")}`;
+        return <span>{formattedDate}</span>;
+      },
+    },
+  ];
+  const [Options_dataRows, setOptions_DataRows] = useState([]);
+  const [Paper_dataRows, setPaper_DataRows] = useState([]);
+  const apiRef = useGridApiRef();
+  const Paper_apiRef = useGridApiRef();
+
+  const Paper_columns = [
+    { field: "id", headerName: "순번", width: 150 },
+    {
+      field: "PAPER_CATE",
+      headerName: "카테고리",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "PAPER_NM",
+      headerName: "판형",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "PAPER_WEIGHT",
+      headerName: "평량 (g)",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "PAPER_QTY",
+      headerName: "설정수량",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "PAPER_AMT",
+      headerName: "설정가격",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "PAPER_PRIORITY",
+      headerName: "순서",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "PAPER_REGDATE",
+      headerName: "추가일",
+      // type: "number",
+      width: 150,
+      editable: false,
+      renderCell: (params) => {
+        const date = new Date(params.value);
+        const formattedDate = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        const formattedTime = `${String(date.getHours()).padStart(
+          2,
+          "0"
+        )}:${String(date.getMinutes()).padStart(2, "0")}:${String(
+          date.getSeconds()
+        ).padStart(2, "0")}`;
+        return <span>{formattedDate}</span>;
+      },
+    },
+    {
+      field: "PAPER_MODIDATE",
+      headerName: "수정일",
+      // type: "number",
+      width: 150,
+      editable: false,
+      renderCell: (params) => {
+        const date = new Date(params.value);
+        const formattedDate = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        const formattedTime = `${String(date.getHours()).padStart(
+          2,
+          "0"
+        )}:${String(date.getMinutes()).padStart(2, "0")}:${String(
+          date.getSeconds()
+        ).padStart(2, "0")}`;
+        return <span>{formattedDate}</span>;
+      },
+    },
+  ];
+
+  /////////////////////
   return (
     <S.MainLayout>
       <S.AdminWrapper>
@@ -440,11 +643,7 @@ const AdminProdDetail = () => {
                 </td>
               </tr>
               <tr>
-                <th>
-                  썸네일 설명
-                  <br />
-                  (줄 수를 통일하는게 좋습니다.)
-                </th>
+                <th>썸네일 설명</th>
                 <td>
                   <textarea
                     cols="50"
@@ -475,7 +674,7 @@ const AdminProdDetail = () => {
           <div className="title">상품</div>
           <div className="content">
             <table>
-              <tr>
+              {/* <tr>
                 <th>상품가격</th>
                 <td>
                   <input
@@ -526,7 +725,7 @@ const AdminProdDetail = () => {
                     }}
                   />
                 </td>
-              </tr>
+              </tr> */}
               <tr>
                 <th>상품 기본 설명</th>
                 <td>
@@ -730,75 +929,107 @@ const AdminProdDetail = () => {
           <div className="content">
             <table>
               <tr>
-                <th>옵션</th>
+                <th>용지</th>
                 <td>
-                  <S.Btn
+                  <Button
+                    variant="outlined"
                     onClick={async () => {
-                      console.log(selectedOption);
-
-                      let options_ary = [];
-                      selectedOption.forEach((el, index) => {
-                        if (el) {
-                          console.log(options[index]);
-                          options_ary.push(options[index].OPTION_SID);
-                        }
+                      const PAPER_SIDS = [];
+                      Array.from(
+                        Paper_apiRef.current.getSelectedRows().values()
+                      ).map((el, index) => {
+                        PAPER_SIDS.push(el.PAPER_SID);
                       });
-                      console.log(options_ary);
-                      try {
-                        const res = await axios.post(
-                          process.env.REACT_APP_DB_HOST +
-                            "/api/admin/prod/update_options",
-                          {
-                            prod_sid: prod_sid,
-                            options: options_ary,
-                          }
-                        );
-                        alert(res.data);
-                      } catch (e) {
-                        console.log(e);
+
+                      console.log(PAPER_SIDS);
+                      const result = await axios.post(
+                        process.env.REACT_APP_DB_HOST + "/api/admin/prod_paper",
+                        { PAPER_SIDS: PAPER_SIDS, PROD_SID: prod_sid }
+                      );
+
+                      if (result.status === 200) {
+                        alert("적용되었습니다.");
+                        initdb();
+                      } else {
+                        alert("적용 실패");
                       }
                     }}
                   >
                     적용
-                  </S.Btn>
-                  <table
-                    style={{
-                      textAlign: "center",
-                      fontSize: "0.8rem",
-                      width: "80%",
-                      margin: "0.5rem 0",
-                      padding: "0",
+                  </Button>
+                  <Box sx={{ height: 500, width: "100%", display: "grid" }}>
+                    <DataGrid
+                      apiRef={Paper_apiRef}
+                      rows={Paper_dataRows}
+                      columns={Paper_columns}
+                      // processRowUpdate={(updatedRow, originalRow) => {
+                      //   handleClickOpen(updatedRow);
+                      //   return updatedRow;
+                      // }}
+                      initialState={{
+                        pagination: {
+                          paginationModel: {
+                            pageSize: 10,
+                          },
+                        },
+                      }}
+                      pageSizeOptions={[5]}
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                    />
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <th>후가공</th>
+                <td>
+                  <Button
+                    variant="outlined"
+                    onClick={async () => {
+                      const OPTION_SIDS = [];
+                      Array.from(apiRef.current.getSelectedRows().values()).map(
+                        (el, index) => {
+                          OPTION_SIDS.push(el.OPTION_SID);
+                        }
+                      );
+                      const result = await axios.post(
+                        process.env.REACT_APP_DB_HOST +
+                          "/api/admin/prod_option",
+                        { OPTION_SIDS: OPTION_SIDS, PROD_SID: prod_sid }
+                      );
+
+                      if (result.status === 200) {
+                        alert("적용되었습니다.");
+                        initdb();
+                      } else {
+                        alert("적용 실패");
+                      }
                     }}
                   >
-                    <tr>
-                      <th style={{ width: "2%" }}>
-                        <input type="checkbox" onChange={handleAllSeleted} />
-                      </th>
-                      <th>옵션 카테고리</th>
-                      <th>옵션 이름</th>
-                      <th>옵션 설명</th>
-                      <th>
-                        옵션 가격
-                        <br />
-                        (판매 단위 x 옵션 가격)
-                      </th>
-                    </tr>
-                    {options.map((el, index) => (
-                      <tr>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedOption[index]}
-                            onChange={() => handleSeleted(index)}
-                          />
-                        </td>
-                        <td>{el.OPTION_CATE}</td>
-                        <td>{el.OPTION_NM}</td>
-                        <td>{el.OPTION_DETAIL}</td>
-                        <td>{el.OPTION_PRICE.toLocaleString("ko-KR")}</td>
-                      </tr>
-                    ))}
-                  </table>
+                    적용
+                  </Button>
+
+                  <Box sx={{ height: 500, width: "100%", display: "grid" }}>
+                    <DataGrid
+                      apiRef={apiRef}
+                      rows={Options_dataRows}
+                      columns={options_columns}
+                      // processRowUpdate={(updatedRow, originalRow) => {
+                      //   handleClickOpen(updatedRow);
+                      //   return updatedRow;
+                      // }}
+                      initialState={{
+                        pagination: {
+                          paginationModel: {
+                            pageSize: 10,
+                          },
+                        },
+                      }}
+                      pageSizeOptions={[5]}
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                    />
+                  </Box>
                 </td>
               </tr>
             </table>
