@@ -7,6 +7,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import { BorderAll } from "@mui/icons-material";
 
 const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
   /**
@@ -53,12 +54,47 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
    * 타공
    */
 
-  const [perforated, setPerforated] = useState(false);
-  const [perforatedQty, setPerforatedQty] = useState("1개");
-  const [perforatedSize, setPerforatedSize] = useState("3mm");
+  const [punching, setPunching] = useState(false);
+  const [punchingQty, setPunchingQty] = useState("cnt1");
+  const [punchingSize, setPunchingSize] = useState("3mm");
 
   const handleChangePerfo = (event, newAlignment) => {
-    setPerforated(newAlignment);
+    setPunching(newAlignment);
+  };
+
+  /**
+   * 오시 명함
+   */
+
+  const [osi, setOsi] = useState(false);
+  const [osiQty, setOsiQty] = useState("line1");
+  const [osiDirect, setOsiDirect] = useState("가로");
+
+  const handleChangeOsi = (event, newAlignment) => {
+    setOsi(newAlignment);
+  };
+
+  /**
+   * 미싱
+   */
+
+  const [missing, setMissing] = useState(false);
+  const [missingQty, setMissingQty] = useState("line1");
+  const [missingDirect, setMissingDirect] = useState("가로");
+
+  const handleChangeMissing = (event, newAlignment) => {
+    setMissing(newAlignment);
+  };
+
+  /**
+   * 코팅
+   */
+
+  const [cotting, setCotting] = useState(false);
+  const [cottingOption, setCottingOption] = useState("dan_yes");
+
+  const handleChangeCotting = (event, newAlignment) => {
+    setCotting(newAlignment);
   };
 
   /**
@@ -77,18 +113,62 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
 
   useEffect(() => {
     const copy = selOption;
-    copy.perforated = perforated;
-    copy.perforatedQty = perforatedQty;
-    copy.perforatedSize = perforatedSize;
+    copy.punching = punching;
+    copy.punchingQty = punchingQty;
+    copy.punchingSize = punchingSize;
 
     setSelOption(copy);
     updateOptionAmt();
-  }, [perforated, perforatedQty, perforatedSize]);
+  }, [punching, punchingQty, punchingSize]);
+
+  useEffect(() => {
+    const copy = selOption;
+    console.log(copy);
+
+    copy.osi = osi;
+    copy.osiQty = osiQty;
+    copy.osiDirect = osiDirect;
+
+    setSelOption(copy);
+
+    updateOptionAmt();
+  }, [osi, osiQty, osiDirect]);
+
+  useEffect(() => {
+    const copy = selOption;
+    console.log(copy);
+
+    copy.missing = missing;
+    copy.missingQty = missingQty;
+    copy.missingDirect = missingDirect;
+
+    setSelOption(copy);
+
+    updateOptionAmt();
+  }, [missing, missingQty, missingDirect]);
+
+  useEffect(() => {
+    const copy = selOption;
+    console.log(copy);
+
+    copy.cotting = cotting;
+    copy.cottingOption = cottingOption;
+
+    setSelOption(copy);
+
+    updateOptionAmt();
+  }, [cotting, cottingOption]);
 
   return (
     <>
       {type === "귀도리" && (
-        <>
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
           <S.Product_Detail_Option_ItemBox>
             <S.Product_Detail_Option_ItemText>
               귀도리
@@ -111,9 +191,9 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
 
           {earDori && (
             <S.Product_Detail_Option_ItemBox>
-              <S.Product_Detail_Option_ItemText>
+              {/* <S.Product_Detail_Option_ItemText>
                 귀도리 상세
-              </S.Product_Detail_Option_ItemText>
+              </S.Product_Detail_Option_ItemText> */}
               <S.OptionBtns2>
                 <ToggleButtonGroup
                   color="primary"
@@ -183,10 +263,16 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
               )}
             </S.Product_Detail_Option_ItemBox>
           )}
-        </>
+        </Box>
       )}
       {type === "타공" && (
-        <>
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
           <S.Product_Detail_Option_ItemBox>
             <S.Product_Detail_Option_ItemText>
               타공
@@ -194,7 +280,7 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
             <S.OptionBtns2>
               <ToggleButtonGroup
                 color="primary"
-                value={perforated}
+                value={punching}
                 exclusive
                 onChange={handleChangePerfo}
                 aria-label="Platform"
@@ -207,28 +293,28 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
             </S.OptionBtns2>
           </S.Product_Detail_Option_ItemBox>
 
-          {perforated && (
+          {punching && (
             <>
               <S.Product_Detail_Option_ItemBox>
-                <S.Product_Detail_Option_ItemText>
+                {/* <S.Product_Detail_Option_ItemText>
                   타공 상세
-                </S.Product_Detail_Option_ItemText>
+                </S.Product_Detail_Option_ItemText> */}
                 <S.OptionBtns3>
                   <ToggleButtonGroup
                     color="primary"
-                    value={perforatedQty}
+                    value={punchingQty}
                     exclusive
                     onChange={(e) => {
-                      setPerforatedQty(e.target.value);
+                      setPunchingQty(e.target.value);
                     }}
                     aria-label="Platform"
                     style={{ width: "100%" }}
                     className="group"
                   >
-                    <ToggleButton value={"1개"}>1개</ToggleButton>
-                    <ToggleButton value={"2개"}>2개</ToggleButton>
-                    <ToggleButton value={"3개"}>3개</ToggleButton>
-                    <ToggleButton value={"4개"}>4개</ToggleButton>
+                    <ToggleButton value={"cnt1"}>1개</ToggleButton>
+                    <ToggleButton value={"cnt2"}>2개</ToggleButton>
+                    <ToggleButton value={"cnt3"}>3개</ToggleButton>
+                    <ToggleButton value={"cnt4"}>4개</ToggleButton>
                   </ToggleButtonGroup>
                 </S.OptionBtns3>
               </S.Product_Detail_Option_ItemBox>
@@ -236,10 +322,10 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
                 <S.OptionBtns2>
                   <ToggleButtonGroup
                     color="primary"
-                    value={perforatedSize}
+                    value={punchingSize}
                     exclusive
                     onChange={(e) => {
-                      setPerforatedSize(e.target.value);
+                      setPunchingSize(e.target.value);
                     }}
                     aria-label="Platform"
                     style={{ width: "100%" }}
@@ -256,7 +342,212 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
               </S.Product_Detail_Option_ItemBox>
             </>
           )}
-        </>
+        </Box>
+      )}
+      {type === "오시" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <S.Product_Detail_Option_ItemBox>
+            <S.Product_Detail_Option_ItemText>
+              오시
+            </S.Product_Detail_Option_ItemText>
+            <S.OptionBtns2>
+              <ToggleButtonGroup
+                color="primary"
+                value={osi}
+                exclusive
+                onChange={handleChangeOsi}
+                aria-label="Platform"
+                style={{ width: "100%" }}
+                className="group"
+              >
+                <ToggleButton value={true}>오시</ToggleButton>
+                <ToggleButton value={false}>선택 안함</ToggleButton>
+              </ToggleButtonGroup>
+            </S.OptionBtns2>
+          </S.Product_Detail_Option_ItemBox>
+
+          {osi && (
+            <Box sx={{}}>
+              <S.Product_Detail_Option_ItemBox>
+                {/* <S.Product_Detail_Option_ItemText>
+                  오시 상세
+                </S.Product_Detail_Option_ItemText> */}
+                <S.OptionBtns3>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={osiQty}
+                    exclusive
+                    onChange={(e) => {
+                      setOsiQty(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"line1"}>1줄</ToggleButton>
+                    <ToggleButton value={"line2"}>2줄</ToggleButton>
+                    <ToggleButton value={"line3"}>3줄</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns3>
+              </S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemBox>
+                <S.OptionBtns2>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={osiDirect}
+                    exclusive
+                    onChange={(e) => {
+                      setOsiDirect(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"가로"}>가로</ToggleButton>
+                    <ToggleButton value={"세로"}>세로</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns2>
+              </S.Product_Detail_Option_ItemBox>
+            </Box>
+          )}
+        </Box>
+      )}
+      {type === "미싱" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <S.Product_Detail_Option_ItemBox>
+            <S.Product_Detail_Option_ItemText>
+              미싱
+            </S.Product_Detail_Option_ItemText>
+            <S.OptionBtns2>
+              <ToggleButtonGroup
+                color="primary"
+                value={missing}
+                exclusive
+                onChange={handleChangeMissing}
+                aria-label="Platform"
+                style={{ width: "100%" }}
+                className="group"
+              >
+                <ToggleButton value={true}>미싱</ToggleButton>
+                <ToggleButton value={false}>선택 안함</ToggleButton>
+              </ToggleButtonGroup>
+            </S.OptionBtns2>
+          </S.Product_Detail_Option_ItemBox>
+
+          {missing && (
+            <Box sx={{}}>
+              <S.Product_Detail_Option_ItemBox>
+                {/* <S.Product_Detail_Option_ItemText>
+                  미싱 상세
+                </S.Product_Detail_Option_ItemText> */}
+                <S.OptionBtns3>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={missingQty}
+                    exclusive
+                    onChange={(e) => {
+                      setMissingQty(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"line1"}>1줄</ToggleButton>
+                    <ToggleButton value={"line2"}>2줄</ToggleButton>
+                    <ToggleButton value={"line3"}>3줄</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns3>
+              </S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemBox>
+                <S.OptionBtns2>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={missingDirect}
+                    exclusive
+                    onChange={(e) => {
+                      setMissingDirect(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"가로"}>가로</ToggleButton>
+                    <ToggleButton value={"세로"}>세로</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns2>
+              </S.Product_Detail_Option_ItemBox>
+            </Box>
+          )}
+        </Box>
+      )}
+      {type === "코팅" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <S.Product_Detail_Option_ItemBox>
+            <S.Product_Detail_Option_ItemText>
+              코팅
+            </S.Product_Detail_Option_ItemText>
+            <S.OptionBtns2>
+              <ToggleButtonGroup
+                color="primary"
+                value={cotting}
+                exclusive
+                onChange={handleChangeCotting}
+                aria-label="Platform"
+                style={{ width: "100%" }}
+                className="group"
+              >
+                <ToggleButton value={true}>코팅</ToggleButton>
+                <ToggleButton value={false}>선택 안함</ToggleButton>
+              </ToggleButtonGroup>
+            </S.OptionBtns2>
+          </S.Product_Detail_Option_ItemBox>
+
+          {cotting && (
+            <Box sx={{}}>
+              <S.Product_Detail_Option_ItemBox>
+                {/* <S.Product_Detail_Option_ItemText>
+                  코팅 상세
+                </S.Product_Detail_Option_ItemText> */}
+                <S.OptionBtns>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={cottingOption}
+                    exclusive
+                    onChange={(e) => {
+                      setCottingOption(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"dan_yes"}>단면유광코팅</ToggleButton>
+                    <ToggleButton value={"dan_no"}>단면무광코팅</ToggleButton>
+                    <ToggleButton value={"yang_yes"}>양면유광코팅</ToggleButton>
+                    <ToggleButton value={"yang_no"}>양면무광코팅</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns>
+              </S.Product_Detail_Option_ItemBox>
+            </Box>
+          )}
+        </Box>
       )}
     </>
   );

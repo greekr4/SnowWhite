@@ -17,6 +17,18 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import OptionToggle from "../components/options/OptionToggle";
+import {
+  CottingPrice,
+  CottingPrice2,
+  CottingPrice_velvet,
+  MissingNameCardPrice,
+  MissingPrice1,
+  MissingPrice3,
+  OsiNameCard,
+  OsiNameCardPrice,
+  PunchingPrice,
+  RoundingPrice,
+} from "./price";
 
 const ProductDetailPage = ({ openPopup }) => {
   const [qty, setQty] = useState();
@@ -119,7 +131,7 @@ const ProductDetailPage = ({ openPopup }) => {
     setPaper(paperData);
     console.log(paperData);
 
-    setAlignment(paperData[0].PAPER_NM + paperData[0].PAPER_WEIGHT);
+    setSelectedPaper(paperData[0].PAPER_NM + paperData[0].PAPER_WEIGHT);
 
     setPaperQty(paperData[0]?.PAPER_QTY);
 
@@ -213,6 +225,8 @@ const ProductDetailPage = ({ openPopup }) => {
   };
 
   const handleSendCart = async () => {
+    console.log(selOption);
+
     if (USER_ID === undefined) {
       openPopup(0);
       return false;
@@ -223,7 +237,8 @@ const ProductDetailPage = ({ openPopup }) => {
     }
 
     const PROD_SID = prodDetail.PROD_SID;
-    const ITEM_OPTION = JSON.stringify(seletedOptions);
+    // const ITEM_OPTION = JSON.stringify(seletedOptions);
+    const ITEM_OPTION = createOptionNm().join(" | ");
     const ITEM_QUANTITY = qty;
     const ITEM_AMOUNT = parseInt(defaultAmt) + parseInt(optionAmt);
     const ITEM_DESIGN = JSON.stringify([]);
@@ -288,10 +303,10 @@ const ProductDetailPage = ({ openPopup }) => {
   const [defaultAmt, setDefaultAmt] = useState(0);
   const [optionAmt, setOptionAmt] = useState(0);
 
-  const [alignment, setAlignment] = useState();
+  const [selectedPaper, setSelectedPaper] = useState();
 
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
+  const handleChange = (event, newSelectedPaper) => {
+    setSelectedPaper(newSelectedPaper);
   };
 
   //옵션 종합
@@ -302,6 +317,7 @@ const ProductDetailPage = ({ openPopup }) => {
   // 옵션 가격 계산 함수
   const calculateOptionPrice = (qty, option) => {
     if (!option) {
+      console.log(option);
       alert(`가격 테이블이 설정되지 않았습니다.`);
       return false;
     }
@@ -319,25 +335,88 @@ const ProductDetailPage = ({ openPopup }) => {
     }
   };
 
+  const calculateDifference = (item) => {
+    return Math.abs(item.maesu - qty);
+  };
+
+  function findClosest(Price) {
+    return Price.reduce((prev, curr) => {
+      return calculateDifference(curr) < calculateDifference(prev)
+        ? curr
+        : prev;
+    });
+  }
+
   const updateOptionAmt = () => {
-    console.log(selOption);
+    console.log(optionPriceTable);
     let amt = 0;
 
     if (selOption.earDori === true) {
-      let test = optionPriceTable.find(
-        (option) => option.OPTION_NM === "귀도리"
-      );
-      amt += calculateOptionPrice(qty, test);
+      const findedItem = findClosest(RoundingPrice); //단가표
+      console.log(findedItem);
+      const premium = 1.1;
+
+      amt += Math.round((findedItem["price"] * premium) / 100) * 100;
     }
 
-    if (selOption.perforated === true) {
-      let test = optionPriceTable.find(
-        (option) =>
-          option.OPTION_NM === "타공" &&
-          option.OPTION_DETAIL === selOption.perforatedQty
-      );
+    //타공
+    if (selOption.punching === true) {
+      const findedItem = findClosest(PunchingPrice); //단가표
+      const premium = 1.1;
+      //타공 개수 단가 * 수량 * premium 100의 자리 반올림
+      amt +=
+        Math.round((findedItem[selOption.punchingQty] * qty * premium) / 100) *
+        100;
+    }
 
-      amt += calculateOptionPrice(qty, test);
+    //오시_명함
+    if (selOption.osi === true) {
+      const findedItem = findClosest(OsiNameCardPrice); //단가표
+      const premium = 1.1;
+      //타공 개수 단가 * premium 100의 자리 반올림
+      const price =
+        Math.round((findedItem[selOption.osiQty] * premium) / 100) * 100;
+      const min_price = 5000;
+      const finalPrice = Math.max(price, min_price);
+      amt += finalPrice;
+    }
+
+    //미싱
+    if (selOption.missing === true) {
+      let findedItem;
+      if (selOption.missingQty === "line3") {
+        findedItem = findClosest(MissingPrice3); //단가표
+      } else {
+        findedItem = findClosest(MissingPrice1); //단가표
+      }
+
+      const premium = 1.1;
+      //타공 개수 단가 * premium 100의 자리 반올림
+      const price = Math.round((findedItem["a6"] * qty * premium) / 100) * 100;
+      const min_price = 5000;
+      const finalPrice = Math.max(price, min_price);
+
+      amt += finalPrice;
+    }
+
+    //코팅 명함
+    if (selOption.cotting === true) {
+      const dan = 3400 - 700;
+      const dan_add = 700;
+      const yang = 4900 - 1300;
+      const yang_add = 1300;
+
+      let price = 0;
+      if (selOption.cottingOption.indexOf("dan") != -1) {
+        price = dan + (dan_add / 100) * qty;
+      } else {
+        price = yang + (yang_add / 100) * qty;
+      }
+
+      const premium = 1.1;
+      const finalPrifce = Math.round((price * premium) / 100) * 100;
+
+      amt += finalPrifce;
     }
 
     setOptionAmt(amt);
@@ -347,9 +426,119 @@ const ProductDetailPage = ({ openPopup }) => {
     updateOptionAmt();
   }, [qty]);
 
+  /**
+   * 후가공
+   *
+   */
+
+  /**
+   * 옵션 이름 생성
+   *
+   */
+
+  const createOptionNm = () => {
+    console.log(selOption);
+    let optionNm = [];
+
+    if (selectedPaper) {
+      optionNm.push(selectedPaper + "g");
+    }
+
+    if (selOption.earDori === true)
+      optionNm.push(`귀도리 ${selOption.earDoriOption}`);
+
+    if (selOption.punching === true) {
+      let qty = "";
+      switch (selOption.punchingQty) {
+        case "cnt1":
+          qty = "1개";
+          break;
+        case "cnt2":
+          qty = "2개";
+          break;
+        case "cnt3":
+          qty = "3개";
+          break;
+        case "cnt4":
+          qty = "4개";
+          break;
+      }
+      optionNm.push(`타공 ${qty} ${selOption.punchingSize}`);
+    }
+
+    if (selOption.osi === true) {
+      let line = "";
+      switch (selOption.osiQty) {
+        case "line1":
+          line = "1줄";
+          break;
+        case "line2":
+          line = "2줄";
+          break;
+        case "line3":
+          line = "3줄";
+          break;
+      }
+      optionNm.push(`오시 ${line} ${selOption.osiDirect}`);
+    }
+
+    if (selOption.missing === true) {
+      let line = "";
+      switch (selOption.missingQty) {
+        case "line1":
+          line = "1줄";
+          break;
+        case "line2":
+          line = "2줄";
+          break;
+        case "line3":
+          line = "3줄";
+          break;
+      }
+      optionNm.push(`미싱 ${line} ${selOption.missingDirect}`);
+    }
+
+    if (selOption.cotting === true) {
+      let cottingNm;
+      switch (selOption.cottingOption) {
+        case "dan_yes":
+          cottingNm = "단면유광코팅";
+          break;
+        case "dan_no":
+          cottingNm = "단면무광코팅";
+          break;
+        case "yang_yes":
+          cottingNm = "양면유광코팅";
+          break;
+        case "yang_no":
+          cottingNm = "양면무광코팅";
+          break;
+      }
+      optionNm.push(`${cottingNm}`);
+    }
+    return optionNm;
+    // alert(optionNm);
+    //   {
+    //     "earDori": false,
+    //     "earDoriOption": "4mm",
+    //     "punching": false,
+    //     "punchingQty": "cnt1",
+    //     "punchingSize": "3mm",
+    //     "osi": false,
+    //     "osiQty": "line1",
+    //     "osiDirect": "가로",
+    //     "missing": false,
+    //     "missingQty": "line1",
+    //     "missingDirect": "가로",
+    //     "cotting": false,
+    //     "cottingOption": "dan_yes"
+    // }
+  };
+
   return (
     <>
       <S.MainLayout>
+        <Button onClick={createOptionNm}>ㅇㅇ</Button>
         <S.MainSection>
           <S.ProdDetailWrapper>
             <S.ProdDetailBox ref={DtailBox}>
@@ -389,7 +578,7 @@ const ProductDetailPage = ({ openPopup }) => {
                     <S.OptionBtns>
                       <ToggleButtonGroup
                         color="primary"
-                        value={alignment}
+                        value={selectedPaper}
                         exclusive
                         onChange={handleChange}
                         aria-label="Platform"
@@ -511,13 +700,26 @@ const ProductDetailPage = ({ openPopup }) => {
                 )}
 
                 <S.ProdDetailPayBox>
-                  <S.ProdDetailPriceText>가격</S.ProdDetailPriceText>
+                  <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
+                  <S.ProdDetailPriceValue>
+                    {parseInt(defaultAmt).toLocaleString("ko-KR")}원
+                  </S.ProdDetailPriceValue>
+                  <br />
+                  <br />
+                  <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
+                  <S.ProdDetailPriceValue>
+                    {parseInt(optionAmt).toLocaleString("ko-KR")}원
+                  </S.ProdDetailPriceValue>
+                  <br />
+                  <br />
+                  <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
                   <S.ProdDetailPriceValue>
                     {(
-                      parseInt(defaultAmt) + parseInt(optionAmt)
+                      parseInt(optionAmt) + parseInt(defaultAmt)
                     ).toLocaleString("ko-KR")}
                     원
                   </S.ProdDetailPriceValue>
+                  <br />
                 </S.ProdDetailPayBox>
                 {/* <Link to="/order"> */}
                 <S.ProdDetailPayButton onClick={handleSendCart}>

@@ -261,8 +261,8 @@ const CartPage = () => {
                   <th style={{ width: "5%" }}>
                     <input type="checkbox" onClick={handleAllSeleted} />
                   </th>
-                  <th style={{ width: "20%" }}></th>
-                  <th style={{ width: "20%" }}>상품 정보</th>
+                  <th style={{ width: "10%" }}></th>
+                  <th style={{ width: "25%" }}>상품 정보</th>
                   <th style={{ width: "10%" }}>수량</th>
                   <th style={{ width: "15%" }}>가격</th>
                   <th style={{ width: "10%" }}>최종 편집일</th>
@@ -292,13 +292,14 @@ const CartPage = () => {
                         <S.CartMidProdInfoBox>
                           <h1>{el.PROD_NM}</h1>
                           <p>
-                            {el.ITEM_OPTION
+                            {/* {el.ITEM_OPTION
                               ? el.ITEM_OPTION.map((option, index) =>
                                   index === el.ITEM_OPTION.length - 1
                                     ? `${option.OPTION_CATE}-${option.OPTION_NM}`
                                     : `${option.OPTION_CATE}-${option.OPTION_NM} / `
                                 )
-                              : "기본 옵션"}
+                              : "기본 옵션"} */}
+                            {el.ITEM_OPTION}
                           </p>
                           <p>{formatDate(el.CART_REGDATE)}</p>
                         </S.CartMidProdInfoBox>

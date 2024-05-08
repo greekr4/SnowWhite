@@ -1756,7 +1756,7 @@ export const CartMidThumbnail = styled.div`
 export const CartMidProdInfoBox = styled.div`
   & h1 {
     font-size: 1.2rem;
-    padding-bottom: 1rem;
+    padding-bottom: 8px;
   }
   & p {
     font-size: 0.75rem;
