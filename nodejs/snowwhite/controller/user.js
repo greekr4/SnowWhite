@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const logger = require("../../winston/logger");
+
 const {
   makeToken,
   makeRefreshToken,
@@ -15,6 +17,7 @@ const { sendMail } = require("./mail");
  *
  */
 exports.login = async (req, res) => {
+  logger.info("login");
   const { userid, userpw } = req.body;
   const incode_pw = crypto.createHash("sha512").update(userpw).digest("base64");
   const SelectUser = (userid) => {

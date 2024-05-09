@@ -271,13 +271,14 @@ const OrderPage = ({ openPopup }) => {
                         <S.CartMidProdInfoBox>
                           <h1>{el.PROD_NM}</h1>
                           <p>
-                            {el.ITEM_OPTION
+                            {/* {el.ITEM_OPTION
                               ? el.ITEM_OPTION.map((option, index) =>
                                   index === el.ITEM_OPTION.length - 1
                                     ? `${option.OPTION_CATE}-${option.OPTION_NM}`
                                     : `${option.OPTION_CATE}-${option.OPTION_NM} / `
                                 )
-                              : "기본 옵션"}
+                              : "기본 옵션"} */}
+                            {el.ITEM_OPTION}
                           </p>
                           <p>{formatDate(el.CART_REGDATE)}</p>
                         </S.CartMidProdInfoBox>

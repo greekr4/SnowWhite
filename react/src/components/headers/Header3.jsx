@@ -1,5 +1,5 @@
 import * as S from "../../styles/new_styles";
-import logo_sample from "../../assets/logo_sample.png";
+import logo from "../../assets/logo.png";
 import GnbSubMenu from "../gnbs/GnbSubMenu";
 import { useEffect, useState } from "react";
 import bannerBg from "../../assets/header_banner.png";
@@ -144,7 +144,7 @@ const Header3 = ({ openPopup, queryClient }) => {
       <S.HeaderGnbWrapper className={isFixed ? "fix" : ""}>
         <S.HeaderGnbRows>
           <Link to="/">
-            <S.HeaderLogoBox img={logo_sample} />
+            <S.HeaderLogoBox img={logo} />
           </Link>
           <S.HeaderMenuList>
             {Cate &&

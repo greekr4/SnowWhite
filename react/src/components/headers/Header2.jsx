@@ -52,7 +52,7 @@ const Header2 = ({ openPopup }) => {
                   onMouseEnter={() => mouseEvent("menu1", true)}
                   onMouseLeave={() => mouseEvent("menu1", false)}
                 >
-                  <S.Hd2_nav_menu_a>스노우화이트</S.Hd2_nav_menu_a>
+                  <S.Hd2_nav_menu_a>스노우플래닛</S.Hd2_nav_menu_a>
                   <S.Hd2_sub_menu_content
                     className={hide["menu1"] ? "show" : "hide"}
                   >

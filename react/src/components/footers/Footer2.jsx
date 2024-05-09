@@ -9,7 +9,7 @@ import youtube_static from "../../assets/icons/youtube_static.png";
 import youtube_animated from "../../assets/icons/youtube_animated.gif";
 import { Link } from "react-router-dom";
 
-const Footer2 = () => {
+const Footer2 = ({ openPopup2 }) => {
   const [facebookIcon, setFacebookIcon] = useState(facebook_static);
   const [instaIcon, setInstaIcon] = useState(insta_static);
   const [youtubeIcon, setYoutubeIcon] = useState(youtube_static);
@@ -61,10 +61,14 @@ const Footer2 = () => {
                 <S.FooterBtnText>고객센터</S.FooterBtnText>
               </S.FooterBtnItem>
               <S.FooterBtnItem>
-                <S.FooterBtnText>이용약관</S.FooterBtnText>
+                <S.FooterBtnText onClick={() => openPopup2(0)}>
+                  이용약관
+                </S.FooterBtnText>
               </S.FooterBtnItem>
               <S.FooterBtnItem>
-                <S.FooterBtnText>개인정보처리방침</S.FooterBtnText>
+                <S.FooterBtnText onClick={() => openPopup2(1)}>
+                  개인정보처리방침
+                </S.FooterBtnText>
               </S.FooterBtnItem>
               <S.FooterBtnItem>
                 <Link to={"/notice"}>
@@ -113,12 +117,12 @@ const Footer2 = () => {
         </S.FooterBtnWrapper>
         <S.FooterAboutWrapper>
           <S.FooterAboutText>
-            ㈜ 스노우화이트 대표이사 이규민 사업자등록번호 000-00-00000
-            통신판매신고 2024-경기고양-0000
+            ㈜ 스노우화이트 대표이사 이규민 사업자등록번호 636-81-02878
+            {/* 통신판매신고 2024-경기고양-0000 */}
           </S.FooterAboutText>
           <S.FooterAboutText>
-            개인정보보호책임자 : 홍길동 경기도 고양시 일산동구 00, 1층 |
-            고객만족센터 1588-0000
+            개인정보보호책임자 : 김태균 | 경기도 고양시 일산동구 장대길 42-17
+            {/* 고객만족센터 1588-0000 */}
           </S.FooterAboutText>
           <S.FooterAboutText>
             Copyright ⓒ 2024. ㈜ 스노우화이트. All rights reserved. icons by{" "}

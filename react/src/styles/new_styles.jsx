@@ -132,7 +132,7 @@ export const HeaderLogoBox = styled.div`
   height: ${(props) => (props.height ? props.height : "80px")};
   background-image: url(${(props) => (props.img ? props.img : "")});
   background-position: center;
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
   cursor: pointer;
 `;
@@ -472,7 +472,24 @@ export const PortfolioItemImgBox = styled.div`
 export const MainBottomBannerBox = styled.div`
   width: 100%;
   height: 340px;
-  background: url(${(props) => props.img}) no-repeat center center;
+  background: url(${(props) => props.img}) 50% 0px / cover no-repeat;
+
+  & div.inner {
+    padding: 110px;
+
+    & h1 {
+      font-size: 36px;
+      color: aliceblue;
+      text-align: center;
+      padding: 20px;
+    }
+
+    & h2 {
+      font-size: 14px;
+      color: aliceblue;
+      text-align: center;
+    }
+  }
 `;
 
 /**
@@ -680,18 +697,20 @@ export const Pop_Policy_Wrap = styled.div`
 
 export const Pop_Policy_Content = styled.div`
   overflow: auto;
-  height: 300px;
+  height: 600px;
   background-color: #eee;
   padding: 1rem;
 
   & > h1 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 18px;
+    font-weight: 550;
+    padding: 12px 0 12px 0;
   }
 
   & > p {
     font-size: 0.9rem;
-    margin-bottom: 1rem;
+    /* margin-bottom: 8px; */
+    padding-bottom: 5px;
   }
 `;
 

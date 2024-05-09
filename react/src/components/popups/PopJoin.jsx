@@ -35,19 +35,17 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
 
   const handleAllcheck = (e) => {
     if (e.target.checked === true) {
-      ckRefs.current.forEach((e) => {
-        e.checked = true;
-      });
+      ckRefs.current[0].checked = true;
+      ckRefs.current[1].checked = true;
+      ckRefs.current[2].checked = true;
     } else {
-      ckRefs.current.forEach((e) => {
-        e.checked = false;
-      });
+      ckRefs.current[0].checked = false;
+      ckRefs.current[1].checked = false;
+      ckRefs.current[2].checked = false;
     }
   };
 
   const handleJoin = () => {
-    console.log(ckRefs.current);
-
     if (userid === undefined || userpw === undefined || usernm === undefined) {
       setSnackbar({
         children: "필수 항목을 모두 입력해주세요.",
@@ -264,7 +262,7 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
         <DialogTitle id="alert-dialog-title">{"Success"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            축하합니다! 스노우화이트 회원가입이 완료 되었습니다.
+            축하합니다! 스노우플래닛 회원가입이 완료 되었습니다.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -293,6 +291,7 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
                 helperText={emailError}
                 error={emailError ? true : false}
                 value={userid}
+                disabled={authInputShow ? true : false}
                 onChange={handleEmailChange}
                 style={{ marginBottom: "0.6em" }}
                 InputProps={{
@@ -413,7 +412,7 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
                     openPopup2(0);
                   }}
                 >
-                  <b>스노우화이트 이용 약관</b> 동의 (필수)
+                  <b>스노우플래닛 이용 약관</b> 동의 (필수)
                 </S.Pop_Remeber_label>
               </S.Pop_Check>
               <S.Pop_Check>

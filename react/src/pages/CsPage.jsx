@@ -10,7 +10,7 @@ const CsPage = () => {
         <S.NoticeWrapper>
           <S.CartTopTitleBox>
             <h1>고객센터</h1>
-            <p>스노우화이트의 고객센터 입니다.</p>
+            <p>스노우플래닛의 고객센터 입니다.</p>
           </S.CartTopTitleBox>
           <S.NoticeBoardBox>
             <GlobalBoard boardType={"CS"} />

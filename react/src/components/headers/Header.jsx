@@ -32,7 +32,7 @@ const Header = () => {
           <S.Hd_mid_menu>
             <FiMenu size={50} />
           </S.Hd_mid_menu>
-          <S.Hd_mid_logo>스노우화이트</S.Hd_mid_logo>
+          <S.Hd_mid_logo>스노우플래닛</S.Hd_mid_logo>
           <S.Hd_mid_icons>
             <S.Hd_mid_icon>
               <FaSearch size={30} />

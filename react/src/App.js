@@ -99,7 +99,11 @@ function App({ queryClient }) {
         <Routes>
           <Route
             element={
-              <DefaultLayout openPopup={openPopup} queryClient={queryClient} />
+              <DefaultLayout
+                openPopup={openPopup}
+                openPopup2={openPopup2}
+                queryClient={queryClient}
+              />
             }
           >
             <Route path="/" element={<MainPage2 />} />

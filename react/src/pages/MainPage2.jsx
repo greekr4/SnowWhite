@@ -91,7 +91,7 @@ const MainPage2 = () => {
       <S.MainSection bgc="#f9fafc">
         <S.MainPortfolioWrapper>
           <S.PortfolioTextBox>
-            <S.PortfolioTitle>스노우화이트 Portfolio</S.PortfolioTitle>
+            <S.PortfolioTitle>스노우플래닛 Portfolio</S.PortfolioTitle>
           </S.PortfolioTextBox>
           <S.PortfolioList>
             {test_pf.map((item, index) => (
@@ -101,7 +101,17 @@ const MainPage2 = () => {
         </S.MainPortfolioWrapper>
       </S.MainSection>
       <S.MainSection>
-        <S.MainBottomBannerBox img={BottomBannerImg}></S.MainBottomBannerBox>
+        <S.MainBottomBannerBox img={BottomBannerImg}>
+          <div className="inner">
+            <h1>무한대의 명함을 경험하다.</h1>
+            <h2>
+              한번 보면 빠져들 수밖에 없는 매력적인 명함
+              <br />
+              <br />
+              직접 보고 느껴보세요!
+            </h2>
+          </div>
+        </S.MainBottomBannerBox>
       </S.MainSection>
     </S.MainLayout>
   );

@@ -9,7 +9,7 @@ const NoticePage = () => {
         <S.NoticeWrapper>
           <S.CartTopTitleBox>
             <h1>공지사항</h1>
-            <p>스노우화이트의 공지사항 입니다.</p>
+            <p>스노우플래닛의 공지사항 입니다.</p>
           </S.CartTopTitleBox>
           <S.NoticeBoardBox>
             <GlobalBoard boardType={"NOTICE"} />

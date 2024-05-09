@@ -31,7 +31,7 @@ const Footer = () => {
         <S.Ft_mid_inner>
           <S.Ft_mid_infoBox>
             <S.Ft_mid_infoLeft>
-              <S.Ft_mid_infoText>(주)스노우화이트</S.Ft_mid_infoText>
+              <S.Ft_mid_infoText>(주)스노우플래닛</S.Ft_mid_infoText>
               <S.Ft_mid_infoText>본사 : 경기도 고양시</S.Ft_mid_infoText>
               <S.Ft_mid_infoText>
                 COPYRIGHTⓒ SNOWWHITE CO.LTD. ALL RIGHTS RESERVED
@@ -53,7 +53,7 @@ const Footer = () => {
       </S.Ft_mid>
       <S.Ft_bot>
         <S.Ft_bot_inner>
-          <S.Ft_bot_Logo>스노우화이트</S.Ft_bot_Logo>
+          <S.Ft_bot_Logo>스노우플래닛</S.Ft_bot_Logo>
         </S.Ft_bot_inner>
       </S.Ft_bot>
     </>

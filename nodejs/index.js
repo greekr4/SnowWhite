@@ -1,6 +1,8 @@
 ///
 
 const express = require("express");
+const https = require("https");
+const os = require("os");
 const path = require("path");
 const app = express();
 const bodyParser = require("body-parser");
@@ -9,8 +11,9 @@ const cors = require("cors");
 const busboy = require("connect-busboy");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const multer = require("multer");
-
+const fs = require("fs");
 const jwt = require("jsonwebtoken"); // JWT 모듈 연결
+
 const {
   auth,
   makeToken,
@@ -329,6 +332,40 @@ app.post("/api/admin/prod_option", auth, insert_products_option);
 
 app.post("/api/admin/prod_paper", auth, insert_products_paper);
 
-app.listen("3030", () => {
-  console.log("Server started");
-});
+// app.listen("3030", () => {
+//   console.log("Server started");
+// });
+
+if (os.type().indexOf("Windows") != -1) {
+  //윈도우일떄
+  app.listen("3030", () => {
+    console.log("Server started");
+  });
+} else {
+  //리눅스
+
+  const privateKey = fs.readFileSync(
+    "/etc/letsencrypt/live/snowplanet.co.kr/privkey.pem",
+    "utf8"
+  );
+  const certificate = fs.readFileSync(
+    "/etc/letsencrypt/live/snowplanet.co.kr/cert.pem",
+    "utf8"
+  );
+  const ca = fs.readFileSync(
+    "/etc/letsencrypt/live/snowplanet.co.kr/chain.pem",
+    "utf8"
+  );
+
+  const options = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca,
+  };
+
+  const server = https.createServer(options, app);
+
+  server.listen(3030, () => {
+    console.log("HTTPS server listening");
+  });
+}

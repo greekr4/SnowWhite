@@ -9,11 +9,11 @@ const IntroPage0 = () => {
         <S.IntroWayWrapper>
           <S.CartTopTitleBox>
             <h1>오시는 길</h1>
-            <p>스노우화이트를 찾아 오시는 방법입니다.</p>
+            <p>스노우플래닛를 찾아 오시는 방법입니다.</p>
           </S.CartTopTitleBox>
           <S.KakaoMapBox>
             <Kakaomap />
-            <h1>스노우화이트</h1>
+            <h1>스노우플래닛</h1>
             <div className="sub">
               <h2>주소</h2>
               <p>경기도 고양시 일산동구 장대길 42-17</p>

@@ -9,10 +9,12 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import ReactQuill, { Quill } from "react-quill";
 import {
+  Alert,
   Button,
   ButtonGroup,
   MenuItem,
   Select,
+  Snackbar,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
@@ -232,7 +234,10 @@ const ProductDetailPage = ({ openPopup }) => {
       return false;
     }
     if (!designCheck) {
-      alert("디자인을 확인 해 주세요.");
+      setSnackbar({
+        children: "디자인을 확인해주세요.",
+        severity: "error",
+      });
       return false;
     }
 
@@ -257,7 +262,10 @@ const ProductDetailPage = ({ openPopup }) => {
     );
 
     if (res.status === 200) {
-      alert("장바구니에 추가 되었습니다.");
+      setSnackbar({
+        children: "장바구니에 추가되었습니다.",
+        severity: "success",
+      });
     }
   };
 
@@ -268,10 +276,22 @@ const ProductDetailPage = ({ openPopup }) => {
     }
     const input = document.createElement("input");
     input.setAttribute("type", "file");
-    input.setAttribute("accept", "pdf/*");
+    input.setAttribute("accept", ".ai,.pdf");
     input.click();
     input.addEventListener("change", async () => {
       const file = input.files[0];
+
+      //체크
+      const allowedExtensions = [".ai", ".pdf"];
+      const fileExtension = file.name.split(".").pop().toLowerCase();
+      if (!allowedExtensions.includes("." + fileExtension)) {
+        setSnackbar({
+          children: "올바른 파일 형식을 선택해주세요. (ai 또는 pdf)",
+          severity: "error",
+        });
+        return;
+      }
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", "design");
@@ -287,7 +307,10 @@ const ProductDetailPage = ({ openPopup }) => {
           }
         );
         const designUrl = result.data;
-        alert("디자인이 등록되었습니다.");
+        setSnackbar({
+          children: "파일이 업로드 되었습니다.",
+          severity: "success",
+        });
         setDesignFile(designUrl);
         setDesignCheck(true);
       } catch (error) {
@@ -535,10 +558,16 @@ const ProductDetailPage = ({ openPopup }) => {
     // }
   };
 
+  /**
+   * 스낵바
+   */
+
+  const [snackbar, setSnackbar] = useState(null);
+
   return (
     <>
       <S.MainLayout>
-        <Button onClick={createOptionNm}>ㅇㅇ</Button>
+        {/* <Button onClick={createOptionNm}>ㅇㅇ</Button> */}
         <S.MainSection>
           <S.ProdDetailWrapper>
             <S.ProdDetailBox ref={DtailBox}>
@@ -748,6 +777,23 @@ const ProductDetailPage = ({ openPopup }) => {
           </S.ProductReviewWrapper>
         </S.MainSection>
       </S.MainLayout>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          onClose={() => {
+            setSnackbar(null);
+          }}
+          autoHideDuration={3000}
+        >
+          <Alert
+            {...snackbar}
+            onClose={() => {
+              setSnackbar(null);
+            }}
+          />
+        </Snackbar>
+      )}
     </>
   );
 };

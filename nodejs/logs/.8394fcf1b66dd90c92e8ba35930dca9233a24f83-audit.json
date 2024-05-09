@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\.8394fcf1b66dd90c92e8ba35930dca9233a24f83-audit.json",
+    "files": [
+        {
+            "date": 1715220857388,
+            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-09.error.log",
+            "hash": "ce9535f6683491bbf92f74cc34ae318e889ed876fcb10792110d659a19cfc73a"
+        }
+    ],
+    "hashType": "sha256"
+}
