@@ -112,6 +112,7 @@ function App({ queryClient }) {
               path="/products/detail/:prod_sid"
               element={<ProductDetailPage openPopup={openPopup} />}
             />
+
             <Route path="/cart" element={<CartPage />} />
             <Route
               path="/order/:item_sids"

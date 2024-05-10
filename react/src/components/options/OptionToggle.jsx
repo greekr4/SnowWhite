@@ -549,6 +549,63 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
           )}
         </Box>
       )}
+      {type === "책자" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <S.Product_Detail_Option_ItemBox>
+            <S.Product_Detail_Option_ItemText>
+              내지
+            </S.Product_Detail_Option_ItemText>
+            <S.OptionBtns>
+              <ToggleButtonGroup
+                color="primary"
+                value={cotting}
+                exclusive
+                onChange={handleChangeCotting}
+                aria-label="Platform"
+                style={{ width: "100%" }}
+                className="group"
+              >
+                <ToggleButton value={true}>스노우 100g</ToggleButton>
+                <ToggleButton value={false}>아트지 100g</ToggleButton>
+              </ToggleButtonGroup>
+            </S.OptionBtns>
+          </S.Product_Detail_Option_ItemBox>
+
+          {cotting && (
+            <Box sx={{}}>
+              <S.Product_Detail_Option_ItemBox>
+                {/* <S.Product_Detail_Option_ItemText>
+                  코팅 상세
+                </S.Product_Detail_Option_ItemText> */}
+                <S.OptionBtns>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={cottingOption}
+                    exclusive
+                    onChange={(e) => {
+                      setCottingOption(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"dan_yes"}>단면유광코팅</ToggleButton>
+                    <ToggleButton value={"dan_no"}>단면무광코팅</ToggleButton>
+                    <ToggleButton value={"yang_yes"}>양면유광코팅</ToggleButton>
+                    <ToggleButton value={"yang_no"}>양면무광코팅</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns>
+              </S.Product_Detail_Option_ItemBox>
+            </Box>
+          )}
+        </Box>
+      )}
     </>
   );
 };

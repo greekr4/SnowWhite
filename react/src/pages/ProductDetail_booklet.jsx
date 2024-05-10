@@ -600,36 +600,38 @@ const ProductDetailPage = ({ openPopup }) => {
                   <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
                 ))}
                 <S.Product_Detail_Option_ItemWrapper>
-                  <S.Product_Detail_Option_ItemBox>
-                    <S.Product_Detail_Option_ItemText>
-                      용지
-                    </S.Product_Detail_Option_ItemText>
-                    <S.OptionBtns>
-                      <ToggleButtonGroup
-                        color="primary"
-                        value={selectedPaper}
-                        exclusive
-                        onChange={handleChange}
-                        aria-label="Platform"
-                        style={{ width: "100%" }}
-                        className="group"
-                      >
-                        {paper?.map((item, index) => (
-                          <ToggleButton
-                            value={item.PAPER_NM + item.PAPER_WEIGHT}
-                            onClick={() => {
-                              setPaperQty(item.PAPER_QTY);
-                              setPaperAmt(item.PAPER_AMT);
-                              setQty(item.PAPER_QTY?.split(",")[0]);
-                              setDefaultAmt(item.PAPER_AMT?.split(",")[0]);
-                            }}
-                          >
-                            {item.PAPER_NM} {item.PAPER_WEIGHT}g
-                          </ToggleButton>
-                        ))}
-                      </ToggleButtonGroup>
-                    </S.OptionBtns>
-                  </S.Product_Detail_Option_ItemBox>
+                  {prodDetail?.PROD_NM === "명함" && (
+                    <S.Product_Detail_Option_ItemBox>
+                      <S.Product_Detail_Option_ItemText>
+                        용지
+                      </S.Product_Detail_Option_ItemText>
+                      <S.OptionBtns>
+                        <ToggleButtonGroup
+                          color="primary"
+                          value={selectedPaper}
+                          exclusive
+                          onChange={handleChange}
+                          aria-label="Platform"
+                          style={{ width: "100%" }}
+                          className="group"
+                        >
+                          {paper?.map((item, index) => (
+                            <ToggleButton
+                              value={item.PAPER_NM + item.PAPER_WEIGHT}
+                              onClick={() => {
+                                setPaperQty(item.PAPER_QTY);
+                                setPaperAmt(item.PAPER_AMT);
+                                setQty(item.PAPER_QTY?.split(",")[0]);
+                                setDefaultAmt(item.PAPER_AMT?.split(",")[0]);
+                              }}
+                            >
+                              {item.PAPER_NM} {item.PAPER_WEIGHT}g
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </S.OptionBtns>
+                    </S.Product_Detail_Option_ItemBox>
+                  )}
 
                   {/* {prodOptions?.map((options, index) => (
                     <OptionItem
@@ -651,13 +653,6 @@ const ProductDetailPage = ({ openPopup }) => {
                       updateOptionAmt={updateOptionAmt}
                     />
                   ))}
-
-                  <OptionToggle
-                    type={"책자"}
-                    selOption={selOption}
-                    setSelOption={setSelOption}
-                    updateOptionAmt={updateOptionAmt}
-                  />
 
                   <S.Product_Detail_Option_ItemBox>
                     <S.Product_Detail_Option_ItemText>
