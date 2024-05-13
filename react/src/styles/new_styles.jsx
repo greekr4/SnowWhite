@@ -391,6 +391,7 @@ export const GlobProdItemDesc = styled.span`
   color: #999;
   padding-bottom: 1.5rem;
   white-space: pre-line;
+  height: 65px;
 `;
 export const GlobProdItemBtn = styled.span`
   cursor: pointer;

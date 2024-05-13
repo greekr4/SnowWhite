@@ -1183,3 +1183,32 @@ where
 
   return res.status(200).send("OK");
 };
+
+exports.update_products_show = async (req, res) => {
+  const { prod_sid, prod_show } = req.body;
+
+  const qry = `
+update
+	TB_PRODUCT
+set
+	PROD_SHOW = ${prod_show}
+where
+	PROD_SID = '${prod_sid}'
+  `;
+  const res_update = await getConnection(qry);
+  if (res_update.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
+};
+
+exports.update_products_global = async (req, res) => {
+  const { PROD_SID, FIELD } = req.body;
+
+  const FILED = "";
+
+  const qry = `
+update
+  TB_PRODUCT
+set
+  ${FILED}
+  `;
+};

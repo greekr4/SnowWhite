@@ -45,6 +45,8 @@ from
 where
 	PROD_SHOW = 1
   AND PROD_DELCODE != 1
+order by
+  PROD_PRIORITY
 `;
 
   const res_qry = await getConnection(qry);

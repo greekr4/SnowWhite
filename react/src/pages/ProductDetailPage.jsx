@@ -442,6 +442,8 @@ const ProductDetailPage = ({ openPopup }) => {
       amt += finalPrifce;
     }
 
+    // if(selOption.cover)
+
     setOptionAmt(amt);
   };
 
@@ -609,7 +611,9 @@ const ProductDetailPage = ({ openPopup }) => {
                         color="primary"
                         value={selectedPaper}
                         exclusive
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          setSelectedPaper(e.target.value);
+                        }}
                         aria-label="Platform"
                         style={{ width: "100%" }}
                         className="group"
@@ -651,13 +655,6 @@ const ProductDetailPage = ({ openPopup }) => {
                       updateOptionAmt={updateOptionAmt}
                     />
                   ))}
-
-                  <OptionToggle
-                    type={"책자"}
-                    selOption={selOption}
-                    setSelOption={setSelOption}
-                    updateOptionAmt={updateOptionAmt}
-                  />
 
                   <S.Product_Detail_Option_ItemBox>
                     <S.Product_Detail_Option_ItemText>

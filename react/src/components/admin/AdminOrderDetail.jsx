@@ -232,19 +232,7 @@ const AdminOrderDetail = ({ orderData }) => {
                     />
                   </th>
                   <th>{orderData.PROD_NM}</th>
-                  <th>
-                    {orderData.ITEM_OPTION.map((option, index) =>
-                      index < orderData.ITEM_OPTION.length - 1 ? (
-                        <>
-                          {option.OPTION_CATE}-{option.OPTION_NM} /{" "}
-                        </>
-                      ) : (
-                        <>
-                          {option.OPTION_CATE}-{option.OPTION_NM}
-                        </>
-                      )
-                    )}
-                  </th>
+                  <th>{orderData.ITEM_OPTION}</th>
                   <th></th>
                   <th>
                     {orderData.ITEM_FILE_LOCATION && (

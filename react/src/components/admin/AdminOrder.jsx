@@ -56,8 +56,10 @@ const AdminOrder = ({ openPopup }) => {
         return "배송 중";
       case 5:
         return "배송 완료";
+      case 9:
+        return "취소";
       default:
-        return "error";
+        return "Code error";
     }
   };
 
@@ -137,7 +139,7 @@ const AdminOrder = ({ openPopup }) => {
         <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(5)}>
           배송완료 처리
         </S.Btn>
-        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(0)}>
+        <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(9)}>
           취소 처리
         </S.Btn>
         <S.AdminInfoBox>
@@ -173,6 +175,12 @@ const AdminOrder = ({ openPopup }) => {
             <span className="title">배송완료</span>
             <span className="number">
               {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 5).length}
+            </span>
+          </div>
+          <div onClick={() => statusFillter(9)}>
+            <span className="title">취소</span>
+            <span className="number">
+              {initOrderlist_frist.filter((el) => el.ORDER_STATUS === 9).length}
             </span>
           </div>
         </S.AdminInfoBox>

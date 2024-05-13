@@ -9,11 +9,19 @@ import { formatDate } from "../hooks/Utill";
 import Pagination from "react-js-pagination";
 import arrow_left from "../assets/icons/arrow_left.png";
 import arrow_right from "../assets/icons/arrow_right.png";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CancelIcon from "@mui/icons-material/Cancel";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Call } from "@mui/icons-material";
 
 const CustomDatePickerHeader = ({
   date,
@@ -91,6 +99,8 @@ const OrderListPage = ({ openPopup }) => {
         return "배송 중";
       case 5:
         return "배송 완료";
+      case 9:
+        return "취소";
       default:
         return "error";
     }
@@ -111,18 +121,39 @@ const OrderListPage = ({ openPopup }) => {
     const pageItems = getPageItems(initOrderlist, e, countPerPage);
     setOrderlist(pageItems);
   };
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogAmt, setDialogAmt] = useState(0);
+
+  const updateStatus = async (order_sid) => {
+    const result = window.confirm("취소 하시겠습니까?");
+    if (!result) {
+      return false;
+    }
+    const res = await axios.put(
+      process.env.REACT_APP_DB_HOST + "/api/admin/order",
+      {
+        order_sid: order_sid,
+        field: "ORDER_STATUS",
+        order_status: 9,
+      }
+    );
+
+    initdb();
+  };
   return (
-    <S.MainLayout>
-      <S.MainSection>
-        <S.CartTopWrapper>
-          <S.CartTopTitleBox>
-            <h1>주문 내역</h1>
-            <p>내가 주문한 상품 확인이 가능해요.</p>
-          </S.CartTopTitleBox>
-          <S.CartTopAddtionBox>
-            <p>주문 상품 {initOrderlist ? initOrderlist.length : "0"}개</p>
-          </S.CartTopAddtionBox>
-          {/* <S.OrderListTopAddtionBox>
+    <>
+      <S.MainLayout>
+        <S.MainSection>
+          <S.CartTopWrapper>
+            <S.CartTopTitleBox>
+              <h1>주문 내역</h1>
+              <p>내가 주문한 상품 확인이 가능해요.</p>
+            </S.CartTopTitleBox>
+            <S.CartTopAddtionBox>
+              <p>주문 상품 {initOrderlist ? initOrderlist.length : "0"}개</p>
+            </S.CartTopAddtionBox>
+            {/* <S.OrderListTopAddtionBox>
             <div className="left">
               <label>기간별 조회</label>
               <S.Btn>6개월</S.Btn>
@@ -159,24 +190,24 @@ const OrderListPage = ({ openPopup }) => {
               </S.RightInner>
             </div>
           </S.OrderListTopAddtionBox> */}
-        </S.CartTopWrapper>
-      </S.MainSection>
-      <S.MainSection>
-        <S.OrderListMidWrapper>
-          <S.OrderListMidProdBox>
-            <table>
-              <thead>
-                <tr>
-                  <th>주문일</th>
-                  <th>주문번호</th>
-                  <th>상품정보</th>
-                  <th>결제금액</th>
-                  <th>진행상태</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* {orderlist?.map((el, index) => (
+          </S.CartTopWrapper>
+        </S.MainSection>
+        <S.MainSection>
+          <S.OrderListMidWrapper>
+            <S.OrderListMidProdBox>
+              <table>
+                <thead>
+                  <tr>
+                    <th>주문일</th>
+                    <th>주문번호</th>
+                    <th>상품정보</th>
+                    <th>결제금액</th>
+                    <th>진행상태</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* {orderlist?.map((el, index) => (
                   <tr key={index}>
                     <td>{el.ORDER_SID}</td>
                     <td>{formatDate(el.ORDER_DATE)}</td>
@@ -196,46 +227,48 @@ const OrderListPage = ({ openPopup }) => {
                     </td>
                   </tr>
                 ))} */}
-                {orderlist?.length ? (
-                  orderlist?.map((el, index) => (
-                    <tr key={index}>
-                      <td>{formatDate(el.ORDER_DATE)}</td>
-                      <td style={{ fontSize: "0.75em" }}>{el.ORDER_SID}</td>
-                      <td>
-                        <p style={{ fontSize: "1.1em", fontWeight: "500" }}>
-                          {el.ORDER_CORE_PROD}
-                        </p>
-                        <p
-                          style={{
-                            fontSize: "0.8em",
-                            color: "#777",
-                            padding: "0.25em",
-                          }}
-                        >
-                          {el.ORDER_CORE_OPTION}
-                        </p>
-                        {el.ITEM_SIDS.split(",").length - 1 != 0 ? (
+                  {orderlist?.length ? (
+                    orderlist?.map((el, index) => (
+                      <tr key={index}>
+                        <td>{formatDate(el.ORDER_DATE)}</td>
+                        <td style={{ fontSize: "0.75em" }}>{el.ORDER_SID}</td>
+                        <td>
+                          <p style={{ fontSize: "1.1em", fontWeight: "500" }}>
+                            {el.ORDER_CORE_PROD}
+                          </p>
                           <p
                             style={{
                               fontSize: "0.8em",
+                              color: "#777",
                               padding: "0.25em",
-                              cursor: "pointer",
                             }}
-                            onClick={() =>
-                              openPopup("orderDetail", { ITEMS: el.ITEM_SIDS })
-                            }
                           >
-                            {" "}
-                            외 {el.ITEM_SIDS.split(",").length - 1} 건
+                            {el.ORDER_CORE_OPTION}
                           </p>
-                        ) : (
-                          <></>
-                        )}
-                        <p></p>
+                          {el.ITEM_SIDS.split(",").length - 1 != 0 ? (
+                            <p
+                              style={{
+                                fontSize: "0.8em",
+                                padding: "0.25em",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                openPopup("orderDetail", {
+                                  ITEMS: el.ITEM_SIDS,
+                                })
+                              }
+                            >
+                              {" "}
+                              외 {el.ITEM_SIDS.split(",").length - 1} 건
+                            </p>
+                          ) : (
+                            <></>
+                          )}
+                          <p></p>
 
-                        {/* 외{" "}
+                          {/* 외{" "}
                       {el.ITEM_SIDS.split(",").length - 1} 건 */}
-                        {/* <div
+                          {/* <div
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -272,124 +305,203 @@ const OrderListPage = ({ openPopup }) => {
                           </div>
                         ))}
                       </div> */}
-                      </td>
-                      <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
-                      <td>{renderStatus(el.ORDER_STATUS)}</td>
-                      <td>
-                        {el.ORDER_STATUS < 4 ? (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<CancelIcon />}
-                          >
-                            취소요청
-                          </Button>
-                        ) : el.ORDER_STATUS === 4 ? (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<LocalShippingIcon />}
-                            onClick={() => {
-                              openPopup("logisDetail", {
-                                ORDER_LOGIS_NM: el.ORDER_LOGIS_NM,
-                                ORDER_LOGIS_NO: el.ORDER_LOGIS_NO,
-                              });
-                            }}
-                          >
-                            배송추적
-                          </Button>
-                        ) : el.ORDER_STATUS === 5 && el.ORDER_REVIEW === "N" ? (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<RateReviewIcon />}
-                            onClick={() => {
-                              openPopup("reviewForm", {
-                                ORDER_SID: el.ORDER_SID,
-                                PROD_SID: el.ORDER_CORE_PROD_SID,
-                                PROD_NM: el.ORDER_CORE_PROD,
-                                ITEM_OPTION: el.ORDER_CORE_OPTION,
-                                USER_ID: data?.USER_ID,
-                                PROD_CATECODE: el.ORDER_CORE_PROD_CATECODE,
-                                initdb: initdb,
-                              });
-                            }}
-                          >
-                            리뷰작성
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<VisibilityIcon />}
-                            onClick={() => {
-                              openPopup("reviewDetail", {
-                                order_sid: el.ORDER_SID,
-                              });
-                            }}
-                          >
-                            리뷰확인
-                          </Button>
-                        )}
+                        </td>
+                        <td>{el.ORDER_AMOUNT.toLocaleString("ko-kr")}</td>
+                        <td>
+                          {renderStatus(el.ORDER_STATUS)}
+                          {el.ORDER_STATUS === 1 &&
+                            el.ORDER_PAYMENT_TYPE === "pm2" && (
+                              <div>
+                                <Button
+                                  variant="contained"
+                                  color="info"
+                                  size="small"
+                                  sx={{
+                                    fontSize: "10px",
+                                    margin: "5px auto",
+                                  }}
+                                  onClick={() => {
+                                    setDialogOpen(true);
+                                    setDialogAmt(el.ORDER_AMOUNT);
+                                  }}
+                                >
+                                  계좌확인
+                                </Button>
+                              </div>
+                            )}
+                        </td>
+                        <td>
+                          {el.ORDER_STATUS < 2 ? (
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<CancelIcon />}
+                              onClick={() => {
+                                updateStatus(el.ORDER_SID);
+                              }}
+                            >
+                              취소하기
+                            </Button>
+                          ) : el.ORDER_STATUS === 4 ? (
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<LocalShippingIcon />}
+                              onClick={() => {
+                                openPopup("logisDetail", {
+                                  ORDER_LOGIS_NM: el.ORDER_LOGIS_NM,
+                                  ORDER_LOGIS_NO: el.ORDER_LOGIS_NO,
+                                });
+                              }}
+                            >
+                              배송추적
+                            </Button>
+                          ) : el.ORDER_STATUS === 5 &&
+                            el.ORDER_REVIEW === "N" ? (
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<RateReviewIcon />}
+                              onClick={() => {
+                                openPopup("reviewForm", {
+                                  ORDER_SID: el.ORDER_SID,
+                                  PROD_SID: el.ORDER_CORE_PROD_SID,
+                                  PROD_NM: el.ORDER_CORE_PROD,
+                                  ITEM_OPTION: el.ORDER_CORE_OPTION,
+                                  USER_ID: data?.USER_ID,
+                                  PROD_CATECODE: el.ORDER_CORE_PROD_CATECODE,
+                                  initdb: initdb,
+                                });
+                              }}
+                            >
+                              리뷰작성
+                            </Button>
+                          ) : el.ORDER_STATUS === 5 &&
+                            el.ORDER_REVIEW === "Y" ? (
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<VisibilityIcon />}
+                              onClick={() => {
+                                openPopup("reviewDetail", {
+                                  order_sid: el.ORDER_SID,
+                                });
+                              }}
+                            >
+                              리뷰확인
+                            </Button>
+                          ) : // ) : el.ORDER_STATUS === 2 ? (
+                          //   <Button
+                          //     variant="outlined"
+                          //     size="small"
+                          //     startIcon={<Call />}
+                          //     onClick={() => {
+                          //       openPopup("reviewDetail", {
+                          //         order_sid: el.ORDER_SID,
+                          //       });
+                          //     }}
+                          //   >
+                          //     취소문의
+                          //   </Button>
+                          null}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={"100%"} style={{ height: "6rem" }}>
+                        주문내역이 비었습니다.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={"100%"} style={{ height: "6rem" }}>
-                      주문내역이 비었습니다.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </S.OrderListMidProdBox>
-          <S.PaginationBox>
-            <Pagination
-              // 현제 보고있는 페이지
-              activePage={currentPage}
-              // 한페이지에 출력할 아이템수
-              itemsCountPerPage={countPerPage}
-              // 총 아이템수
-              totalItemsCount={initOrderlist?.length}
-              // 표시할 페이지수
-              pageRangeDisplayed={10}
-              // 마지막 버튼 숨기기
-              hideFirstLastPages={true}
-              // 버튼 커스텀
-              prevPageText={
-                <S.Glob_Icon
-                  icon={arrow_left}
-                  width="16px"
-                  height="16px"
-                  margin="3px 0 0 0"
-                />
-              }
-              nextPageText={
-                <S.Glob_Icon
-                  icon={arrow_right}
-                  width="16px"
-                  height="16px"
-                  margin="3px 0 0 0"
-                />
-              }
-              // 함수
-              onChange={handlePageChange}
-            />
-          </S.PaginationBox>
-        </S.OrderListMidWrapper>
-        <S.CartBotWrapper>
-          <S.CartBotNotiBox>
-            <h1>주문/배송 안내</h1>
-            <p>
-              결제 주문후 2~4일 이내 발송 됩니다. (토, 일, 공휴일은 배송기일에서
-              제외됩니다.)
-            </p>
-            <p>단, 도서 지역은 배송기일이 추가적으로 소요 될 수 있습니다.</p>
-          </S.CartBotNotiBox>
-        </S.CartBotWrapper>
-      </S.MainSection>
-    </S.MainLayout>
+                  )}
+                </tbody>
+              </table>
+            </S.OrderListMidProdBox>
+            <S.PaginationBox>
+              <Pagination
+                // 현제 보고있는 페이지
+                activePage={currentPage}
+                // 한페이지에 출력할 아이템수
+                itemsCountPerPage={countPerPage}
+                // 총 아이템수
+                totalItemsCount={initOrderlist?.length}
+                // 표시할 페이지수
+                pageRangeDisplayed={10}
+                // 마지막 버튼 숨기기
+                hideFirstLastPages={true}
+                // 버튼 커스텀
+                prevPageText={
+                  <S.Glob_Icon
+                    icon={arrow_left}
+                    width="16px"
+                    height="16px"
+                    margin="3px 0 0 0"
+                  />
+                }
+                nextPageText={
+                  <S.Glob_Icon
+                    icon={arrow_right}
+                    width="16px"
+                    height="16px"
+                    margin="3px 0 0 0"
+                  />
+                }
+                // 함수
+                onChange={handlePageChange}
+              />
+            </S.PaginationBox>
+          </S.OrderListMidWrapper>
+          <S.CartBotWrapper>
+            <S.CartBotNotiBox>
+              <h1>주문/배송 안내</h1>
+              <p>
+                결제 주문후 2~4일 이내 발송 됩니다. (토, 일, 공휴일은
+                배송기일에서 제외됩니다.)
+              </p>
+              <p>단, 도서 지역은 배송기일이 추가적으로 소요 될 수 있습니다.</p>
+            </S.CartBotNotiBox>
+          </S.CartBotWrapper>
+        </S.MainSection>
+      </S.MainLayout>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{ textAlign: "center", width: "350px" }}
+        >
+          계좌번호 안내
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ textAlign: "center" }}
+          >
+            기업은행 452-043731-04-021
+            <br />
+            예금주 : (주)스노우화이트
+            <br />
+            <b>{parseInt(dialogAmt).toLocaleString("ko-kr")}원</b> 입금
+            부탁드립니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDialogOpen(false);
+            }}
+            autoFocus
+          >
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

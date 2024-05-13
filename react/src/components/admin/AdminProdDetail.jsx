@@ -552,6 +552,20 @@ const AdminProdDetail = () => {
   ];
 
   /////////////////////
+
+  const handleSetShow = async (value) => {
+    try {
+      const res = await axios.post(
+        process.env.REACT_APP_DB_HOST + "/api/admin/prod/prod_show",
+        { prod_sid: prod_sid, prod_show: value }
+      );
+
+      alert(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <S.MainLayout>
       <S.AdminWrapper>
@@ -607,8 +621,22 @@ const AdminProdDetail = () => {
               <tr>
                 <th>메인 화면</th>
                 <td>
-                  <S.Btn margin="0.25rem">진열</S.Btn>
-                  <S.Btn margin="0.25rem">해제</S.Btn>
+                  <S.Btn
+                    margin="0.25rem"
+                    onClick={() => {
+                      handleSetShow(1);
+                    }}
+                  >
+                    진열
+                  </S.Btn>
+                  <S.Btn
+                    margin="0.25rem"
+                    onClick={() => {
+                      handleSetShow(0);
+                    }}
+                  >
+                    해제
+                  </S.Btn>
                 </td>
               </tr>
             </table>

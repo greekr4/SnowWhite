@@ -126,6 +126,7 @@ export function CheckoutPage({
                         res.paymentType,
                         res.amount
                       );
+
                       window.location.href = "/orderlist";
                     } else {
                       alert("결제를 실패하였습니다.");

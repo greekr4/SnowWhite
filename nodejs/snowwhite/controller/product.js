@@ -31,7 +31,14 @@ order by BANNER_PRIORITY
 };
 
 exports.select_products_thumbnail = async (req, res) => {
-  const { cateid } = req.body;
+  const { cateid, main } = req.body;
+
+  let main_where = main ? `and T1.PROD_MAIN = 'Y'` : ``;
+  let orderby = main
+    ? `order by T1.PROD_MAIN_PRIORITY`
+    : `order by T1.PROD_PRIORITY`;
+  let cate_where = cateid ? `and T1.PROD_CATECODE = ${cateid}` : ``;
+
   const qry = `
 select
   T1.PROD_SID,
@@ -46,13 +53,18 @@ on
   T1.PROD_SID = T2.PROD_SID
 where
   T2.IMAGE_CATE = 'thumbnail'
-  and
-  T1.PROD_CATECODE = ?
+ ${cate_where}
   and
   T1.PROD_DELCODE = 0
+  and
+  T1.PROD_SHOW = 1
+  ${main_where}
+  ${orderby}
 `;
 
-  const res_data = await getConnection(qry, [cateid]);
+  console.log("썸네일 쿼리", qry);
+
+  const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row);
 };

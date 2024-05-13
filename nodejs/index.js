@@ -104,6 +104,7 @@ const {
   update_admin_option_price,
   insert_products_option,
   insert_products_paper,
+  update_products_show,
 } = require("./snowwhite/controller/admin");
 const {
   upload,
@@ -231,6 +232,8 @@ app.post("/api/admin/prod/update_options", auth, update_products_options);
 
 app.post("/api/admin/prod/update_content", auth, update_products_content);
 
+app.post("/api/admin/prod/prod_show", auth, update_products_show);
+
 app.post("/api/admin/prod/add", auth, insert_products_dummy);
 
 app.post("/api/admin/prod/del", auth, update_products_delcode);
@@ -331,6 +334,8 @@ app.post("/api/paper_excel", auth, paperExcelUpload);
 app.post("/api/admin/prod_option", auth, insert_products_option);
 
 app.post("/api/admin/prod_paper", auth, insert_products_paper);
+
+//app.put("/api/admin/product_global", auth);
 
 // app.listen("3030", () => {
 //   console.log("Server started");
