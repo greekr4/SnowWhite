@@ -10,7 +10,13 @@ import {
 } from "@mui/material";
 import { BorderAll } from "@mui/icons-material";
 
-const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
+const OptionToggle = ({
+  type,
+  selOption,
+  setSelOption,
+  updateOptionAmt,
+  calcBooklet,
+}) => {
   /**
    * 귀도리
    */
@@ -91,29 +97,35 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
    * 코팅
    */
 
-  const [cotting, setCotting] = useState(false);
-  const [cottingOption, setCottingOption] = useState("dan_yes");
+  const [coating, setCoating] = useState(false);
+  const [coatingOption, setCoatingOption] = useState("dan_yes");
 
-  const handleChangeCotting = (event, newAlignment) => {
-    setCotting(newAlignment);
+  const handleChangeCoating = (event, newAlignment) => {
+    setCoating(newAlignment);
   };
 
   /**
    * 책자 종합
    */
 
+  // 표지 용지 타입
+  const [coverPaper, setCoverPaper] = useState("regularPaper");
+  // 표지 용지 상세
+  const [coverPaperDetail, setCoverPaperDetail] = useState("스노우180g");
   // 표지 페이지
   const [coverPage, setCoverPage] = useState("4p");
   // 규격
   const [paperSize, setPaperSize] = useState("A4");
   // 내지
-  const [innerPaper, setInnerPaper] = useState("스노우 100g");
+  const [innerPaper, setInnerPaper] = useState("regularPaper");
   // 내지 컬러
   const [innerColor, setInnerColor] = useState("양면8도컬러");
   // 내지 페이지수
   const [innerPage, setInnerPage] = useState(20);
   // 제본
-  const [bindingType, setBindingType] = useState("중철");
+  const [bindingType, setBindingType] = useState("ironBinding");
+  // 커버코팅
+  const [coverCoating, setCoverCoating] = useState("선택안함");
 
   /**
    * 옵션 토탈
@@ -169,29 +181,42 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
     const copy = selOption;
     console.log(copy);
 
-    copy.cotting = cotting;
-    copy.cottingOption = cottingOption;
+    copy.coating = coating;
+    copy.coatingOption = coatingOption;
 
     setSelOption(copy);
 
     updateOptionAmt();
-  }, [cotting, cottingOption]);
+  }, [coating, coatingOption]);
 
   useEffect(() => {
     const copy = selOption;
     console.log(copy);
 
+    copy.coverPaper = coverPaper;
+    copy.coverPaperDetail = coverPaperDetail;
     copy.coverPage = coverPage;
     copy.paperSize = paperSize;
     copy.innerPaper = innerPaper;
     copy.innerColor = innerColor;
     copy.innerPage = innerPage;
     copy.bindingType = bindingType;
+    copy.coverCoating = coverCoating;
 
     setSelOption(copy);
-
+    calcBooklet();
     updateOptionAmt();
-  }, [coverPage, paperSize, innerPaper, innerColor, innerPage, bindingType]);
+  }, [
+    coverPaper,
+    coverPage,
+    paperSize,
+    innerPaper,
+    innerColor,
+    innerPage,
+    bindingType,
+    coverCoating,
+    coverPaperDetail,
+  ]);
 
   return (
     <>
@@ -541,9 +566,9 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
             <S.OptionBtns2>
               <ToggleButtonGroup
                 color="primary"
-                value={cotting}
+                value={coating}
                 exclusive
-                onChange={handleChangeCotting}
+                onChange={handleChangeCoating}
                 aria-label="Platform"
                 style={{ width: "100%" }}
                 className="group"
@@ -554,7 +579,7 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
             </S.OptionBtns2>
           </S.Product_Detail_Option_ItemBox>
 
-          {cotting && (
+          {coating && (
             <Box sx={{}}>
               <S.Product_Detail_Option_ItemBox>
                 {/* <S.Product_Detail_Option_ItemText>
@@ -563,10 +588,10 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
                 <S.OptionBtns>
                   <ToggleButtonGroup
                     color="primary"
-                    value={cottingOption}
+                    value={coatingOption}
                     exclusive
                     onChange={(e) => {
-                      setCottingOption(e.target.value);
+                      setCoatingOption(e.target.value);
                     }}
                     aria-label="Platform"
                     style={{ width: "100%" }}
@@ -583,61 +608,6 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
           )}
         </Box>
       )}
-      {type === "표지코팅" && (
-        <Box
-          sx={{
-            marginBottom: "20px",
-            paddingBottom: "20px",
-            borderBottom: "1px solid #ddd",
-          }}
-        >
-          <S.Product_Detail_Option_ItemBox>
-            <S.Product_Detail_Option_ItemText>
-              표지코팅
-            </S.Product_Detail_Option_ItemText>
-            <S.OptionBtns2>
-              <ToggleButtonGroup
-                color="primary"
-                value={cotting}
-                exclusive
-                onChange={handleChangeCotting}
-                aria-label="Platform"
-                style={{ width: "100%" }}
-                className="group"
-              >
-                <ToggleButton value={true}>코팅</ToggleButton>
-                <ToggleButton value={false}>선택 안함</ToggleButton>
-              </ToggleButtonGroup>
-            </S.OptionBtns2>
-          </S.Product_Detail_Option_ItemBox>
-
-          {cotting && (
-            <Box sx={{}}>
-              <S.Product_Detail_Option_ItemBox>
-                {/* <S.Product_Detail_Option_ItemText>
-                  코팅 상세
-                </S.Product_Detail_Option_ItemText> */}
-                <S.OptionBtns>
-                  <ToggleButtonGroup
-                    color="primary"
-                    value={cottingOption}
-                    exclusive
-                    onChange={(e) => {
-                      setCottingOption(e.target.value);
-                    }}
-                    aria-label="Platform"
-                    style={{ width: "100%" }}
-                    className="group"
-                  >
-                    <ToggleButton value={"dan_yes"}>단면유광코팅</ToggleButton>
-                    <ToggleButton value={"dan_no"}>단면무광코팅</ToggleButton>
-                  </ToggleButtonGroup>
-                </S.OptionBtns>
-              </S.Product_Detail_Option_ItemBox>
-            </Box>
-          )}
-        </Box>
-      )}
       {type === "책자" && (
         <Box
           sx={{
@@ -646,6 +616,90 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
             borderBottom: "1px solid #ddd",
           }}
         >
+          {/* 표지  */}
+
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                표지
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={coverPaper}
+                  exclusive
+                  onChange={(e) => {
+                    setCoverPaper(e.target.value);
+                    if (e.target.value === "premiumPaper") {
+                      setCoverPaperDetail("아르떼160g");
+                    } else {
+                      setCoverPaperDetail("스노우180g");
+                    }
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"regularPaper"}>일반지</ToggleButton>
+                  <ToggleButton value={"premiumPaper"}>고급지</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          {coverPaper === "regularPaper" ? (
+            <Box sx={{}}>
+              <S.Product_Detail_Option_ItemBox>
+                <S.OptionBtns2>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={coverPaperDetail}
+                    exclusive
+                    onChange={(e) => {
+                      setCoverPaperDetail(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"스노우180g"}>스노우180g</ToggleButton>
+                    <ToggleButton value={"스노우200g"}>스노우200g</ToggleButton>
+                    <ToggleButton value={"스노우250g"}>스노우250g</ToggleButton>
+                    <ToggleButton value={"모조지180g"}>모조지180g</ToggleButton>
+                    <ToggleButton value={"모조지200g"}>모조지200g</ToggleButton>
+                    <ToggleButton value={"모조지250g"}>모조지250g</ToggleButton>
+                    <ToggleButton value={"아트지180g"}>아트지180g</ToggleButton>
+                    <ToggleButton value={"아트지200g"}>아트지200g</ToggleButton>
+                    <ToggleButton value={"아트지250g"}>아트지250g</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns2>
+              </S.Product_Detail_Option_ItemBox>
+            </Box>
+          ) : coverPaper === "premiumPaper" ? (
+            <Box sx={{}}>
+              <S.Product_Detail_Option_ItemBox>
+                <S.OptionBtns2>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={coverPaperDetail}
+                    exclusive
+                    onChange={(e) => {
+                      setCoverPaperDetail(e.target.value);
+                    }}
+                    aria-label="Platform"
+                    style={{ width: "100%" }}
+                    className="group"
+                  >
+                    <ToggleButton value={"아르떼160g"}>아르떼160g</ToggleButton>
+                    <ToggleButton value={"아르떼200g"}>아르떼200g</ToggleButton>
+                    <ToggleButton value={"아르떼240g"}>아르떼240g</ToggleButton>
+                    <ToggleButton value={"랑데부160g"}>랑데부160g</ToggleButton>
+                    <ToggleButton value={"랑데부200g"}>랑데부200g</ToggleButton>
+                    <ToggleButton value={"랑데부240g"}>랑데부240g</ToggleButton>
+                  </ToggleButtonGroup>
+                </S.OptionBtns2>
+              </S.Product_Detail_Option_ItemBox>
+            </Box>
+          ) : null}
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.OptionBtns>
@@ -694,6 +748,34 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
+                표지코팅
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={coverCoating}
+                  exclusive
+                  onChange={(e) => {
+                    setCoverCoating(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"단면유광코팅"}>
+                    단면유광코팅
+                  </ToggleButton>
+                  <ToggleButton value={"단면무광코팅"}>
+                    단면무광코팅
+                  </ToggleButton>
+                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
                 내지
               </S.Product_Detail_Option_ItemText>
               <S.OptionBtns>
@@ -708,8 +790,8 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"스노우 100g"}>스노우 100g</ToggleButton>
-                  <ToggleButton value={"아트지 100g"}>아트지 100g</ToggleButton>
+                  <ToggleButton value={"regularPaper"}>일반지</ToggleButton>
+                  <ToggleButton value={"premiumPaper"}>고급지</ToggleButton>
                 </ToggleButtonGroup>
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
@@ -750,6 +832,13 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
                   onChange={(e) => {
                     setInnerPage(e.target.value);
                   }}
+                  onBlur={(e) => {
+                    if (e.target.value < 2) {
+                      setInnerPage(2);
+                    } else if (e.target.value % 2 !== 0) {
+                      setInnerPage(parseInt(e.target.value) + 1);
+                    }
+                  }}
                 />
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
@@ -771,9 +860,9 @@ const OptionToggle = ({ type, selOption, setSelOption, updateOptionAmt }) => {
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"중철"}>중철</ToggleButton>
-                  <ToggleButton value={"무선"}>무선</ToggleButton>
-                  <ToggleButton value={"스프링"}>스프링</ToggleButton>
+                  <ToggleButton value={"ironBinding"}>중철</ToggleButton>
+                  <ToggleButton value={"wirelessBinding"}>무선</ToggleButton>
+                  <ToggleButton value={"springBinding"}>스프링</ToggleButton>
                 </ToggleButtonGroup>
               </S.OptionBtns2>
             </S.Product_Detail_Option_ItemBox>

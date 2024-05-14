@@ -27462,7 +27462,7 @@ export const MissingPrice3 = [
 ];
 
 //일반코팅
-export const CottingPrice = [
+export const CoatingPrice = [
   {
     maesu: 1,
     dan_no: 3000,
@@ -33171,7 +33171,7 @@ export const CottingPrice = [
 ];
 
 //벨벳
-export const CottingPrice_velvet = [
+export const CoatingPrice_velvet = [
   {
     maesu: 1,
     dan_no: 3000,

@@ -10,19 +10,21 @@ import { useQuery } from "react-query";
 import ReactQuill, { Quill } from "react-quill";
 import {
   Alert,
+  Box,
   Button,
   ButtonGroup,
   MenuItem,
   Select,
   Snackbar,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
 import OptionToggle from "../components/options/OptionToggle";
 import {
-  CottingPrice,
-  CottingPrice2,
-  CottingPrice_velvet,
+  coatingPrice,
+  coatingPrice2,
+  coatingPrice_velvet,
   MissingNameCardPrice,
   MissingPrice1,
   MissingPrice3,
@@ -325,7 +327,8 @@ const ProductDetailPage = ({ openPopup }) => {
   const [paperAmt, setPaperAmt] = useState();
   const [defaultAmt, setDefaultAmt] = useState(0);
   const [optionAmt, setOptionAmt] = useState(0);
-
+  const [totalAmt, setTotalAmt] = useState(0);
+  const [taxAmt, setTaxAmt] = useState(0);
   const [selectedPaper, setSelectedPaper] = useState();
 
   const handleChange = (event, newSelectedPaper) => {
@@ -377,7 +380,7 @@ const ProductDetailPage = ({ openPopup }) => {
     if (selOption.earDori === true) {
       const findedItem = findClosest(RoundingPrice); //단가표
       console.log(findedItem);
-      const premium = 1.1;
+      const premium = 1;
 
       amt += Math.round((findedItem["price"] * premium) / 100) * 100;
     }
@@ -385,7 +388,7 @@ const ProductDetailPage = ({ openPopup }) => {
     //타공
     if (selOption.punching === true) {
       const findedItem = findClosest(PunchingPrice); //단가표
-      const premium = 1.1;
+      const premium = 1;
       //타공 개수 단가 * 수량 * premium 100의 자리 반올림
       amt +=
         Math.round((findedItem[selOption.punchingQty] * qty * premium) / 100) *
@@ -395,7 +398,7 @@ const ProductDetailPage = ({ openPopup }) => {
     //오시_명함
     if (selOption.osi === true) {
       const findedItem = findClosest(OsiNameCardPrice); //단가표
-      const premium = 1.1;
+      const premium = 1;
       //타공 개수 단가 * premium 100의 자리 반올림
       const price =
         Math.round((findedItem[selOption.osiQty] * premium) / 100) * 100;
@@ -413,7 +416,7 @@ const ProductDetailPage = ({ openPopup }) => {
         findedItem = findClosest(MissingPrice1); //단가표
       }
 
-      const premium = 1.1;
+      const premium = 1;
       //타공 개수 단가 * premium 100의 자리 반올림
       const price = Math.round((findedItem["a6"] * qty * premium) / 100) * 100;
       const min_price = 5000;
@@ -423,20 +426,20 @@ const ProductDetailPage = ({ openPopup }) => {
     }
 
     //코팅 명함
-    if (selOption.cotting === true) {
+    if (selOption.coating === true) {
       const dan = 3400 - 700;
       const dan_add = 700;
       const yang = 4900 - 1300;
       const yang_add = 1300;
 
       let price = 0;
-      if (selOption.cottingOption.indexOf("dan") != -1) {
+      if (selOption.coatingOption.indexOf("dan") != -1) {
         price = dan + (dan_add / 100) * qty;
       } else {
         price = yang + (yang_add / 100) * qty;
       }
 
-      const premium = 1.1;
+      const premium = 1;
       const finalPrifce = Math.round((price * premium) / 100) * 100;
 
       amt += finalPrifce;
@@ -523,23 +526,23 @@ const ProductDetailPage = ({ openPopup }) => {
       optionNm.push(`미싱 ${line} ${selOption.missingDirect}`);
     }
 
-    if (selOption.cotting === true) {
-      let cottingNm;
-      switch (selOption.cottingOption) {
+    if (selOption.coating === true) {
+      let coatingNm;
+      switch (selOption.coatingOption) {
         case "dan_yes":
-          cottingNm = "단면유광코팅";
+          coatingNm = "단면유광코팅";
           break;
         case "dan_no":
-          cottingNm = "단면무광코팅";
+          coatingNm = "단면무광코팅";
           break;
         case "yang_yes":
-          cottingNm = "양면유광코팅";
+          coatingNm = "양면유광코팅";
           break;
         case "yang_no":
-          cottingNm = "양면무광코팅";
+          coatingNm = "양면무광코팅";
           break;
       }
-      optionNm.push(`${cottingNm}`);
+      optionNm.push(`${coatingNm}`);
     }
     return optionNm;
     // alert(optionNm);
@@ -555,8 +558,8 @@ const ProductDetailPage = ({ openPopup }) => {
     //     "missing": false,
     //     "missingQty": "line1",
     //     "missingDirect": "가로",
-    //     "cotting": false,
-    //     "cottingOption": "dan_yes"
+    //     "coating": false,
+    //     "coatingOption": "dan_yes"
     // }
   };
 
@@ -565,6 +568,265 @@ const ProductDetailPage = ({ openPopup }) => {
    */
 
   const [snackbar, setSnackbar] = useState(null);
+
+  //책자
+  const [bookQty, setBookQty] = useState(1);
+  const [bookCoverAmt, setBookCoverAmt] = useState(0);
+  const [bookBindingAmt, setBookBindingAmt] = useState(0);
+  const [bookCoatingAmt, setBookCoatingAmt] = useState(0);
+  const [bookInnerAmt, setBookInnerAmt] = useState(0);
+  const [bookOptionAmt, setBookOptionAmt] = useState(0);
+
+  //책자 계산
+  const calcBooklet = () => {
+    if (!bookQty || !selOption) {
+      return false;
+    }
+    //규격 A4 = B5 , A5 = B6
+    const paperSize =
+      selOption.paperSize === "B5"
+        ? "A4"
+        : selOption.paperSize === "B6"
+        ? "A5"
+        : selOption?.paperSize;
+
+    let unit_qty = 0;
+    if (bookQty < 10) {
+      unit_qty = 10;
+    } else if (bookQty < 20) {
+      unit_qty = 20;
+    } else if (bookQty < 50) {
+      unit_qty = 50;
+    } else if (bookQty < 100) {
+      unit_qty = 100;
+    } else if (bookQty < 150) {
+      unit_qty = 150;
+    } else if (bookQty < 200) {
+      unit_qty = 200;
+    } else {
+      unit_qty = 201;
+    }
+
+    //커버 가격 테이블
+    const cover_price = booklet_cover_price[paperSize]?.find(
+      (e) => e.copies === unit_qty
+    );
+
+    //내지 가격 테이블
+    const inner_price = booklet_inner_price[paperSize]?.find(
+      (e) => e.copies === unit_qty
+    );
+
+    // 로딩 처리
+    if (!cover_price || !inner_price) {
+      console.log("뭔가없음");
+      return false;
+    }
+
+    // 커버 가격계산
+    console.log("표지비", cover_price[selOption.coverPaper] * bookQty);
+    setBookCoverAmt(cover_price[selOption.coverPaper] * bookQty);
+    console.log("제본비", cover_price[selOption.bindingType] * bookQty);
+    setBookBindingAmt(cover_price[selOption.bindingType] * bookQty);
+
+    if (selOption.coverCoating !== "선택안함") {
+      console.log("코팅값", cover_price["coating"] * bookQty);
+      setBookCoatingAmt(cover_price["coating"] * bookQty);
+    } else {
+      console.log("코팅값", 0);
+      setBookCoatingAmt(0);
+    }
+
+    console.log(
+      `내지비 ${inner_price[selOption.innerPaper]} * ${
+        selOption.innerPage
+      } * ${bookQty} = ${
+        inner_price[selOption.innerPaper] * selOption.innerPage * bookQty
+      }`
+    );
+    setBookInnerAmt(
+      inner_price[selOption.innerPaper] * selOption.innerPage * bookQty
+    );
+    // alert(cover_price[selOption.coverPaper]);
+  };
+
+  //책자 부수 변경시 가격 계산
+  useEffect(() => {
+    calcBooklet();
+    console.log(selOption);
+  }, [bookQty]);
+
+  //책자 표지 단가표
+  const booklet_cover_price = {
+    A4: [
+      {
+        copies: 10,
+        regularPaper: 700,
+        premiumPaper: 800,
+        coating: 700,
+        ironBinding: 1800,
+        wirelessBinding: 2000,
+      },
+      {
+        copies: 20,
+        regularPaper: 600,
+        premiumPaper: 700,
+        coating: 600,
+        ironBinding: 1500,
+        wirelessBinding: 1800,
+      },
+      {
+        copies: 50,
+        regularPaper: 600,
+        premiumPaper: 700,
+        coating: 500,
+        ironBinding: 1000,
+        wirelessBinding: 1500,
+      },
+      {
+        copies: 100,
+        regularPaper: 500,
+        premiumPaper: 600,
+        coating: 500,
+        ironBinding: 700,
+        wirelessBinding: 1200,
+      },
+      {
+        copies: 150,
+        regularPaper: 400,
+        premiumPaper: 500,
+        coating: 400,
+        ironBinding: 500,
+        wirelessBinding: 1000,
+      },
+      {
+        copies: 200,
+        regularPaper: 400,
+        premiumPaper: 500,
+        coating: 400,
+        ironBinding: 500,
+        wirelessBinding: 900,
+      },
+      {
+        copies: 201,
+        regularPaper: 400,
+        premiumPaper: 500,
+        coating: 400,
+        ironBinding: 400,
+        wirelessBinding: 700,
+      },
+    ],
+    A5: [
+      {
+        copies: 10,
+        regularPaper: 700,
+        premiumPaper: 800,
+        coating: 700,
+        ironBinding: 1800,
+        wirelessBinding: 2000,
+      },
+    ],
+  };
+
+  const booklet_inner_price = {
+    A4: [
+      {
+        copies: 10,
+        regularPaper: 200,
+        premiumPaper: 200,
+      },
+      {
+        copies: 20,
+        regularPaper: 200,
+        premiumPaper: 200,
+      },
+      {
+        copies: 50,
+        regularPaper: 200,
+        premiumPaper: 200,
+      },
+      {
+        copies: 100,
+        regularPaper: 200,
+        premiumPaper: 200,
+      },
+      {
+        copies: 150,
+        regularPaper: 200,
+        premiumPaper: 200,
+      },
+      {
+        copies: 200,
+        regularPaper: 200,
+        premiumPaper: 200,
+      },
+      {
+        copies: 201,
+        regularPaper: 28,
+        premiumPaper: 15,
+      },
+    ],
+  };
+
+  //책자 최종가격 계산
+  const calcTotalAmt = () => {
+    let defaultAmt_copy =
+      isNaN(defaultAmt) || defaultAmt === undefined ? 0 : defaultAmt;
+    let optionAmt_copy =
+      isNaN(optionAmt) || optionAmt === undefined ? 0 : optionAmt;
+    let bookCoverAmt_copy =
+      isNaN(bookCoverAmt) || bookCoverAmt === undefined ? 0 : bookCoverAmt;
+    let bookInnerAmt_copy =
+      isNaN(bookInnerAmt) || bookInnerAmt === undefined ? 0 : bookInnerAmt;
+    let bookOptionAmt_copy =
+      isNaN(bookOptionAmt) || bookOptionAmt === undefined ? 0 : bookOptionAmt;
+    let bookCoatingAmt_copy =
+      isNaN(bookCoatingAmt) || bookCoatingAmt === undefined
+        ? 0
+        : bookCoatingAmt;
+    let bookBindingAmt_copy =
+      isNaN(bookBindingAmt) || bookBindingAmt === undefined
+        ? 0
+        : bookBindingAmt;
+
+    setTotalAmt(
+      parseInt(optionAmt_copy) +
+        parseInt(defaultAmt_copy) +
+        parseInt(bookCoverAmt_copy) +
+        parseInt(bookInnerAmt_copy) +
+        parseInt(bookOptionAmt_copy) +
+        parseInt(bookCoatingAmt_copy) +
+        parseInt(bookBindingAmt_copy)
+    );
+
+    // 책자일 경우
+    if (prodDetail?.PROD_OPTIONS?.indexOf("책자") !== -1) {
+      setTaxAmt(
+        (parseInt(optionAmt_copy) +
+          parseInt(defaultAmt_copy) +
+          parseInt(bookCoverAmt_copy) +
+          parseInt(bookInnerAmt_copy) +
+          parseInt(bookOptionAmt_copy) +
+          parseInt(bookCoatingAmt_copy) +
+          parseInt(bookBindingAmt_copy)) *
+          0.1
+      );
+    } else {
+      setTaxAmt((parseInt(optionAmt_copy) + parseInt(defaultAmt_copy)) * 0.1);
+    }
+  };
+
+  useEffect(() => {
+    calcTotalAmt();
+  }, [
+    optionAmt,
+    defaultAmt,
+    bookCoverAmt,
+    bookInnerAmt,
+    bookOptionAmt,
+    bookCoatingAmt,
+    bookBindingAmt,
+  ]);
 
   return (
     <>
@@ -602,38 +864,41 @@ const ProductDetailPage = ({ openPopup }) => {
                   <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
                 ))}
                 <S.Product_Detail_Option_ItemWrapper>
-                  <S.Product_Detail_Option_ItemBox>
-                    <S.Product_Detail_Option_ItemText>
-                      용지
-                    </S.Product_Detail_Option_ItemText>
-                    <S.OptionBtns>
-                      <ToggleButtonGroup
-                        color="primary"
-                        value={selectedPaper}
-                        exclusive
-                        onChange={(e) => {
-                          setSelectedPaper(e.target.value);
-                        }}
-                        aria-label="Platform"
-                        style={{ width: "100%" }}
-                        className="group"
-                      >
-                        {paper?.map((item, index) => (
-                          <ToggleButton
-                            value={item.PAPER_NM + item.PAPER_WEIGHT}
-                            onClick={() => {
-                              setPaperQty(item.PAPER_QTY);
-                              setPaperAmt(item.PAPER_AMT);
-                              setQty(item.PAPER_QTY?.split(",")[0]);
-                              setDefaultAmt(item.PAPER_AMT?.split(",")[0]);
-                            }}
-                          >
-                            {item.PAPER_NM} {item.PAPER_WEIGHT}g
-                          </ToggleButton>
-                        ))}
-                      </ToggleButtonGroup>
-                    </S.OptionBtns>
-                  </S.Product_Detail_Option_ItemBox>
+                  {/* 명함일 경우 용지 세팅 */}
+                  {prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1 && (
+                    <S.Product_Detail_Option_ItemBox>
+                      <S.Product_Detail_Option_ItemText>
+                        용지
+                      </S.Product_Detail_Option_ItemText>
+                      <S.OptionBtns>
+                        <ToggleButtonGroup
+                          color="primary"
+                          value={selectedPaper}
+                          exclusive
+                          onChange={(e) => {
+                            setSelectedPaper(e.target.value);
+                          }}
+                          aria-label="Platform"
+                          style={{ width: "100%" }}
+                          className="group"
+                        >
+                          {paper?.map((item, index) => (
+                            <ToggleButton
+                              value={item.PAPER_NM + item.PAPER_WEIGHT}
+                              onClick={() => {
+                                setPaperQty(item.PAPER_QTY);
+                                setPaperAmt(item.PAPER_AMT);
+                                setQty(item.PAPER_QTY?.split(",")[0]);
+                                setDefaultAmt(item.PAPER_AMT?.split(",")[0]);
+                              }}
+                            >
+                              {item.PAPER_NM} {item.PAPER_WEIGHT}g
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </S.OptionBtns>
+                    </S.Product_Detail_Option_ItemBox>
+                  )}
 
                   {/* {prodOptions?.map((options, index) => (
                     <OptionItem
@@ -653,55 +918,60 @@ const ProductDetailPage = ({ openPopup }) => {
                       selOption={selOption}
                       setSelOption={setSelOption}
                       updateOptionAmt={updateOptionAmt}
+                      calcBooklet={calcBooklet}
                     />
                   ))}
-
-                  <S.Product_Detail_Option_ItemBox>
-                    <S.Product_Detail_Option_ItemText>
-                      수량
-                    </S.Product_Detail_Option_ItemText>
-                    <Select
-                      value={qty ? qty : 100}
-                      displayEmpty
-                      inputProps={{ "aria-label": "Without label" }}
-                      autoWidth={true}
-                    >
-                      {paperQty?.split(",")?.map((el, index) => (
-                        <MenuItem
-                          value={el}
-                          onClick={() => {
-                            setQty(el);
-                            setDefaultAmt(paperAmt.split(",")[index]);
-                          }}
-                        >
-                          {el}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {/* 
-                      <div className="container">
-                        <input id="dropdown" type="checkbox" ref={DropDown} />
-                        <label className="dropdownLabel" for="dropdown">
-                          <div>{qty}</div>
-                          <FaAngleDown className="caretIcon" />
-                        </label>
-                        <div className="content">
-                          <ul>
-                            {paperQty?.split(",").map((el, index) => (
-                              <li
-                                onClick={() => {
-                                  setQty(el);
-                                  setDefaultAmt(paperAmt.split(",")[index]);
-                                  DropDown.current.checked = false;
-                                }}
-                              >
-                                {el}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div> */}
-                  </S.Product_Detail_Option_ItemBox>
+                  {/* 명함 수량 */}
+                  {prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1 ? (
+                    <S.Product_Detail_Option_ItemBox>
+                      <S.Product_Detail_Option_ItemText>
+                        수량
+                      </S.Product_Detail_Option_ItemText>
+                      <Select
+                        value={qty ? qty : 100}
+                        displayEmpty
+                        inputProps={{ "aria-label": "Without label" }}
+                        autoWidth={true}
+                      >
+                        {paperQty?.split(",")?.map((el, index) => (
+                          <MenuItem
+                            value={el}
+                            onClick={() => {
+                              setQty(el);
+                              setDefaultAmt(paperAmt.split(",")[index]);
+                            }}
+                          >
+                            {el}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </S.Product_Detail_Option_ItemBox>
+                  ) : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1 ? (
+                    <Box sx={{}}>
+                      <S.Product_Detail_Option_ItemBox>
+                        <S.OptionBtns>
+                          <TextField
+                            sx={{ width: "50%", marginTop: "5px" }}
+                            id="outlined-basic"
+                            label="부수"
+                            value={bookQty}
+                            variant="outlined"
+                            type="number"
+                            onChange={(e) => {
+                              setBookQty(e.target.value);
+                            }}
+                            onBlur={(e) => {
+                              if (e.target.value < 2) {
+                                setBookQty(1);
+                              } else if (e.target.value % 2 !== 0) {
+                                setBookQty(parseInt(e.target.value) + 1);
+                              }
+                            }}
+                          />
+                        </S.OptionBtns>
+                      </S.Product_Detail_Option_ItemBox>
+                    </Box>
+                  ) : null}
                 </S.Product_Detail_Option_ItemWrapper>
                 {prodDetail?.PROD_NOTI?.split("|").map((el, index) => (
                   <S.ProdDetailDesc>{el}</S.ProdDetailDesc>
@@ -733,28 +1003,86 @@ const ProductDetailPage = ({ openPopup }) => {
                   </S.ProdDetailDesignBtns>
                 )}
 
-                <S.ProdDetailPayBox>
-                  <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
-                  <S.ProdDetailPriceValue>
-                    {parseInt(defaultAmt).toLocaleString("ko-KR")}원
-                  </S.ProdDetailPriceValue>
-                  <br />
-                  <br />
-                  <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
-                  <S.ProdDetailPriceValue>
-                    {parseInt(optionAmt).toLocaleString("ko-KR")}원
-                  </S.ProdDetailPriceValue>
-                  <br />
-                  <br />
-                  <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
-                  <S.ProdDetailPriceValue>
-                    {(
-                      parseInt(optionAmt) + parseInt(defaultAmt)
-                    ).toLocaleString("ko-KR")}
-                    원
-                  </S.ProdDetailPriceValue>
-                  <br />
-                </S.ProdDetailPayBox>
+                {prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1 ? (
+                  <S.ProdDetailPayBox>
+                    <S.ProdDetailPriceText>표지비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookCoverAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>내지비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookInnerAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>제본비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookBindingAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>코팅비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookCoatingAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>기타비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookOptionAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>부가세</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(taxAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {(parseInt(totalAmt) + parseInt(taxAmt)).toLocaleString(
+                        "ko-KR"
+                      )}
+                      원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                  </S.ProdDetailPayBox>
+                ) : (
+                  <S.ProdDetailPayBox>
+                    <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(defaultAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(optionAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>부가세</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(taxAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {(
+                        parseInt(optionAmt) +
+                        parseInt(defaultAmt) +
+                        parseInt(taxAmt)
+                      ).toLocaleString("ko-KR")}
+                      원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                  </S.ProdDetailPayBox>
+                )}
+
                 {/* <Link to="/order"> */}
                 <S.ProdDetailPayButton onClick={handleSendCart}>
                   장바구니에 담기
