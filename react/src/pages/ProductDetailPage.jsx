@@ -624,8 +624,15 @@ const ProductDetailPage = ({ openPopup }) => {
     }
 
     // 커버 가격계산
-    console.log("표지비", cover_price[selOption.coverPaper] * bookQty);
-    setBookCoverAmt(cover_price[selOption.coverPaper] * bookQty);
+    console.log(
+      "표지비",
+      (cover_price[selOption.coverPaper] + cover_price[selOption.coverPage]) *
+        bookQty
+    );
+    setBookCoverAmt(
+      (cover_price[selOption.coverPaper] + cover_price[selOption.coverPage]) *
+        bookQty
+    );
     console.log("제본비", cover_price[selOption.bindingType] * bookQty);
     setBookBindingAmt(cover_price[selOption.bindingType] * bookQty);
 
@@ -637,17 +644,54 @@ const ProductDetailPage = ({ openPopup }) => {
       setBookCoatingAmt(0);
     }
 
+    //내지 단면 혹은 양면 추가값
+    // 고급지는 +10
+    let inner_side_price = 0;
+    if (
+      selOption.innerPaper === "regularPaper" &&
+      selOption.innerSide === "singleSide"
+    ) {
+      inner_side_price = inner_price[selOption.innerSide];
+    } else if (
+      selOption.innerPaper !== "regularPaper" &&
+      selOption.innerSide === "singleSide"
+    ) {
+      inner_side_price = inner_price[selOption.innerSide] + 10;
+    }
+
+    console.log(inner_side_price);
+
     console.log(
-      `내지비 ${inner_price[selOption.innerPaper]} * ${
+      `내지비 (${inner_price[selOption.innerPaper]} + ${inner_side_price}) * ${
         selOption.innerPage
       } * ${bookQty} = ${
-        inner_price[selOption.innerPaper] * selOption.innerPage * bookQty
+        (inner_price[selOption.innerPaper] + inner_side_price) *
+        selOption.innerPage *
+        bookQty
       }`
     );
     setBookInnerAmt(
-      inner_price[selOption.innerPaper] * selOption.innerPage * bookQty
+      (inner_price[selOption.innerPaper] + inner_side_price) *
+        selOption.innerPage *
+        bookQty
     );
-    // alert(cover_price[selOption.coverPaper]);
+
+    //후가공 계산
+    let finishing_price = 0;
+    //금박
+    if (selOption.bookletGoldFoil != "none") {
+      finishing_price += booklet_finishing_price[selOption.bookletGoldFoil];
+    }
+
+    if (selOption.bookletEmbossing != "none") {
+      finishing_price += booklet_finishing_price[selOption.bookletEmbossing];
+    }
+
+    if (selOption.bookletSpotCoatting != "none") {
+      finishing_price += booklet_finishing_price[selOption.bookletSpotCoatting];
+    }
+
+    setBookOptionAmt(finishing_price);
   };
 
   //책자 부수 변경시 가격 계산
@@ -666,6 +710,8 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 700,
         ironBinding: 1800,
         wirelessBinding: 2000,
+        doubleSide: 200,
+        singleSide: 0,
       },
       {
         copies: 20,
@@ -674,6 +720,8 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 600,
         ironBinding: 1500,
         wirelessBinding: 1800,
+        doubleSide: 200,
+        singleSide: 0,
       },
       {
         copies: 50,
@@ -682,6 +730,8 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 500,
         ironBinding: 1000,
         wirelessBinding: 1500,
+        doubleSide: 200,
+        singleSide: 0,
       },
       {
         copies: 100,
@@ -690,6 +740,8 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 500,
         ironBinding: 700,
         wirelessBinding: 1200,
+        doubleSide: 200,
+        singleSide: 0,
       },
       {
         copies: 150,
@@ -698,6 +750,8 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 400,
         ironBinding: 500,
         wirelessBinding: 1000,
+        doubleSide: 200,
+        singleSide: 0,
       },
       {
         copies: 200,
@@ -706,6 +760,8 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 400,
         ironBinding: 500,
         wirelessBinding: 900,
+        doubleSide: 200,
+        singleSide: 0,
       },
       {
         copies: 201,
@@ -714,16 +770,80 @@ const ProductDetailPage = ({ openPopup }) => {
         coating: 400,
         ironBinding: 400,
         wirelessBinding: 700,
+        doubleSide: 200,
+        singleSide: 0,
       },
     ],
     A5: [
       {
         copies: 10,
-        regularPaper: 700,
-        premiumPaper: 800,
-        coating: 700,
+        regularPaper: 600,
+        premiumPaper: 700,
+        coating: 600,
         ironBinding: 1800,
         wirelessBinding: 2000,
+        doubleSide: 200,
+        singleSide: 0,
+      },
+      {
+        copies: 20,
+        regularPaper: 500,
+        premiumPaper: 600,
+        coating: 500,
+        ironBinding: 1500,
+        wirelessBinding: 1800,
+        doubleSide: 200,
+        singleSide: 0,
+      },
+      {
+        copies: 50,
+        regularPaper: 500,
+        premiumPaper: 600,
+        coating: 400,
+        ironBinding: 1000,
+        wirelessBinding: 1500,
+        doubleSide: 200,
+        singleSide: 0,
+      },
+      {
+        copies: 100,
+        regularPaper: 400,
+        premiumPaper: 500,
+        coating: 400,
+        ironBinding: 700,
+        wirelessBinding: 1200,
+        doubleSide: 200,
+        singleSide: 0,
+      },
+      {
+        copies: 150,
+        regularPaper: 300,
+        premiumPaper: 400,
+        coating: 300,
+        ironBinding: 500,
+        wirelessBinding: 1000,
+        doubleSide: 200,
+        singleSide: 0,
+      },
+      {
+        copies: 200,
+        regularPaper: 300,
+        premiumPaper: 400,
+        coating: 300,
+        ironBinding: 500,
+        wirelessBinding: 900,
+        doubleSide: 200,
+        singleSide: 0,
+      },
+      {
+        copies: 201,
+        regularPaper: 300,
+        premiumPaper: 400,
+        coating: 300,
+        ironBinding: 400,
+        wirelessBinding: 700,
+        doubleSide: 200,
+        singleSide: 0,
       },
     ],
   };
@@ -732,40 +852,125 @@ const ProductDetailPage = ({ openPopup }) => {
     A4: [
       {
         copies: 10,
-        regularPaper: 200,
+        regularPaper: 180,
         premiumPaper: 200,
+        premiumPaper2: 210,
+        doubleSide: 0,
+        singleSide: 10,
       },
       {
         copies: 20,
-        regularPaper: 200,
-        premiumPaper: 200,
+        regularPaper: 150,
+        premiumPaper: 170,
+        premiumPaper2: 180,
+        doubleSide: 0,
+        singleSide: 10,
       },
       {
         copies: 50,
-        regularPaper: 200,
-        premiumPaper: 200,
+        regularPaper: 140,
+        premiumPaper: 160,
+        premiumPaper2: 170,
+        doubleSide: 0,
+        singleSide: 10,
       },
       {
         copies: 100,
-        regularPaper: 200,
-        premiumPaper: 200,
+        regularPaper: 130,
+        premiumPaper: 150,
+        premiumPaper2: 160,
+        doubleSide: 0,
+        singleSide: 10,
       },
       {
         copies: 150,
-        regularPaper: 200,
-        premiumPaper: 200,
+        regularPaper: 120,
+        premiumPaper: 140,
+        premiumPaper2: 150,
+        doubleSide: 0,
+        singleSide: 10,
       },
       {
         copies: 200,
-        regularPaper: 200,
-        premiumPaper: 200,
+        regularPaper: 100,
+        premiumPaper: 120,
+        premiumPaper2: 130,
+        doubleSide: 0,
+        singleSide: 10,
       },
       {
         copies: 201,
-        regularPaper: 28,
-        premiumPaper: 15,
+        regularPaper: 90,
+        premiumPaper: 110,
+        premiumPaper2: 120,
+        doubleSide: 0,
+        singleSide: 10,
       },
     ],
+    A5: [
+      {
+        copies: 10,
+        regularPaper: 100,
+        premiumPaper: 120,
+        premiumPaper2: 130,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+      {
+        copies: 20,
+        regularPaper: 85,
+        premiumPaper: 105,
+        premiumPaper2: 115,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+      {
+        copies: 50,
+        regularPaper: 80,
+        premiumPaper: 100,
+        premiumPaper2: 110,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+      {
+        copies: 100,
+        regularPaper: 75,
+        premiumPaper: 95,
+        premiumPaper2: 105,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+      {
+        copies: 150,
+        regularPaper: 70,
+        premiumPaper: 90,
+        premiumPaper2: 100,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+      {
+        copies: 200,
+        regularPaper: 60,
+        premiumPaper: 80,
+        premiumPaper2: 90,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+      {
+        copies: 201,
+        regularPaper: 55,
+        premiumPaper: 75,
+        premiumPaper2: 85,
+        doubleSide: 0,
+        singleSide: 10,
+      },
+    ],
+  };
+
+  const booklet_finishing_price = {
+    goldfoil: 150000,
+    embossing: 150000,
+    spotcoatting: 200000,
   };
 
   //책자 최종가격 계산
@@ -801,7 +1006,7 @@ const ProductDetailPage = ({ openPopup }) => {
 
     // 책자일 경우
     if (prodDetail?.PROD_OPTIONS?.indexOf("책자") !== -1) {
-      setTaxAmt(
+      const bookletTax =
         (parseInt(optionAmt_copy) +
           parseInt(defaultAmt_copy) +
           parseInt(bookCoverAmt_copy) +
@@ -809,10 +1014,13 @@ const ProductDetailPage = ({ openPopup }) => {
           parseInt(bookOptionAmt_copy) +
           parseInt(bookCoatingAmt_copy) +
           parseInt(bookBindingAmt_copy)) *
-          0.1
-      );
+        0.1;
+
+      setTaxAmt(Math.round(bookletTax / 10) * 10);
     } else {
-      setTaxAmt((parseInt(optionAmt_copy) + parseInt(defaultAmt_copy)) * 0.1);
+      const elseTax =
+        (parseInt(optionAmt_copy) + parseInt(defaultAmt_copy)) * 0.1;
+      setTaxAmt(Math.round(elseTax / 10) * 10);
     }
   };
 
@@ -1029,7 +1237,7 @@ const ProductDetailPage = ({ openPopup }) => {
                     </S.ProdDetailPriceValue>
                     <br />
                     <br />
-                    <S.ProdDetailPriceText>기타비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
                     <S.ProdDetailPriceValue>
                       {parseInt(bookOptionAmt).toLocaleString("ko-KR")}원
                     </S.ProdDetailPriceValue>

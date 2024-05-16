@@ -339,7 +339,7 @@ const CartPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} style={{ height: "6rem" }}>
+                    <td colSpan={"100%"} style={{ height: "6rem" }}>
                       장바구니가 비었습니다.
                     </td>
                   </tr>

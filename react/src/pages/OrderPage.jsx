@@ -113,7 +113,7 @@ const OrderPage = ({ openPopup }) => {
     height: ViewStep === 0 ? 600 + "px" : 0 + "px",
   });
   const StepSlideDown2 = useSpring({
-    height: ViewStep === 1 ? 250 + "px" : 0 + "px",
+    height: ViewStep === 1 ? 350 + "px" : 0 + "px",
   });
   const StepSlideDown3 = useSpring({
     height: ViewStep === 2 ? 200 + "px" : 0 + "px",
@@ -247,7 +247,7 @@ const OrderPage = ({ openPopup }) => {
 
   const [snackbar, setSnackbar] = useState(false);
 
-  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <>
@@ -500,8 +500,49 @@ const OrderPage = ({ openPopup }) => {
                   </S.OBDeliPriceBox>
                   <S.OBPaymentBox>
                     <S.OBPaymentSpan>
-                      기본 배송비는 {deliPrice.toLocaleString("ko-kr")}원
-                      입니다.
+                      <h1
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "550",
+                          paddingBottom: "12px",
+                        }}
+                      >
+                        배송 안내
+                      </h1>
+                      <p>
+                        <b style={{ paddingRight: "12px" }}>배송 업체</b>CJ택배,
+                        롯데택배, 로젠택배
+                      </p>
+                      <p>
+                        <b style={{ paddingRight: "12px" }}>배송 지역</b>
+                        대한민국 전 지역
+                      </p>
+                      <p>
+                        <b style={{ paddingRight: "12px" }}>배송 비용</b>
+                        {deliPrice.toLocaleString("ko-kr")}원
+                      </p>
+                      <p>
+                        <b style={{ paddingRight: "12px" }}>배송 기간</b>
+                        주말·공휴일 제외 2-5일
+                      </p>
+                      <h1
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "550",
+                          paddingTop: "12px",
+                          paddingBottom: "12px",
+                        }}
+                      >
+                        유의 사항
+                      </h1>
+                      <p>
+                        - 주문 폭주 및 공급 사정으로 인하여 지연 및 품절이
+                        발생될 수 있습니다.
+                      </p>
+                      <p>
+                        - 기본 배송기간 이상 소요되는 상품이거나, 품절 상품은
+                        개별 연락을 드립니다.
+                      </p>
                     </S.OBPaymentSpan>
                   </S.OBPaymentBox>
                 </S.StepMenu>
@@ -590,9 +631,15 @@ const OrderPage = ({ openPopup }) => {
                         ∙ 주문할 상품의 편집정보, 상품정보, 상품가격, 배송정보를
                         확인 하였습니다.
                       </p>
-                      <p>
-                        ∙ 주문취소 및 수정은 결제 후 1시간 이내에만 가능합니다.
+                      <p
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          openPopup("refund");
+                        }}
+                      >
+                        ∙ <b>환불 및 교환 정책</b> 을 확인 하였습니다.
                       </p>
+                      <p></p>
                       {/* <p>
                       <input type="checkbox" name="ck1" id="ck1" ref={ckRef} />
                       <label htmlFor="ck1">개인정보 수집 동의 (필수)</label>

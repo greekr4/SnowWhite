@@ -1297,7 +1297,7 @@ export const ProdDetailSliderBox = styled.div`
 export const ProdDetailMainSlider = styled.div``;
 export const ProdDetailSubSlider = styled.div`
   display: flex;
-  margin: 1rem;
+  margin: 12px 0 12px 0;
 `;
 
 export const ProdDetailMainSliderView = styled(animated.div)`
@@ -1309,7 +1309,7 @@ export const ProdDetailMainSliderView = styled(animated.div)`
 export const ProdDetailSubSliderView = styled.div`
   width: 70px;
   height: 70px;
-  margin: 0.35rem;
+  margin: 0;
   background: url(${(props) => props.img}) center/cover no-repeat;
   border: 1.5px solid #ccc;
   cursor: pointer;

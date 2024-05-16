@@ -11,6 +11,7 @@ import PopReviewDetail from "./PopReviewDetail";
 import PopLogisDetail from "./PopLogisDetail";
 import PopDeliveryForm from "./PopDeliveryForm";
 import PopDeliveryRecentForm from "./PopDeliveryRecentForm";
+import PopRefund from "./PopRefund";
 
 /////포탈1
 const ModalPortal = ({
@@ -54,6 +55,11 @@ const ModalPortal = ({
     case 2:
       return ReactDOM.createPortal(
         <PopFindPw openPopup={openPopup} closePopup={closePopup} />,
+        el
+      );
+    case "refund":
+      return ReactDOM.createPortal(
+        <PopRefund openPopup={openPopup} closePopup={closePopup} />,
         el
       );
     case "reviewForm":
