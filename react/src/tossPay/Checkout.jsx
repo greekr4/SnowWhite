@@ -54,17 +54,20 @@ export function CheckoutPage({
     // TODO: API를 호출해서 서버에게 paymentKey, orderId, amount를 넘겨주세요.
     // 서버에선 해당 데이터를 가지고 승인 API를 호출하면 결제가 완료됩니다.
     // https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%8A%B9%EC%9D%B8
-    const response = await fetch("/api/tosspay/confirm", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        paymentKey,
-        orderId,
-        amount,
-      }),
-    });
+    const response = await fetch(
+      process.env.REACT_APP_DB_HOST + "/api/tosspay/confirm",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paymentKey,
+          orderId,
+          amount,
+        }),
+      }
+    );
 
     if (response.ok) {
       return true;
@@ -129,12 +132,13 @@ export function CheckoutPage({
 
                       window.location.href = "/orderlist";
                     } else {
-                      alert("결제를 실패하였습니다.");
+                      alert("결제를 실패하였습니다.1");
                     }
                   });
               } catch (error) {
                 // TODO: 에러 처리
-                alert("결제를 실패하였습니다.");
+                console.log(error);
+                alert("결제를 실패하였습니다.2");
               }
             }}
           >

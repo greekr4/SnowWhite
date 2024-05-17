@@ -829,19 +829,44 @@ const OptionToggle = ({
             </S.Product_Detail_Option_ItemBox>
           </Box>
           <Box sx={{}}>
-            <S.Product_Detail_Option_ItemBox>
-              <InputLabel id="demo-simple-select-label">용지</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={10}
-                onChange={() => {}}
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </S.Product_Detail_Option_ItemBox>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">용지</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={10}
+                  onChange={() => {}}
+                  fullWidth
+                >
+                  <MenuItem value={10}>백색모조</MenuItem>
+                  <MenuItem value={20}>미색모조</MenuItem>
+                  <MenuItem value={30}>스노우화이트</MenuItem>
+                  <MenuItem value={30}>아트</MenuItem>
+                  <MenuItem value={30}>아르떼</MenuItem>
+                  <MenuItem value={30}>랑데부</MenuItem>
+                  <MenuItem value={30}>몽블랑</MenuItem>
+                </Select>
+              </Box>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">평량</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={10}
+                  onChange={() => {}}
+                  fullWidth
+                >
+                  <MenuItem value={10}>80g</MenuItem>
+                  <MenuItem value={20}>100g</MenuItem>
+                  <MenuItem value={30}>120g</MenuItem>
+                  <MenuItem value={30}>150g</MenuItem>
+                  <MenuItem value={30}>180g</MenuItem>
+                  <MenuItem value={30}>220g</MenuItem>
+                  <MenuItem value={30}>260g</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
           </Box>
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>

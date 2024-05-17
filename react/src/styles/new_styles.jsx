@@ -1415,6 +1415,13 @@ export const Product_Detail_Option_ItemWrapper = styled.div`
 export const Product_Detail_Option_ItemBox = styled.div`
   margin-top: 1rem;
 `;
+
+export const Product_Detail_Option_SelectBox = styled.div`
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const Product_Detail_Option_ItemText = styled.div`
   color: #333;
   font-size: 0.8rem;

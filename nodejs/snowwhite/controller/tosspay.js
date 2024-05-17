@@ -15,19 +15,43 @@ exports.tosspayConfirm = async (req, res) => {
 
   // ------ 결제 승인 API 호출 ------
   // @docs https://docs.tosspayments.com/guides/payment-widget/integration#3-결제-승인하기
-  const response = await fetch(
-    "https://api.tosspayments.com/v1/payments/confirm",
-    {
-      method: "POST",
-      body: JSON.stringify({ orderId, amount, paymentKey }),
+
+  const { default: got } = await import("got");
+
+  got
+    .post("https://api.tosspayments.com/v1/payments/confirm", {
       headers: {
         Authorization: encryptedSecretKey,
         "Content-Type": "application/json",
       },
-    }
-  );
-  const data = await response.json();
-  console.log(data);
-
-  return res.status(200).send(data);
+      json: {
+        orderId: orderId,
+        amount: amount,
+        paymentKey: paymentKey,
+      },
+      responseType: "json",
+    })
+    .then(function (response) {
+      // 결제 성공 비즈니스 로직을 구현하세요.
+      console.log(response.body);
+      return res.status(response.statusCode).json(response.body);
+    })
+    .catch(function (error) {
+      // 결제 실패 비즈니스 로직을 구현하세요.
+      console.log(error.response.body);
+      return res.status(error.response.statusCode).json(error.response.body);
+    });
+  // const response = await fetch(
+  //   "https://api.tosspayments.com/v1/payments/confirm",
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify({ orderId, amount, paymentKey }),
+  //     headers: {
+  //       Authorization: encryptedSecretKey,
+  //       "Content-Type": "application/json",
+  //     },
+  //   }
+  // );
+  // const data = await response.json();
+  // console.log(data);
 };
