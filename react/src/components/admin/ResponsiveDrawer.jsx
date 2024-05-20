@@ -37,6 +37,8 @@ import AdminCate from "./AdminCate";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import AdminPaper from "./AdminPaper";
 import AdminOptionPrice from "./AdminOptionPrice";
+import { BookmarkOutlined, LiveHelp } from "@mui/icons-material";
+import AdminCs from "./AdminCs";
 const drawerWidth = 240;
 
 const ResponsiveDrawer = (props) => {
@@ -208,6 +210,20 @@ const ResponsiveDrawer = (props) => {
         Board
       </Typography>
       <ListItem
+        key={"1:1문의"}
+        disablePadding
+        onClick={(e) => {
+          setCurrentPgae(e.target.innerText);
+        }}
+      >
+        <ListItemButton>
+          <ListItemIcon>
+            <LiveHelp />
+          </ListItemIcon>
+          <ListItemText primary={"1:1문의"} />
+        </ListItemButton>
+      </ListItem>
+      <ListItem
         key={"게시판관리"}
         disablePadding
         onClick={(e) => {
@@ -372,6 +388,8 @@ const ResponsiveDrawer = (props) => {
           <AdminPaper />
         ) : currentPage === "후가공관리" ? (
           <AdminOptionPrice />
+        ) : currentPage === "1:1문의" ? (
+          <AdminCs />
         ) : null}
       </Box>
     </Box>

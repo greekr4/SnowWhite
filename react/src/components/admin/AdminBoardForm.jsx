@@ -80,7 +80,7 @@ const AdminBoardForm = ({ editData, initdb }) => {
               <option value="NOTICE" selected>
                 공지사항
               </option>
-              <option value="CS">고객센터</option>
+              <option value="FAQ">FAQ</option>
             </select>
             <label>타입</label>
           </S.GlobalInputBox>

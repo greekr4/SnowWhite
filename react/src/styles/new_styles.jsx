@@ -2613,6 +2613,10 @@ export const NBDetail = styled.div`
   padding-bottom: 1.5rem;
   margin-left: 10%;
 `;
+export const NBDetail2 = styled.div`
+  padding-bottom: 1.5rem;
+  margin-left: 10%;
+`;
 
 export const PaginationBox = styled.div`
   .pagination {
@@ -4193,4 +4197,30 @@ export const CustomBox = styled.div`
   & input[type="number"] {
     -moz-appearance: textfield;
   }
+`;
+
+export const CsboardTextBox = styled.div`
+  margin-bottom: 16px;
+  & p {
+    font-size: 14px;
+    color: #333;
+    padding: 4px 0;
+    &::before {
+      content: "-";
+      font-weight: 550;
+      padding-right: 0.5em;
+    }
+  }
+`;
+
+export const CustomTextare = styled.textarea`
+  resize: none;
+  width: 100%;
+  height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline-color: #1976d2;
+  padding-top: 8px;
+  padding-left: 12px;
 `;

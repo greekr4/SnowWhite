@@ -4,18 +4,26 @@ exports.select_board = async (req, res) => {
   const type = req.query.type;
 
   const qry = `
-select
+  select
   @ROWNUM := @ROWNUM + 1 as ROWNUM,
-  T1.*
+  @ROWNUM := @ROWNUM + 1 as id,
+  T1.*,
+  CASE WHEN T2.COMMENT_TITLE  is NOT NULL THEN 'Y' ELSE 'N' END AS ANSWER_CK,
+  T2.COMMENT_WRITER,
+  T2.COMMENT_REGDATE
 from
-  TB_BOARD T1,
+  TB_BOARD T1
+       left outer join
+     tb_comment T2
+     on(T1.BOARD_SID=T2.BOARD_SID)
+  ,
   (
   select
       @ROWNUM := 0) R
 where
   T1.BOARD_TYPE = '${type}'
   AND T1.BOARD_DELETE = 'N'
-order by ROWNUM desc
+order by BOARD_REGDATE desc, ROWNUM desc
 `;
 
   console.log(qry);
@@ -25,8 +33,14 @@ order by ROWNUM desc
 };
 
 exports.insert_board = async (req, res) => {
-  const { USER_ID, BOARD_TYPE, BOARD_WRITER, BOARD_TITLE, BOARD_CONTENT } =
-    req.body;
+  const {
+    USER_ID,
+    BOARD_TYPE,
+    BOARD_WRITER,
+    BOARD_TITLE,
+    BOARD_CONTENT,
+    BOARD_TEL,
+  } = req.body;
 
   const cnt_qry = `
 select
@@ -46,7 +60,7 @@ insert
 	into
 	TB_BOARD
 (
-    BOARD_SID,
+  BOARD_SID,
 	USER_ID,
 	BOARD_WRITER,
 	BOARD_TITLE,
@@ -54,7 +68,8 @@ insert
 	BOARD_FILE,
 	BOARD_HIT,
 	BOARD_REGDATE,
-	BOARD_TYPE
+	BOARD_TYPE,
+  BOARD_TEL
     )
 values(
     '${BOARD_SID}',
@@ -65,7 +80,8 @@ values(
     null,
     0,
     now(),
-    '${BOARD_TYPE}'
+    '${BOARD_TYPE}',
+    '${BOARD_TEL}'
 )
 `;
 
@@ -112,4 +128,20 @@ where
   const res_qry = await getConnection(qry);
   if (res_qry.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send("OK");
+};
+
+exports.select_comment = async (req, res) => {
+  const { BOARD_SID } = req.query;
+  const qry = `
+select
+	T1.*
+from
+	TB_COMMENT T1
+where
+  BOARD_SID = '${BOARD_SID}'
+  `;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
 };

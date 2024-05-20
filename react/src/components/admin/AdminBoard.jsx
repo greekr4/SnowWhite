@@ -53,6 +53,7 @@ const AdminBoard = () => {
           >
             <option value={"NOTICE"}>공지사항</option>
             <option value={"CS"}>고객문의</option>
+            <option value={"FAQ"}>FAQ</option>
           </select>
           <S.Btn
             onClick={() => {

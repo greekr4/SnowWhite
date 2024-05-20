@@ -7,6 +7,7 @@ import Pagination from "react-js-pagination";
 import styled from "styled-components";
 import arrow_left from "../../assets/icons/arrow_left.png";
 import arrow_right from "../../assets/icons/arrow_right.png";
+import { Box, CircularProgress } from "@mui/material";
 
 const GlobalBoard = ({ boardType }) => {
   const [initBoardData, setInitBoardData] = useState();
@@ -17,8 +18,11 @@ const GlobalBoard = ({ boardType }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [countPerPage, setCountPerPage] = useState(10);
+  const [progress, setProgress] = useState(false);
 
   const initdb = async () => {
+    setProgress(true);
+
     const res = await axios.get(process.env.REACT_APP_DB_HOST + "/api/board", {
       params: {
         type: boardType,
@@ -27,6 +31,7 @@ const GlobalBoard = ({ boardType }) => {
 
     setInitBoardData(res.data);
     setBoardData(res.data.slice(0, countPerPage));
+    setProgress(false);
   };
 
   function getPageItems(array, page, pageSize) {
@@ -47,16 +52,24 @@ const GlobalBoard = ({ boardType }) => {
   return (
     <S.NBBox>
       <S.NBHeader>
-        {/* {data.header.map((item, index) => (
-          <S.NBTh width={item.width}>{item.text}</S.NBTh>
-        ))} */}
         <S.NBTh width={"10%"}>번호</S.NBTh>
         <S.NBTh width={"60%"}>제목</S.NBTh>
         <S.NBTh width={"15%"}>작성자</S.NBTh>
         <S.NBTh width={"15%"}>작성일</S.NBTh>
       </S.NBHeader>
-      {boardData?.length ? (
-        boardData?.map((item, index) => (
+      {progress ? (
+        <Box
+          sx={{
+            width: "100%",
+            height: "200px",
+            textAlign: "center",
+            lineHeight: "200px",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : boardData?.length ? (
+        boardData.map((item, index) => (
           <NoticeDetail item={item} index={index} />
         ))
       ) : (

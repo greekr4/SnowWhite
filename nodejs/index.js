@@ -119,6 +119,7 @@ const {
   select_board,
   delete_board,
   update_board,
+  select_comment,
 } = require("./snowwhite/controller/board");
 const { tosspayConfirm } = require("./snowwhite/controller/tosspay");
 const { paperExcelUpload } = require("./snowwhite/controller/excel");
@@ -283,6 +284,8 @@ app.get("/api/board", select_board);
 app.post("/api/board", auth, insert_board);
 app.put("/api/board", auth, update_board);
 app.delete("/api/board", auth, delete_board);
+
+app.get("/api/comment", auth, select_comment);
 
 // 토스페이
 
