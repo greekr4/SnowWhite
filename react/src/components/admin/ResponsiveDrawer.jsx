@@ -168,7 +168,7 @@ const ResponsiveDrawer = (props) => {
           </ListItemButton>
         </ListItem>
         {/* 후가공관리 */}
-        <ListItem
+        {/* <ListItem
           key={"후가공관리"}
           disablePadding
           onClick={(e) => {
@@ -181,7 +181,7 @@ const ResponsiveDrawer = (props) => {
             </ListItemIcon>
             <ListItemText primary={"후가공관리"} />
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
         {/* 카테고리 */}
         <ListItem
           key={"카테고리"}

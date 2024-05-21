@@ -198,12 +198,12 @@ const OrderListPage = ({ openPopup }) => {
               <table>
                 <thead>
                   <tr>
-                    <th>주문일</th>
-                    <th>주문번호</th>
-                    <th>상품정보</th>
-                    <th>결제금액</th>
-                    <th>진행상태</th>
-                    <th></th>
+                    <th style={{ width: "15%" }}>주문일</th>
+                    <th style={{ width: "15%" }}>주문번호</th>
+                    <th style={{ width: "33%" }}>상품정보</th>
+                    <th style={{ width: "15%" }}>결제금액</th>
+                    <th style={{ width: "11%" }}>진행상태</th>
+                    <th style={{ width: "11%" }}></th>
                   </tr>
                 </thead>
                 <tbody>

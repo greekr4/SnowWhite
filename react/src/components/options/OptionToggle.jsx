@@ -115,7 +115,9 @@ const OptionToggle = ({
   // 표지 용지 타입
   const [coverPaper, setCoverPaper] = useState("regularPaper");
   // 표지 용지 상세
-  const [coverPaperDetail, setCoverPaperDetail] = useState("스노우180g");
+  const [coverPaperDetail, setCoverPaperDetail] = useState("백색모조");
+  // 표지 용지 무게
+  const [coverPaperWeight, setCoverPaperWeight] = useState(180);
   // 표지 양 단면
   const [coverPage, setCoverPage] = useState("doubleSide");
   // 규격
@@ -123,9 +125,9 @@ const OptionToggle = ({
   // 내지 용지
   const [innerPaper, setInnerPaper] = useState("regularPaper");
   // 내지 용지 상세
-  const [innerPaperDetail, setInnerPaperDetail] = useState("스노우80g");
+  const [innerPaperDetail, setInnerPaperDetail] = useState("백색모조");
   // 내지 용지 무게
-  const [innerPaperWeight, setInnerPaperWeight] = useState("");
+  const [innerPaperWeight, setInnerPaperWeight] = useState(80);
   // 내지 컬러
   const [innerColor, setInnerColor] = useState("양면8도컬러");
   // 내지 양 단면
@@ -142,6 +144,63 @@ const OptionToggle = ({
   const [bookletEmbossing, setBookletEmbossing] = useState("none");
   // 부분코팅
   const [bookletSpotCoatting, setBookletSpotCoatting] = useState("none");
+
+  // 책자 커버 평량
+  const bookletCoverWeights = {
+    백색모조: [180, 220, 260],
+    스노우화이트: [180, 200, 250],
+    아트: [180, 200, 250],
+    아르떼: [160, 190, 210, 240],
+    랑데부: [160, 190, 210, 240],
+    몽블랑: [160, 190, 210, 240],
+  };
+
+  // 책자 내지 평량
+  const bookletInnerWeights = {
+    백색모조: [80, 100, 120, 150],
+    미색모조: [80, 100, 120],
+    스노우화이트: [80, 100, 120, 150],
+    아트: [80, 100, 120, 150],
+    아르떼: [105, 130, 160, 190, 210],
+    랑데부: [105, 130, 160, 190, 210],
+    몽블랑: [105, 130, 160, 190, 210],
+  };
+
+  useEffect(() => {
+    if (
+      coverPaperDetail === "백색모조" ||
+      coverPaperDetail === "미색모조" ||
+      coverPaperDetail === "스노우화이트" ||
+      coverPaperDetail === "아트"
+    ) {
+      setCoverPaper("regularPaper");
+    } else if (
+      coverPaperDetail === "아르떼" ||
+      coverPaperDetail === "랑데부" ||
+      coverPaperDetail === "몽블랑"
+    ) {
+      setCoverPaper("premiumPaper");
+    }
+
+    if (
+      innerPaperDetail === "백색모조" ||
+      innerPaperDetail === "미색모조" ||
+      innerPaperDetail === "스노우화이트" ||
+      innerPaperDetail === "아트"
+    ) {
+      setInnerPaper("regularPaper");
+    } else if (
+      innerPaperDetail === "아르떼" ||
+      innerPaperDetail === "랑데부" ||
+      innerPaperDetail === "몽블랑"
+    ) {
+      if (innerPaperWeight < 160) {
+        setInnerPaper("premiumPaper");
+      } else if (innerPaperWeight >= 160) {
+        setInnerPaper("premiumPaper2");
+      }
+    }
+  }, [coverPaperDetail, coverPaperWeight, innerPaperDetail, innerPaperWeight]);
 
   /**
    * 옵션 토탈
@@ -211,10 +270,12 @@ const OptionToggle = ({
 
     copy.coverPaper = coverPaper;
     copy.coverPaperDetail = coverPaperDetail;
+    copy.coverPaperWeight = coverPaperWeight;
     copy.coverPage = coverPage;
     copy.paperSize = paperSize;
     copy.innerPaper = innerPaper;
     copy.innerPaperDetail = innerPaperDetail;
+    copy.innerPaperWeight = innerPaperWeight;
     copy.innerColor = innerColor;
     copy.innerPage = innerPage;
     copy.innerSide = innerSide;
@@ -242,6 +303,8 @@ const OptionToggle = ({
     bookletGoldFoil,
     bookletEmbossing,
     bookletSpotCoatting,
+    coverPaperWeight,
+    innerPaperWeight,
   ]);
 
   return (
@@ -669,7 +732,7 @@ const OptionToggle = ({
           </Box>
           {/* 표지  */}
 
-          <Box sx={{}}>
+          <Box sx={{ display: "none" }}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
                 표지
@@ -681,11 +744,6 @@ const OptionToggle = ({
                   exclusive
                   onChange={(e) => {
                     setCoverPaper(e.target.value);
-                    if (e.target.value === "premiumPaper") {
-                      setCoverPaperDetail("아르떼160g");
-                    } else {
-                      setCoverPaperDetail("스노우180g");
-                    }
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
@@ -697,60 +755,47 @@ const OptionToggle = ({
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
           </Box>
-          {coverPaper === "regularPaper" ? (
-            <Box sx={{}}>
-              <S.Product_Detail_Option_ItemBox>
-                <S.OptionBtns2>
-                  <ToggleButtonGroup
-                    color="primary"
-                    value={coverPaperDetail}
-                    exclusive
-                    onChange={(e) => {
-                      setCoverPaperDetail(e.target.value);
-                    }}
-                    aria-label="Platform"
-                    style={{ width: "100%" }}
-                    className="group"
-                  >
-                    <ToggleButton value={"스노우180g"}>스노우180g</ToggleButton>
-                    <ToggleButton value={"스노우200g"}>스노우200g</ToggleButton>
-                    <ToggleButton value={"스노우250g"}>스노우250g</ToggleButton>
-                    <ToggleButton value={"모조지180g"}>모조지180g</ToggleButton>
-                    <ToggleButton value={"모조지200g"}>모조지200g</ToggleButton>
-                    <ToggleButton value={"모조지250g"}>모조지250g</ToggleButton>
-                    <ToggleButton value={"아트지180g"}>아트지180g</ToggleButton>
-                    <ToggleButton value={"아트지200g"}>아트지200g</ToggleButton>
-                    <ToggleButton value={"아트지250g"}>아트지250g</ToggleButton>
-                  </ToggleButtonGroup>
-                </S.OptionBtns2>
-              </S.Product_Detail_Option_ItemBox>
-            </Box>
-          ) : coverPaper === "premiumPaper" ? (
-            <Box sx={{}}>
-              <S.Product_Detail_Option_ItemBox>
-                <S.OptionBtns2>
-                  <ToggleButtonGroup
-                    color="primary"
-                    value={coverPaperDetail}
-                    exclusive
-                    onChange={(e) => {
-                      setCoverPaperDetail(e.target.value);
-                    }}
-                    aria-label="Platform"
-                    style={{ width: "100%" }}
-                    className="group"
-                  >
-                    <ToggleButton value={"아르떼160g"}>아르떼160g</ToggleButton>
-                    <ToggleButton value={"아르떼200g"}>아르떼200g</ToggleButton>
-                    <ToggleButton value={"아르떼240g"}>아르떼240g</ToggleButton>
-                    <ToggleButton value={"랑데부160g"}>랑데부160g</ToggleButton>
-                    <ToggleButton value={"랑데부200g"}>랑데부200g</ToggleButton>
-                    <ToggleButton value={"랑데부240g"}>랑데부240g</ToggleButton>
-                  </ToggleButtonGroup>
-                </S.OptionBtns2>
-              </S.Product_Detail_Option_ItemBox>
-            </Box>
-          ) : null}
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">표지</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={coverPaperDetail}
+                  onChange={(e) => {
+                    setCoverPaperDetail(e.target.value);
+                    setCoverPaperWeight(bookletCoverWeights[e.target.value][0]);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
+                  <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
+                  <MenuItem value={"아트"}>아트</MenuItem>
+                  <MenuItem value={"아르떼"}>아르떼</MenuItem>
+                  <MenuItem value={"랑데부"}>랑데부</MenuItem>
+                  <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
+                </Select>
+              </Box>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">평량</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={coverPaperWeight}
+                  onChange={(e) => {
+                    setCoverPaperWeight(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  {bookletCoverWeights[coverPaperDetail].map((weight) => (
+                    <MenuItem value={weight}>{weight}g</MenuItem>
+                  ))}
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.OptionBtns>
@@ -800,7 +845,7 @@ const OptionToggle = ({
               </S.OptionBtns2>
             </S.Product_Detail_Option_ItemBox>
           </Box>
-          <Box sx={{}}>
+          <Box sx={{ display: "none" }}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
                 내지
@@ -831,21 +876,24 @@ const OptionToggle = ({
           <Box sx={{}}>
             <S.Product_Detail_Option_SelectBox>
               <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">용지</InputLabel>
+                <InputLabel id="demo-simple-select-label">내지</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={10}
-                  onChange={() => {}}
+                  value={innerPaperDetail}
+                  onChange={(e) => {
+                    setInnerPaperDetail(e.target.value);
+                    setInnerPaperWeight(bookletInnerWeights[e.target.value][0]);
+                  }}
                   fullWidth
                 >
-                  <MenuItem value={10}>백색모조</MenuItem>
-                  <MenuItem value={20}>미색모조</MenuItem>
-                  <MenuItem value={30}>스노우화이트</MenuItem>
-                  <MenuItem value={30}>아트</MenuItem>
-                  <MenuItem value={30}>아르떼</MenuItem>
-                  <MenuItem value={30}>랑데부</MenuItem>
-                  <MenuItem value={30}>몽블랑</MenuItem>
+                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
+                  <MenuItem value={"미색모조"}>미색모조</MenuItem>
+                  <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
+                  <MenuItem value={"아트"}>아트</MenuItem>
+                  <MenuItem value={"아르떼"}>아르떼</MenuItem>
+                  <MenuItem value={"랑데부"}>랑데부</MenuItem>
+                  <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
                 </Select>
               </Box>
               <Box sx={{ width: "48%" }}>
@@ -853,17 +901,366 @@ const OptionToggle = ({
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={10}
-                  onChange={() => {}}
+                  value={innerPaperWeight}
+                  onChange={(e) => {
+                    setInnerPaperWeight(e.target.value);
+                  }}
                   fullWidth
                 >
-                  <MenuItem value={10}>80g</MenuItem>
-                  <MenuItem value={20}>100g</MenuItem>
-                  <MenuItem value={30}>120g</MenuItem>
-                  <MenuItem value={30}>150g</MenuItem>
-                  <MenuItem value={30}>180g</MenuItem>
-                  <MenuItem value={30}>220g</MenuItem>
-                  <MenuItem value={30}>260g</MenuItem>
+                  {bookletInnerWeights[innerPaperDetail].map((weight) => (
+                    <MenuItem value={weight}>{weight}g</MenuItem>
+                  ))}
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={innerSide}
+                  exclusive
+                  onChange={(e) => {
+                    setInnerSide(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"doubleSide"}>양면</ToggleButton>
+                  <ToggleButton value={"singleSide"}>단면</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="페이지수"
+                  value={innerPage}
+                  variant="outlined"
+                  size="small"
+                  type="number"
+                  onChange={(e) => {
+                    setInnerPage(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    if (e.target.value < 2) {
+                      setInnerPage(2);
+                    } else if (e.target.value % 2 !== 0) {
+                      setInnerPage(parseInt(e.target.value) + 1);
+                    }
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                제본
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={bindingType}
+                  exclusive
+                  onChange={(e) => {
+                    setBindingType(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"ironBinding"}>중철</ToggleButton>
+                  <ToggleButton value={"wirelessBinding"}>무선</ToggleButton>
+                  {/* <ToggleButton value={"springBinding"}>스프링</ToggleButton> */}
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                후가공
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={bookletGoldFoil}
+                  exclusive
+                  onChange={(e) => {
+                    setbookletGoldFoil(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"goldfoil"}>금박</ToggleButton>
+                  <ToggleButton value={"none"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={bookletEmbossing}
+                  exclusive
+                  onChange={(e) => {
+                    setBookletEmbossing(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"embossing"}>형압</ToggleButton>
+                  <ToggleButton value={"none"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={bookletSpotCoatting}
+                  exclusive
+                  onChange={(e) => {
+                    setBookletSpotCoatting(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"spotcoatting"}>부분코팅</ToggleButton>
+                  <ToggleButton value={"none"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+      {type === "전단지" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                규격
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns3>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={paperSize}
+                  exclusive
+                  onChange={(e) => {
+                    setPaperSize(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"A4"}>A4</ToggleButton>
+                  <ToggleButton value={"A5"}>A5</ToggleButton>
+                  <ToggleButton value={"B5"}>B5</ToggleButton>
+                  <ToggleButton value={"B6"}>B6</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns3>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          {/* 표지  */}
+
+          <Box sx={{ display: "none" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                표지
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={coverPaper}
+                  exclusive
+                  onChange={(e) => {
+                    setCoverPaper(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"regularPaper"}>일반지</ToggleButton>
+                  <ToggleButton value={"premiumPaper"}>고급지</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">표지</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={coverPaperDetail}
+                  onChange={(e) => {
+                    setCoverPaperDetail(e.target.value);
+                    setCoverPaperWeight(bookletCoverWeights[e.target.value][0]);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
+                  <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
+                  <MenuItem value={"아트"}>아트</MenuItem>
+                  <MenuItem value={"아르떼"}>아르떼</MenuItem>
+                  <MenuItem value={"랑데부"}>랑데부</MenuItem>
+                  <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
+                </Select>
+              </Box>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">평량</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={coverPaperWeight}
+                  onChange={(e) => {
+                    setCoverPaperWeight(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  {bookletCoverWeights[coverPaperDetail].map((weight) => (
+                    <MenuItem value={weight}>{weight}g</MenuItem>
+                  ))}
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={coverPage}
+                  exclusive
+                  onChange={(e) => {
+                    setCoverPage(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"doubleSide"}>양면</ToggleButton>
+                  <ToggleButton value={"singleSide"}>단면</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                표지코팅
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={coverCoating}
+                  exclusive
+                  onChange={(e) => {
+                    setCoverCoating(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"단면유광코팅"}>
+                    단면유광코팅
+                  </ToggleButton>
+                  <ToggleButton value={"단면무광코팅"}>
+                    단면무광코팅
+                  </ToggleButton>
+                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{ display: "none" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                내지
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={innerPaper}
+                  exclusive
+                  onChange={(e) => {
+                    setInnerPaper(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"regularPaper"}>일반지</ToggleButton>
+                  <ToggleButton value={"premiumPaper"}>
+                    고급지(80~130)
+                  </ToggleButton>
+                  <ToggleButton value={"premiumPaper2"}>
+                    고급지(160~210)
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">내지</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={innerPaperDetail}
+                  onChange={(e) => {
+                    setInnerPaperDetail(e.target.value);
+                    setInnerPaperWeight(bookletInnerWeights[e.target.value][0]);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
+                  <MenuItem value={"미색모조"}>미색모조</MenuItem>
+                  <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
+                  <MenuItem value={"아트"}>아트</MenuItem>
+                  <MenuItem value={"아르떼"}>아르떼</MenuItem>
+                  <MenuItem value={"랑데부"}>랑데부</MenuItem>
+                  <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
+                </Select>
+              </Box>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel id="demo-simple-select-label">평량</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={innerPaperWeight}
+                  onChange={(e) => {
+                    setInnerPaperWeight(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  {bookletInnerWeights[innerPaperDetail].map((weight) => (
+                    <MenuItem value={weight}>{weight}g</MenuItem>
+                  ))}
                 </Select>
               </Box>
             </S.Product_Detail_Option_SelectBox>

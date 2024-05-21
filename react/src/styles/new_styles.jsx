@@ -1538,6 +1538,19 @@ export const ProdDetailPayBox = styled.div`
   border-top: 1px solid #ddd;
 `;
 
+export const ProdDetailPayBox_POP = styled.div`
+  position: absolute;
+  transition: 0.1s ease-in;
+  top: ${(props) => props.topValue + "px"};
+  left: 80px;
+  width: 200px;
+  padding: 15px;
+
+  background-color: #fff;
+  box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2),
+    0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+`;
+
 export const ProdDetailPriceText = styled.div`
   float: left;
   font-size: 0.8rem;

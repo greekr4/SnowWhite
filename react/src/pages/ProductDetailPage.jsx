@@ -14,6 +14,7 @@ import {
   Button,
   ButtonGroup,
   MenuItem,
+  Paper,
   Select,
   Snackbar,
   TextField,
@@ -245,9 +246,26 @@ const ProductDetailPage = ({ openPopup }) => {
 
     const PROD_SID = prodDetail.PROD_SID;
     // const ITEM_OPTION = JSON.stringify(seletedOptions);
+    console.log(createOptionNm());
     const ITEM_OPTION = createOptionNm().join(" | ");
-    const ITEM_QUANTITY = qty;
-    const ITEM_AMOUNT = parseInt(defaultAmt) + parseInt(optionAmt);
+    const ITEM_QUANTITY =
+      prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1
+        ? qty
+        : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1
+        ? bookQty
+        : 0;
+
+    // {(parseInt(totalAmt) + parseInt(taxAmt)).toLocaleString(
+    //   parseInt(optionAmt) +
+    //   parseInt(defaultAmt) +
+    //   parseInt(taxAmt)
+
+    const ITEM_AMOUNT =
+      prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1
+        ? parseInt(defaultAmt) + parseInt(optionAmt) + parseInt(taxAmt)
+        : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1
+        ? parseInt(totalAmt) + parseInt(taxAmt)
+        : 0;
     const ITEM_DESIGN = JSON.stringify([]);
 
     const res = await axios.post(
@@ -544,23 +562,49 @@ const ProductDetailPage = ({ openPopup }) => {
       }
       optionNm.push(`${coatingNm}`);
     }
+
+    //책자
+    if (prodDetail?.PROD_OPTIONS?.indexOf("책자") !== -1) {
+      // 제본
+      const makeBinding =
+        selOption.bindingType === "ironBinding" ? "중철제본" : "무선제본";
+      //후가공 금박 여부
+      const makeGoldFoil = selOption.bookletGoldFoil === "none" ? "" : "금박";
+      const makeEmbossing = selOption.bookletEmbossing === "none" ? "" : "형압";
+      const makeSpotCoatting =
+        selOption.bookletSpotCoatting === "none" ? "" : "부분코팅";
+
+      // 커버 양면/단면
+      const makeCoverPage =
+        selOption.coverPage === "doubleSide" ? "양면" : "단면";
+      // 커버 코팅
+      const makeCoverCoating =
+        selOption.coverCoating === "선택안함"
+          ? "코팅없음"
+          : selOption.coverCoating;
+      // 내지 양면/단면
+      const mackInnerPage =
+        selOption.innerSide === "doubleSide" ? "양면" : "단면";
+
+      // 사이즈
+      optionNm.push(`${selOption.paperSize}`);
+      // 제본
+      optionNm.push(`${makeBinding}`);
+      // 후가공
+      makeGoldFoil !== "" && optionNm.push(`${makeGoldFoil}`);
+      makeEmbossing !== "" && optionNm.push(`${makeEmbossing}`);
+      makeSpotCoatting !== "" && optionNm.push(`${makeSpotCoatting}`);
+      // 커버옵션
+      optionNm.push(
+        `커버-${selOption.coverPaperDetail} ${selOption.coverPaperWeight}g,${makeCoverPage},${makeCoverCoating}`
+      );
+      // 내지옵션
+      optionNm.push(
+        `내지-${selOption.innerPaperDetail} ${selOption.innerPaperWeight}g,${mackInnerPage},${selOption.innerPage}P`
+      );
+    }
+
     return optionNm;
-    // alert(optionNm);
-    //   {
-    //     "earDori": false,
-    //     "earDoriOption": "4mm",
-    //     "punching": false,
-    //     "punchingQty": "cnt1",
-    //     "punchingSize": "3mm",
-    //     "osi": false,
-    //     "osiQty": "line1",
-    //     "osiDirect": "가로",
-    //     "missing": false,
-    //     "missingQty": "line1",
-    //     "missingDirect": "가로",
-    //     "coating": false,
-    //     "coatingOption": "dan_yes"
-    // }
   };
 
   /**
@@ -568,6 +612,14 @@ const ProductDetailPage = ({ openPopup }) => {
    */
 
   const [snackbar, setSnackbar] = useState(null);
+
+  //공통
+
+  const [globalAmt, setGlobalAmt] = useState(0);
+  const [globalOptionAmt, setGlobalOptionAmt] = useState(0);
+  const [globalTax, setGlobalTax] = useState(0);
+
+  //
 
   //책자
   const [bookQty, setBookQty] = useState(1);
@@ -1289,6 +1341,84 @@ const ProductDetailPage = ({ openPopup }) => {
                     </S.ProdDetailPriceValue>
                     <br />
                   </S.ProdDetailPayBox>
+                )}
+
+                {prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1 ? (
+                  <S.ProdDetailPayBox_POP topValue={scrollPositon + 160}>
+                    <S.ProdDetailPriceText>표지비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookCoverAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>내지비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookInnerAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>제본비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookBindingAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>코팅비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookCoatingAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(bookOptionAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>부가세</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(taxAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {(parseInt(totalAmt) + parseInt(taxAmt)).toLocaleString(
+                        "ko-KR"
+                      )}
+                      원
+                    </S.ProdDetailPriceValue>
+                  </S.ProdDetailPayBox_POP>
+                ) : (
+                  <S.ProdDetailPayBox_POP topValue={scrollPositon + 160}>
+                    <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(defaultAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(optionAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>부가세</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(taxAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {(
+                        parseInt(optionAmt) +
+                        parseInt(defaultAmt) +
+                        parseInt(taxAmt)
+                      ).toLocaleString("ko-KR")}
+                      원
+                    </S.ProdDetailPriceValue>
+                  </S.ProdDetailPayBox_POP>
                 )}
 
                 {/* <Link to="/order"> */}
