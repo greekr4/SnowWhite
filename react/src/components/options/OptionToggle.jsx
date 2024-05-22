@@ -13,6 +13,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { BorderAll } from "@mui/icons-material";
+import { XBanner_price } from "./OptionsPrices";
 
 const OptionToggle = ({
   type,
@@ -20,6 +21,14 @@ const OptionToggle = ({
   setSelOption,
   updateOptionAmt,
   calcBooklet,
+  globalQty,
+  setGlobalQty,
+  globalAmt,
+  setGlobalAmt,
+  globalOptionAmt,
+  setGlobalOptionAmt,
+  globalTax,
+  setGlobalTax,
 }) => {
   /**
    * 귀도리
@@ -203,6 +212,83 @@ const OptionToggle = ({
   }, [coverPaperDetail, coverPaperWeight, innerPaperDetail, innerPaperWeight]);
 
   /**
+   * X배너 종합
+   */
+
+  // X배너 사이즈들
+  const [xBannerStandard, setXBannerStandard] = useState("nomal");
+  const [xBannerWidth, setXBannerWidth] = useState(600);
+  const [xBannerHeight, setXBannerHeight] = useState(1800);
+  //X배너 회배 계산
+  const [xBanneSqm, setXBannerSqm] = useState(0);
+  useEffect(() => {
+    const makedXBannerSqm = (xBannerWidth * xBannerHeight) / 1000000;
+    setXBannerSqm(makedXBannerSqm);
+  }, [xBannerWidth, xBannerHeight]);
+
+  // X배너 소재
+  const [xBannerMaterial, setXBannerMaterial] = useState("무광PET");
+
+  // X배너 후가공
+  const [xBannerFinishing, setXBannerFinishing] = useState("선택안함");
+
+  const [xBannerQty, setXBannerQty] = useState(1);
+
+  useEffect(() => {
+    let unit_qty = 0;
+
+    if (xBannerQty <= 30) {
+      unit_qty = 30;
+    } else if (xBannerQty <= 100) {
+      unit_qty = 100;
+    } else if (xBannerQty <= 300) {
+      unit_qty = 300;
+    } else {
+      unit_qty = 500;
+    }
+
+    const findedPrice = XBanner_price[xBannerStandard].find(
+      (x) => x.qty === unit_qty
+    );
+
+    let unitPrice = 0;
+
+    if (xBannerStandard === "none") {
+      //비규격일시
+      unitPrice = findedPrice[xBannerMaterial] * xBanneSqm;
+    } else {
+      //그외
+      unitPrice = findedPrice[xBannerMaterial];
+    }
+
+    console.log("다우니가격", unitPrice);
+
+    const gPrice = unitPrice * xBannerQty;
+    const gOption = XBanner_price[xBannerFinishing] * xBannerQty;
+    const gTax = Math.round(((gPrice + gOption) * 0.1) / 10) * 10;
+
+    setGlobalAmt(gPrice);
+    setGlobalOptionAmt(gOption);
+    setGlobalTax(gTax);
+  }, [
+    xBannerStandard,
+    xBannerWidth,
+    xBannerHeight,
+    xBannerMaterial,
+    xBannerFinishing,
+    xBannerQty,
+    xBanneSqm,
+  ]);
+
+  /**
+   * 현수막 종합
+   */
+
+  // 배너사이즈
+  const [bannerWidth, setBannerWidth] = useState(200);
+  const [bannerHeight, setBannerHeight] = useState(200);
+
+  /**
    * 옵션 토탈
    *
    */
@@ -264,10 +350,9 @@ const OptionToggle = ({
     updateOptionAmt();
   }, [coating, coatingOption]);
 
+  //책자
   useEffect(() => {
     const copy = selOption;
-    console.log(copy);
-
     copy.coverPaper = coverPaper;
     copy.coverPaperDetail = coverPaperDetail;
     copy.coverPaperWeight = coverPaperWeight;
@@ -305,6 +390,30 @@ const OptionToggle = ({
     bookletSpotCoatting,
     coverPaperWeight,
     innerPaperWeight,
+  ]);
+
+  //X배너
+  useEffect(() => {
+    const copy = selOption;
+    copy.xbanner = {
+      규격: xBannerStandard,
+      가로: xBannerWidth + "mm",
+      세로: xBannerHeight + "mm",
+      소재: xBannerMaterial,
+      후가공: xBannerFinishing,
+    };
+
+    console.log("카피", copy);
+
+    setSelOption(copy);
+  }, [
+    xBannerStandard,
+    xBannerWidth,
+    xBannerHeight,
+    xBannerMaterial,
+    xBannerFinishing,
+    xBannerQty,
+    xBanneSqm,
   ]);
 
   return (
@@ -758,7 +867,11 @@ const OptionToggle = ({
           <Box sx={{}}>
             <S.Product_Detail_Option_SelectBox>
               <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">표지</InputLabel>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  표지
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -778,7 +891,11 @@ const OptionToggle = ({
                 </Select>
               </Box>
               <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">평량</InputLabel>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  평량
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -876,7 +993,11 @@ const OptionToggle = ({
           <Box sx={{}}>
             <S.Product_Detail_Option_SelectBox>
               <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">내지</InputLabel>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  내지
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -897,7 +1018,11 @@ const OptionToggle = ({
                 </Select>
               </Box>
               <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">평량</InputLabel>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  평량
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -1048,12 +1173,10 @@ const OptionToggle = ({
           </Box>
         </Box>
       )}
-      {type === "전단지" && (
+      {type === "X배너" && (
         <Box
           sx={{
             marginBottom: "20px",
-            paddingBottom: "20px",
-            borderBottom: "1px solid #ddd",
           }}
         >
           <Box sx={{}}>
@@ -1061,275 +1184,98 @@ const OptionToggle = ({
               <S.Product_Detail_Option_ItemText>
                 규격
               </S.Product_Detail_Option_ItemText>
-              <S.OptionBtns3>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={paperSize}
-                  exclusive
-                  onChange={(e) => {
-                    setPaperSize(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"A4"}>A4</ToggleButton>
-                  <ToggleButton value={"A5"}>A5</ToggleButton>
-                  <ToggleButton value={"B5"}>B5</ToggleButton>
-                  <ToggleButton value={"B6"}>B6</ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns3>
-            </S.Product_Detail_Option_ItemBox>
-          </Box>
-          {/* 표지  */}
-
-          <Box sx={{ display: "none" }}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.Product_Detail_Option_ItemText>
-                표지
-              </S.Product_Detail_Option_ItemText>
-              <S.OptionBtns>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={coverPaper}
-                  exclusive
-                  onChange={(e) => {
-                    setCoverPaper(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"regularPaper"}>일반지</ToggleButton>
-                  <ToggleButton value={"premiumPaper"}>고급지</ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns>
-            </S.Product_Detail_Option_ItemBox>
-          </Box>
-          <Box sx={{}}>
-            <S.Product_Detail_Option_SelectBox>
-              <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">표지</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={coverPaperDetail}
-                  onChange={(e) => {
-                    setCoverPaperDetail(e.target.value);
-                    setCoverPaperWeight(bookletCoverWeights[e.target.value][0]);
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
-                  <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
-                  <MenuItem value={"아트"}>아트</MenuItem>
-                  <MenuItem value={"아르떼"}>아르떼</MenuItem>
-                  <MenuItem value={"랑데부"}>랑데부</MenuItem>
-                  <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
-                </Select>
-              </Box>
-              <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">평량</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={coverPaperWeight}
-                  onChange={(e) => {
-                    setCoverPaperWeight(e.target.value);
-                  }}
-                  fullWidth
-                >
-                  {bookletCoverWeights[coverPaperDetail].map((weight) => (
-                    <MenuItem value={weight}>{weight}g</MenuItem>
-                  ))}
-                </Select>
-              </Box>
-            </S.Product_Detail_Option_SelectBox>
-          </Box>
-
-          <Box sx={{}}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.OptionBtns>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={coverPage}
-                  exclusive
-                  onChange={(e) => {
-                    setCoverPage(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"doubleSide"}>양면</ToggleButton>
-                  <ToggleButton value={"singleSide"}>단면</ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns>
-            </S.Product_Detail_Option_ItemBox>
-          </Box>
-
-          <Box sx={{}}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.Product_Detail_Option_ItemText>
-                표지코팅
-              </S.Product_Detail_Option_ItemText>
               <S.OptionBtns2>
                 <ToggleButtonGroup
                   color="primary"
-                  value={coverCoating}
+                  value={xBannerStandard}
                   exclusive
                   onChange={(e) => {
-                    setCoverCoating(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"단면유광코팅"}>
-                    단면유광코팅
-                  </ToggleButton>
-                  <ToggleButton value={"단면무광코팅"}>
-                    단면무광코팅
-                  </ToggleButton>
-                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns2>
-            </S.Product_Detail_Option_ItemBox>
-          </Box>
-          <Box sx={{ display: "none" }}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.Product_Detail_Option_ItemText>
-                내지
-              </S.Product_Detail_Option_ItemText>
-              <S.OptionBtns2>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={innerPaper}
-                  exclusive
-                  onChange={(e) => {
-                    setInnerPaper(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"regularPaper"}>일반지</ToggleButton>
-                  <ToggleButton value={"premiumPaper"}>
-                    고급지(80~130)
-                  </ToggleButton>
-                  <ToggleButton value={"premiumPaper2"}>
-                    고급지(160~210)
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns2>
-            </S.Product_Detail_Option_ItemBox>
-          </Box>
-          <Box sx={{}}>
-            <S.Product_Detail_Option_SelectBox>
-              <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">내지</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={innerPaperDetail}
-                  onChange={(e) => {
-                    setInnerPaperDetail(e.target.value);
-                    setInnerPaperWeight(bookletInnerWeights[e.target.value][0]);
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
-                  <MenuItem value={"미색모조"}>미색모조</MenuItem>
-                  <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
-                  <MenuItem value={"아트"}>아트</MenuItem>
-                  <MenuItem value={"아르떼"}>아르떼</MenuItem>
-                  <MenuItem value={"랑데부"}>랑데부</MenuItem>
-                  <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
-                </Select>
-              </Box>
-              <Box sx={{ width: "48%" }}>
-                <InputLabel id="demo-simple-select-label">평량</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={innerPaperWeight}
-                  onChange={(e) => {
-                    setInnerPaperWeight(e.target.value);
-                  }}
-                  fullWidth
-                >
-                  {bookletInnerWeights[innerPaperDetail].map((weight) => (
-                    <MenuItem value={weight}>{weight}g</MenuItem>
-                  ))}
-                </Select>
-              </Box>
-            </S.Product_Detail_Option_SelectBox>
-          </Box>
-          <Box sx={{}}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.OptionBtns>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={innerSide}
-                  exclusive
-                  onChange={(e) => {
-                    setInnerSide(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"doubleSide"}>양면</ToggleButton>
-                  <ToggleButton value={"singleSide"}>단면</ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns>
-            </S.Product_Detail_Option_ItemBox>
-          </Box>
-          <Box sx={{}}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.OptionBtns>
-                <TextField
-                  sx={{ width: "50%", marginTop: "5px" }}
-                  id="outlined-basic"
-                  label="페이지수"
-                  value={innerPage}
-                  variant="outlined"
-                  size="small"
-                  type="number"
-                  onChange={(e) => {
-                    setInnerPage(e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    if (e.target.value < 2) {
-                      setInnerPage(2);
-                    } else if (e.target.value % 2 !== 0) {
-                      setInnerPage(parseInt(e.target.value) + 1);
+                    setXBannerStandard(e.target.value);
+                    setXBannerMaterial("무광PET");
+                    switch (e.target.value) {
+                      case "nomal":
+                        setXBannerWidth(600);
+                        setXBannerHeight(1800);
+
+                        break;
+                      case "mini":
+                        setXBannerWidth(500);
+                        setXBannerHeight(720);
+                        break;
+                      case "none":
+                        setXBannerWidth(1000);
+                        setXBannerHeight(1000);
+                        break;
                     }
                   }}
-                />
-              </S.OptionBtns>
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"nomal"}>일반 (600x1800)</ToggleButton>
+                  <ToggleButton value={"mini"}>미니 (500x720)</ToggleButton>
+                  <ToggleButton value={"none"}>비규격</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: "20px",
+                  display: xBannerStandard === "none" ? "flex" : "none",
+                }}
+              >
+                <TextField
+                  label="가로"
+                  value={xBannerWidth}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, "");
+                    setXBannerWidth(input);
+                  }}
+                  sx={{ width: "48%" }}
+                  aria-readonly
+                ></TextField>
+                <TextField
+                  label="세로"
+                  value={xBannerHeight}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, "");
+                    setXBannerHeight(input);
+                  }}
+                  sx={{ width: "48%" }}
+                  aria-readonly
+                ></TextField>
+              </Box>
             </S.Product_Detail_Option_ItemBox>
           </Box>
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
-                제본
+                소재
               </S.Product_Detail_Option_ItemText>
               <S.OptionBtns>
                 <ToggleButtonGroup
                   color="primary"
-                  value={bindingType}
+                  value={xBannerMaterial}
                   exclusive
                   onChange={(e) => {
-                    setBindingType(e.target.value);
+                    setXBannerMaterial(e.target.value);
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"ironBinding"}>중철</ToggleButton>
-                  <ToggleButton value={"wirelessBinding"}>무선</ToggleButton>
-                  {/* <ToggleButton value={"springBinding"}>스프링</ToggleButton> */}
+                  <ToggleButton value={"무광PET"}>무광PET</ToggleButton>
+                  <ToggleButton
+                    value={"유광PET"}
+                    sx={{
+                      display: xBannerStandard === "nomal" ? "block" : "none",
+                    }}
+                  >
+                    유광PET
+                  </ToggleButton>
                 </ToggleButtonGroup>
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
@@ -1339,61 +1285,158 @@ const OptionToggle = ({
               <S.Product_Detail_Option_ItemText>
                 후가공
               </S.Product_Detail_Option_ItemText>
-              <S.OptionBtns>
+              <S.OptionBtns2>
                 <ToggleButtonGroup
                   color="primary"
-                  value={bookletGoldFoil}
+                  value={xBannerFinishing}
                   exclusive
                   onChange={(e) => {
-                    setbookletGoldFoil(e.target.value);
+                    setXBannerFinishing(e.target.value);
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"goldfoil"}>금박</ToggleButton>
-                  <ToggleButton value={"none"}>선택안함</ToggleButton>
+                  <ToggleButton value={"아일렛"}>아일렛</ToggleButton>
+                  <ToggleButton value={"각목마감"}>각목마감</ToggleButton>
+                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={xBannerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+                    setXBannerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+      {type === "현수막" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                규격
+              </S.Product_Detail_Option_ItemText>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: "20px",
+                }}
+              >
+                <TextField
+                  label="가로"
+                  value={bannerWidth}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, "");
+                    setBannerWidth(input);
+                  }}
+                  sx={{ width: "48%" }}
+                  aria-readonly
+                ></TextField>
+                <TextField
+                  label="세로"
+                  value={bannerHeight}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, "");
+                    setBannerHeight(input);
+                  }}
+                  sx={{ width: "48%" }}
+                  aria-readonly
+                ></TextField>
+              </Box>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                소재
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={xBannerMaterial}
+                  exclusive
+                  onChange={(e) => {
+                    setXBannerMaterial(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"무광PET"}>무광PET</ToggleButton>
+                  <ToggleButton
+                    value={"유광PET"}
+                    sx={{
+                      display: xBannerStandard === "nomal" ? "block" : "none",
+                    }}
+                  >
+                    유광PET
+                  </ToggleButton>
                 </ToggleButtonGroup>
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
           </Box>
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
-              <S.OptionBtns>
+              <S.Product_Detail_Option_ItemText>
+                후가공
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
                 <ToggleButtonGroup
                   color="primary"
-                  value={bookletEmbossing}
+                  value={xBannerFinishing}
                   exclusive
                   onChange={(e) => {
-                    setBookletEmbossing(e.target.value);
+                    setXBannerFinishing(e.target.value);
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"embossing"}>형압</ToggleButton>
-                  <ToggleButton value={"none"}>선택안함</ToggleButton>
+                  <ToggleButton value={"아일렛"}>아일렛</ToggleButton>
+                  <ToggleButton value={"각목마감"}>각목마감</ToggleButton>
+                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
                 </ToggleButtonGroup>
-              </S.OptionBtns>
+              </S.OptionBtns2>
             </S.Product_Detail_Option_ItemBox>
           </Box>
-          <Box sx={{}}>
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
             <S.Product_Detail_Option_ItemBox>
               <S.OptionBtns>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={bookletSpotCoatting}
-                  exclusive
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={xBannerQty}
+                  variant="outlined"
+                  type="number"
                   onChange={(e) => {
-                    setBookletSpotCoatting(e.target.value);
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+                    setXBannerQty(input);
+                    setGlobalQty(input);
                   }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"spotcoatting"}>부분코팅</ToggleButton>
-                  <ToggleButton value={"none"}>선택안함</ToggleButton>
-                </ToggleButtonGroup>
+                />
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
           </Box>

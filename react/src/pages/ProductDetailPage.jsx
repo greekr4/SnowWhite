@@ -230,8 +230,6 @@ const ProductDetailPage = ({ openPopup }) => {
   };
 
   const handleSendCart = async () => {
-    console.log(selOption);
-
     if (USER_ID === undefined) {
       openPopup(0);
       return false;
@@ -245,27 +243,19 @@ const ProductDetailPage = ({ openPopup }) => {
     }
 
     const PROD_SID = prodDetail.PROD_SID;
-    // const ITEM_OPTION = JSON.stringify(seletedOptions);
-    console.log(createOptionNm());
     const ITEM_OPTION = createOptionNm().join(" | ");
     const ITEM_QUANTITY =
       prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1
         ? qty
         : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1
         ? bookQty
-        : 0;
-
-    // {(parseInt(totalAmt) + parseInt(taxAmt)).toLocaleString(
-    //   parseInt(optionAmt) +
-    //   parseInt(defaultAmt) +
-    //   parseInt(taxAmt)
-
+        : globalQty;
     const ITEM_AMOUNT =
       prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1
         ? parseInt(defaultAmt) + parseInt(optionAmt) + parseInt(taxAmt)
         : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1
         ? parseInt(totalAmt) + parseInt(taxAmt)
-        : 0;
+        : parseInt(globalAmt) + parseInt(globalOptionAmt) + parseInt(globalTax);
     const ITEM_DESIGN = JSON.stringify([]);
 
     const res = await axios.post(
@@ -604,6 +594,13 @@ const ProductDetailPage = ({ openPopup }) => {
       );
     }
 
+    //X배너
+    if (selOption.xbanner) {
+      optionNm.push(`${selOption.xbanner.가로} x ${selOption.xbanner.세로}`);
+      optionNm.push(`${selOption.xbanner.소재}`);
+      optionNm.push(`후가공 : ${selOption.xbanner.후가공}`);
+    }
+
     return optionNm;
   };
 
@@ -615,6 +612,7 @@ const ProductDetailPage = ({ openPopup }) => {
 
   //공통
 
+  const [globalQty, setGlobalQty] = useState(1);
   const [globalAmt, setGlobalAmt] = useState(0);
   const [globalOptionAmt, setGlobalOptionAmt] = useState(0);
   const [globalTax, setGlobalTax] = useState(0);
@@ -1179,11 +1177,19 @@ const ProductDetailPage = ({ openPopup }) => {
                       setSelOption={setSelOption}
                       updateOptionAmt={updateOptionAmt}
                       calcBooklet={calcBooklet}
+                      globalQty={globalQty}
+                      setGlobalQty={setGlobalQty}
+                      globalAmt={globalAmt}
+                      setGlobalAmt={setGlobalAmt}
+                      globalOptionAmt={globalOptionAmt}
+                      setGlobalOptionAmt={setGlobalOptionAmt}
+                      globalTax={globalTax}
+                      setGlobalTax={setGlobalTax}
                     />
                   ))}
                   {/* 명함 수량 */}
                   {prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1 ? (
-                    <S.Product_Detail_Option_ItemBox>
+                    <S.Product_Detail_Option_ItemBox2>
                       <S.Product_Detail_Option_ItemText>
                         수량
                       </S.Product_Detail_Option_ItemText>
@@ -1205,10 +1211,10 @@ const ProductDetailPage = ({ openPopup }) => {
                           </MenuItem>
                         ))}
                       </Select>
-                    </S.Product_Detail_Option_ItemBox>
+                    </S.Product_Detail_Option_ItemBox2>
                   ) : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1 ? (
                     <Box sx={{}}>
-                      <S.Product_Detail_Option_ItemBox>
+                      <S.Product_Detail_Option_ItemBox2>
                         <S.OptionBtns>
                           <TextField
                             sx={{ width: "50%", marginTop: "5px" }}
@@ -1229,7 +1235,7 @@ const ProductDetailPage = ({ openPopup }) => {
                             }}
                           />
                         </S.OptionBtns>
-                      </S.Product_Detail_Option_ItemBox>
+                      </S.Product_Detail_Option_ItemBox2>
                     </Box>
                   ) : null}
                 </S.Product_Detail_Option_ItemWrapper>
@@ -1310,8 +1316,8 @@ const ProductDetailPage = ({ openPopup }) => {
                     </S.ProdDetailPriceValue>
                     <br />
                   </S.ProdDetailPayBox>
-                ) : (
-                  <S.ProdDetailPayBox>
+                ) : prodDetail?.PROD_OPTIONS.indexOf("명함") != -1 ? (
+                  <S.ProdDetailPayBox topValue={scrollPositon + 160}>
                     <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
                     <S.ProdDetailPriceValue>
                       {parseInt(defaultAmt).toLocaleString("ko-KR")}원
@@ -1341,8 +1347,40 @@ const ProductDetailPage = ({ openPopup }) => {
                     </S.ProdDetailPriceValue>
                     <br />
                   </S.ProdDetailPayBox>
+                ) : (
+                  <S.ProdDetailPayBox>
+                    <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(globalAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(globalOptionAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>부가세</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(globalTax).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {(
+                        parseInt(globalAmt) +
+                        parseInt(globalOptionAmt) +
+                        parseInt(globalTax)
+                      ).toLocaleString("ko-KR")}
+                      원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                  </S.ProdDetailPayBox>
                 )}
 
+                {/* 좌측 날개 */}
                 {prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1 ? (
                   <S.ProdDetailPayBox_POP topValue={scrollPositon + 160}>
                     <S.ProdDetailPriceText>표지비</S.ProdDetailPriceText>
@@ -1388,8 +1426,9 @@ const ProductDetailPage = ({ openPopup }) => {
                       )}
                       원
                     </S.ProdDetailPriceValue>
+                    <br />
                   </S.ProdDetailPayBox_POP>
-                ) : (
+                ) : prodDetail?.PROD_OPTIONS.indexOf("명함") != -1 ? (
                   <S.ProdDetailPayBox_POP topValue={scrollPositon + 160}>
                     <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
                     <S.ProdDetailPriceValue>
@@ -1418,6 +1457,38 @@ const ProductDetailPage = ({ openPopup }) => {
                       ).toLocaleString("ko-KR")}
                       원
                     </S.ProdDetailPriceValue>
+                    <br />
+                  </S.ProdDetailPayBox_POP>
+                ) : (
+                  <S.ProdDetailPayBox_POP topValue={scrollPositon + 160}>
+                    <S.ProdDetailPriceText>인쇄비</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(globalAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>후가공</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(globalOptionAmt).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>부가세</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {parseInt(globalTax).toLocaleString("ko-KR")}원
+                    </S.ProdDetailPriceValue>
+                    <br />
+                    <br />
+                    <S.ProdDetailPriceText>총금액</S.ProdDetailPriceText>
+                    <S.ProdDetailPriceValue>
+                      {(
+                        parseInt(globalAmt) +
+                        parseInt(globalOptionAmt) +
+                        parseInt(globalTax)
+                      ).toLocaleString("ko-KR")}
+                      원
+                    </S.ProdDetailPriceValue>
+                    <br />
                   </S.ProdDetailPayBox_POP>
                 )}
 

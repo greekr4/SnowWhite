@@ -1407,12 +1407,16 @@ export const ProdDetailDesc = styled.p`
 `;
 
 export const Product_Detail_Option_ItemWrapper = styled.div`
-  padding-bottom: 1rem;
+  /* padding-bottom: 1rem; */
   margin-bottom: 1rem;
   border-bottom: 1px solid #ddd;
 `;
 
 export const Product_Detail_Option_ItemBox = styled.div`
+  margin-top: 1rem;
+`;
+export const Product_Detail_Option_ItemBox2 = styled.div`
+  padding-bottom: 1rem;
   margin-top: 1rem;
 `;
 

@@ -18,7 +18,7 @@ export function CheckoutPage({
   useEffect(() => {
     (async () => {
       const paymentWidget = await loadPaymentWidget(
-        "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm",
+        "test_gck_KNbdOvk5rkywLqnoyJl23n07xlzm",
         ANONYMOUS
       ); // 비회원 customerKey
 
