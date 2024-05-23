@@ -13,7 +13,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { BorderAll } from "@mui/icons-material";
-import { XBanner_price } from "./OptionsPrices";
+import { Banner_price, Stand_price, XBanner_price } from "./OptionsPrices";
 
 const OptionToggle = ({
   type,
@@ -29,6 +29,8 @@ const OptionToggle = ({
   setGlobalOptionAmt,
   globalTax,
   setGlobalTax,
+  snackbar,
+  setSnackbar,
 }) => {
   /**
    * 귀도리
@@ -234,6 +236,8 @@ const OptionToggle = ({
 
   const [xBannerQty, setXBannerQty] = useState(1);
 
+  const [xBannerStand, setXBannerStand] = useState("선택안함");
+
   useEffect(() => {
     let unit_qty = 0;
 
@@ -261,10 +265,23 @@ const OptionToggle = ({
       unitPrice = findedPrice[xBannerMaterial];
     }
 
-    console.log("다우니가격", unitPrice);
+    //거치대 가격
+    let standQty = 0;
+    if (xBannerQty <= 30) {
+      standQty = 30;
+    } else if (xBannerQty <= 120) {
+      standQty = 120;
+    } else {
+      standQty = 500;
+    }
+    const findedPrice_stand = Stand_price[xBannerStand].find(
+      (x) => x.qty === standQty
+    );
+
+    const standPrice = findedPrice_stand.price * xBannerQty;
 
     const gPrice = unitPrice * xBannerQty;
-    const gOption = XBanner_price[xBannerFinishing] * xBannerQty;
+    const gOption = XBanner_price[xBannerFinishing] * xBannerQty + standPrice;
     const gTax = Math.round(((gPrice + gOption) * 0.1) / 10) * 10;
 
     setGlobalAmt(gPrice);
@@ -278,6 +295,7 @@ const OptionToggle = ({
     xBannerFinishing,
     xBannerQty,
     xBanneSqm,
+    xBannerStand,
   ]);
 
   /**
@@ -285,9 +303,98 @@ const OptionToggle = ({
    */
 
   // 배너사이즈
-  const [bannerWidth, setBannerWidth] = useState(200);
-  const [bannerHeight, setBannerHeight] = useState(200);
+  const [bannerWidth, setBannerWidth] = useState(1000);
+  const [bannerHeight, setBannerHeight] = useState(1000);
 
+  //배너 회배
+  const [bannerSqm, setBannerSqm] = useState(0);
+  useEffect(() => {
+    const makedBannerSqm = (bannerWidth * bannerHeight) / 1000000;
+    setBannerSqm(makedBannerSqm);
+  }, [bannerWidth, bannerHeight]);
+
+  //배너 소재
+  const [bannerMaterial, setBannerMaterial] = useState("일반현수막");
+
+  // 배너 후가공
+  const [bannerFinishing, setBannerFinishing] = useState("선택안함");
+
+  //배너 수량
+  const [bannerQty, setBannerQty] = useState(1);
+
+  //배너 가격계산
+  useEffect(() => {
+    let unit_qty = 0;
+
+    if (bannerSqm < 1) {
+      unit_qty = 1;
+    } else if (bannerQty < 50) {
+      unit_qty = 50;
+    } else {
+      unit_qty = 500;
+    }
+
+    let material = bannerMaterial;
+    if (bannerSqm >= 4 && bannerMaterial === "일반현수막") {
+      material = "4회배";
+    }
+
+    const findedPrice = Banner_price[material].find((x) => x.qty === unit_qty);
+
+    const unitPrice = findedPrice.price * bannerSqm;
+
+    console.log(findedPrice);
+    console.log(`단위가격 ${unitPrice}`);
+
+    const gPrice = unitPrice * bannerQty;
+    const gOption = Banner_price[bannerFinishing] * bannerQty;
+    const gTax = Math.round(((gPrice + gOption) * 0.1) / 10) * 10;
+    setGlobalAmt(gPrice);
+    setGlobalOptionAmt(gOption);
+    setGlobalTax(gTax);
+
+    const copy = selOption;
+    copy.banner = {
+      가로: bannerWidth + "mm",
+      세로: bannerHeight + "mm",
+      소재: bannerMaterial,
+      후가공: bannerFinishing,
+    };
+
+    setSelOption(copy);
+  }, [
+    bannerWidth,
+    bannerHeight,
+    bannerMaterial,
+    bannerFinishing,
+    bannerSqm,
+    bannerQty,
+  ]);
+
+  /**
+   * 재단 스티커
+   */
+  const [stickerWidth, setStickerWidth] = useState();
+  const [stickerHeight, setStickerHeight] = useState();
+  const [stickerSqm, setStickerSqm] = useState(0);
+  useEffect(() => {
+    const makedStickerSqm = (stickerWidth * stickerHeight) / 10000;
+    setStickerSqm(makedStickerSqm);
+  }, [stickerWidth, stickerHeight]);
+
+  const [stickerPaper, setStickerPaper] = useState("아트지");
+  const [stickerCoating, setStickerCoating] = useState("무광");
+  const [stickerQty, setStickerQty] = useState(1);
+
+  /**
+   * 도무송 스티커
+   */
+
+  const [thomsonStickerStandard, setThomsonStickerStandard] = useState("A4");
+  const [thomsonStickerPaper, setThomsonStickerPaper] = useState("아트지");
+  const [thomsonStickerType, setThomsonStickerType] = useState("칼선");
+  const [thomsonStickerCoating, setThomsonStickerCoating] = useState("무광");
+  const [thomsonStickerQty, setThomsonStickerQty] = useState(1);
   /**
    * 옵션 토탈
    *
@@ -401,9 +508,8 @@ const OptionToggle = ({
       세로: xBannerHeight + "mm",
       소재: xBannerMaterial,
       후가공: xBannerFinishing,
+      거치대: xBannerStand,
     };
-
-    console.log("카피", copy);
 
     setSelOption(copy);
   }, [
@@ -414,6 +520,7 @@ const OptionToggle = ({
     xBannerFinishing,
     xBannerQty,
     xBanneSqm,
+    xBannerStand,
   ]);
 
   return (
@@ -1304,6 +1411,49 @@ const OptionToggle = ({
               </S.OptionBtns2>
             </S.Product_Detail_Option_ItemBox>
           </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                거치대
+              </S.Product_Detail_Option_ItemText>
+              <S.Product_Detail_Option_SelectBox>
+                <Box sx={{ width: "100%" }}>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={xBannerStand}
+                    onChange={(e) => {
+                      setXBannerStand(e.target.value);
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value={"선택안함"}>선택안함</MenuItem>
+                    <MenuItem value={"실내스타"}>실내용 스타거치대</MenuItem>
+                    <MenuItem value={"실내드림"}>실내용 드림거치대</MenuItem>
+                    <MenuItem value={"실내화이트"}>
+                      실내용 화이트거치대
+                    </MenuItem>
+                    <MenuItem value={"실내포인트"}>
+                      실내용 포인트거치대
+                    </MenuItem>
+                    <MenuItem value={"실외심플단면"}>
+                      실외용 심플 단면거치대
+                    </MenuItem>
+                    <MenuItem value={"실외심플양면"}>
+                      실외용 심플 양면거치대
+                    </MenuItem>
+                    <MenuItem value={"실외갤럭시단면"}>
+                      실외용 갤럭시 단면거치대
+                    </MenuItem>
+                    <MenuItem value={"실외갤럭시양면"}>
+                      실외용 갤럭시 양면거치대
+                    </MenuItem>
+                  </Select>
+                </Box>
+              </S.Product_Detail_Option_SelectBox>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+
           <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
             <S.Product_Detail_Option_ItemBox>
               <S.OptionBtns>
@@ -1316,6 +1466,15 @@ const OptionToggle = ({
                   type="number"
                   onChange={(e) => {
                     const input = e.target.value < 0 ? 1 : e.target.value;
+                    if (input > 500) {
+                      setSnackbar({
+                        children: "500매 이상은 별도 문의해주세요.",
+                        severity: "info",
+                      });
+                      setXBannerQty(500);
+                      setGlobalQty(500);
+                      return;
+                    }
                     setXBannerQty(input);
                     setGlobalQty(input);
                   }}
@@ -1368,34 +1527,30 @@ const OptionToggle = ({
             </S.Product_Detail_Option_ItemBox>
           </Box>
           <Box sx={{}}>
-            <S.Product_Detail_Option_ItemBox>
-              <S.Product_Detail_Option_ItemText>
-                소재
-              </S.Product_Detail_Option_ItemText>
-              <S.OptionBtns>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={xBannerMaterial}
-                  exclusive
-                  onChange={(e) => {
-                    setXBannerMaterial(e.target.value);
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
                 >
-                  <ToggleButton value={"무광PET"}>무광PET</ToggleButton>
-                  <ToggleButton
-                    value={"유광PET"}
-                    sx={{
-                      display: xBannerStandard === "nomal" ? "block" : "none",
-                    }}
-                  >
-                    유광PET
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns>
-            </S.Product_Detail_Option_ItemBox>
+                  소재
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={bannerMaterial}
+                  onChange={(e) => {
+                    setBannerMaterial(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"일반현수막"}>일반현수막</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                  <MenuItem value={"유포그레이"}>유포그레이</MenuItem>
+                  <MenuItem value={"켈"}>켈</MenuItem>
+                  <MenuItem value={"켈그레이"}>켈그레이</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
           </Box>
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
@@ -1405,10 +1560,10 @@ const OptionToggle = ({
               <S.OptionBtns2>
                 <ToggleButtonGroup
                   color="primary"
-                  value={xBannerFinishing}
+                  value={bannerFinishing}
                   exclusive
                   onChange={(e) => {
-                    setXBannerFinishing(e.target.value);
+                    setBannerFinishing(e.target.value);
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
@@ -1428,12 +1583,584 @@ const OptionToggle = ({
                   sx={{ width: "50%", marginTop: "5px" }}
                   id="outlined-basic"
                   label="수량"
-                  value={xBannerQty}
+                  value={bannerQty}
                   variant="outlined"
                   type="number"
                   onChange={(e) => {
                     const input = e.target.value < 0 ? 1 : e.target.value;
-                    setXBannerQty(input);
+
+                    if (input >= 500) {
+                      setSnackbar({
+                        children: "500매 이상은 별도 문의해주세요.",
+                        severity: "info",
+                      });
+                      setBannerQty(500);
+                      setGlobalQty(500);
+                      return;
+                    }
+
+                    setBannerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+      {type === "재단스티커" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                사이즈
+              </S.Product_Detail_Option_ItemText>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: "20px",
+                }}
+              >
+                <TextField
+                  label="가로"
+                  value={stickerWidth}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, "");
+                    setStickerWidth(input);
+                  }}
+                  sx={{ width: "48%" }}
+                  aria-readonly
+                ></TextField>
+                <TextField
+                  label="세로"
+                  value={stickerHeight}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, "");
+                    setStickerHeight(input);
+                  }}
+                  sx={{ width: "48%" }}
+                  aria-readonly
+                ></TextField>
+              </Box>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  용지
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={stickerPaper}
+                  onChange={(e) => {
+                    setStickerPaper(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"아트지"}>아트지</MenuItem>
+                  <MenuItem value={"모조지"}>모조지</MenuItem>
+                  <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
+                  <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                코팅
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={stickerCoating}
+                  exclusive
+                  onChange={(e) => {
+                    setStickerCoating(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"무광"}>무광</ToggleButton>
+                  <ToggleButton value={"유광"}>유광</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={stickerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+
+                    setStickerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+      {type === "도무송스티커" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                사이즈
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns3>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerStandard}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerStandard(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"A4"}>A4</ToggleButton>
+                  <ToggleButton value={"A5"}>A5</ToggleButton>
+                  <ToggleButton value={"B5"}>B5</ToggleButton>
+                  <ToggleButton value={"B6"}>B6</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns3>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  용지
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={thomsonStickerPaper}
+                  onChange={(e) => {
+                    setThomsonStickerPaper(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"아트지"}>아트지</MenuItem>
+                  <MenuItem value={"모조지"}>모조지</MenuItem>
+                  <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
+                  <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                칼선
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerType}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerType(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"칼선"}>칼선</ToggleButton>
+                  <ToggleButton value={"인쇄만"}>인쇄만</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                코팅
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerCoating}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerCoating(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"무광"}>무광</ToggleButton>
+                  <ToggleButton value={"유광"}>유광</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={thomsonStickerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+
+                    setThomsonStickerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+      {type === "전단지" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                사이즈
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns3>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerStandard}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerStandard(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"A4"}>A4</ToggleButton>
+                  <ToggleButton value={"A5"}>A5</ToggleButton>
+                  <ToggleButton value={"B5"}>B5</ToggleButton>
+                  <ToggleButton value={"B6"}>B6</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns3>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  용지
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={thomsonStickerPaper}
+                  onChange={(e) => {
+                    setThomsonStickerPaper(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"아트지"}>아트지</MenuItem>
+                  <MenuItem value={"모조지"}>모조지</MenuItem>
+                  <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
+                  <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={thomsonStickerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+
+                    setThomsonStickerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+
+      {type === "엽서" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                사이즈
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns3>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerStandard}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerStandard(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"A4"}>A4</ToggleButton>
+                  <ToggleButton value={"A5"}>A5</ToggleButton>
+                  <ToggleButton value={"B5"}>B5</ToggleButton>
+                  <ToggleButton value={"B6"}>B6</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns3>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  용지
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={thomsonStickerPaper}
+                  onChange={(e) => {
+                    setThomsonStickerPaper(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"아트지"}>아트지</MenuItem>
+                  <MenuItem value={"모조지"}>모조지</MenuItem>
+                  <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
+                  <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={thomsonStickerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+
+                    setThomsonStickerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+
+      {type === "포스터" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                사이즈
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns3>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerStandard}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerStandard(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"A4"}>A4</ToggleButton>
+                  <ToggleButton value={"A5"}>A5</ToggleButton>
+                  <ToggleButton value={"B5"}>B5</ToggleButton>
+                  <ToggleButton value={"B6"}>B6</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns3>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  용지
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={thomsonStickerPaper}
+                  onChange={(e) => {
+                    setThomsonStickerPaper(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"아트지"}>아트지</MenuItem>
+                  <MenuItem value={"모조지"}>모조지</MenuItem>
+                  <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
+                  <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={thomsonStickerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+
+                    setThomsonStickerQty(input);
+                    setGlobalQty(input);
+                  }}
+                />
+              </S.OptionBtns>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+        </Box>
+      )}
+
+      {type === "리플릿" && (
+        <Box
+          sx={{
+            marginBottom: "20px",
+          }}
+        >
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                사이즈
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns3>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={thomsonStickerStandard}
+                  exclusive
+                  onChange={(e) => {
+                    setThomsonStickerStandard(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"A4"}>A4</ToggleButton>
+                  <ToggleButton value={"A5"}>A5</ToggleButton>
+                  <ToggleButton value={"B5"}>B5</ToggleButton>
+                  <ToggleButton value={"B6"}>B6</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns3>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_SelectBox>
+              <Box sx={{ width: "48%" }}>
+                <InputLabel
+                  sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+                >
+                  용지
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={thomsonStickerPaper}
+                  onChange={(e) => {
+                    setThomsonStickerPaper(e.target.value);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value={"아트지"}>아트지</MenuItem>
+                  <MenuItem value={"모조지"}>모조지</MenuItem>
+                  <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
+                  <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
+                  <MenuItem value={"유포지"}>유포지</MenuItem>
+                </Select>
+              </Box>
+            </S.Product_Detail_Option_SelectBox>
+          </Box>
+
+          <Box sx={{ marginTop: "20px", borderTop: "1px solid #ddd" }}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.OptionBtns>
+                <TextField
+                  sx={{ width: "50%", marginTop: "5px" }}
+                  id="outlined-basic"
+                  label="수량"
+                  value={thomsonStickerQty}
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => {
+                    const input = e.target.value < 0 ? 1 : e.target.value;
+
+                    setThomsonStickerQty(input);
                     setGlobalQty(input);
                   }}
                 />

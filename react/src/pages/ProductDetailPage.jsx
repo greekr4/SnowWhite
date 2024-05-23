@@ -595,10 +595,22 @@ const ProductDetailPage = ({ openPopup }) => {
     }
 
     //X배너
-    if (selOption.xbanner) {
-      optionNm.push(`${selOption.xbanner.가로} x ${selOption.xbanner.세로}`);
-      optionNm.push(`${selOption.xbanner.소재}`);
-      optionNm.push(`후가공 : ${selOption.xbanner.후가공}`);
+    if (prodDetail?.PROD_OPTIONS?.indexOf("X배너") != -1) {
+      if (selOption.xbanner) {
+        optionNm.push(`${selOption.xbanner.가로} x ${selOption.xbanner.세로}`);
+        optionNm.push(`${selOption.xbanner.소재}`);
+        optionNm.push(`후가공 : ${selOption.xbanner.후가공}`);
+        optionNm.push(`거치대 : ${selOption.xbanner.거치대}`);
+      }
+    }
+
+    //현수막
+    if (prodDetail?.PROD_OPTIONS?.indexOf("현수막") != -1) {
+      if (selOption.banner) {
+        optionNm.push(`${selOption.banner.가로} x ${selOption.banner.세로}`);
+        optionNm.push(`${selOption.banner.소재}`);
+        optionNm.push(`후가공 : ${selOption.banner.후가공}`);
+      }
     }
 
     return optionNm;
@@ -1185,6 +1197,8 @@ const ProductDetailPage = ({ openPopup }) => {
                       setGlobalOptionAmt={setGlobalOptionAmt}
                       globalTax={globalTax}
                       setGlobalTax={setGlobalTax}
+                      snackbar={snackbar}
+                      setSnackbar={setSnackbar}
                     />
                   ))}
                   {/* 명함 수량 */}
@@ -1501,7 +1515,7 @@ const ProductDetailPage = ({ openPopup }) => {
             </S.ProdDetailBox>
           </S.ProdDetailWrapper>
         </S.MainSection>
-        <S.MainSection bgc="#f9fafc">
+        <S.MainSection bgc="">
           <S.ProdDetailContentWrapper>
             <div className="ql-snow">
               <div className="ql-editor">
