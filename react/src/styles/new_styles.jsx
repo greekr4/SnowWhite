@@ -111,6 +111,8 @@ export const HeaderGnbWrapper = styled.div`
   width: 100%;
   border-bottom: 1px solid #eee;
   z-index: 999;
+  position: fixed;
+  background: white;
   &.fix {
     position: fixed;
     background: white;

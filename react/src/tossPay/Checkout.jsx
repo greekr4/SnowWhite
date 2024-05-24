@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
-
+import { generateUUID } from "three/src/math/MathUtils";
+const customerKey = generateUUID();
 const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
 
 export function CheckoutPage({
@@ -19,7 +20,7 @@ export function CheckoutPage({
     (async () => {
       const paymentWidget = await loadPaymentWidget(
         "test_gck_KNbdOvk5rkywLqnoyJl23n07xlzm",
-        ANONYMOUS
+        customerKey
       ); // 비회원 customerKey
 
       if (paymentWidgetRef.current == null) {
@@ -34,7 +35,7 @@ export function CheckoutPage({
         paymentWidgetRef.current.renderPaymentMethods(
           "#payment-method",
           { value: totalPrice },
-          { variantKey: "DEFAULT" }
+          { variantKey: "default-1" }
         );
 
       /**
@@ -43,7 +44,7 @@ export function CheckoutPage({
        */
       agreementWidgetRef.current = paymentWidgetRef.current.renderAgreement(
         "#agreement",
-        { variantKey: "DEFAULT" }
+        { variantKey: "default-1" }
       );
 
       paymentMethodsWidgetRef.current = paymentMethodsWidget;
@@ -132,13 +133,17 @@ export function CheckoutPage({
 
                       window.location.href = "/orderlist";
                     } else {
-                      alert("결제를 실패하였습니다.1");
+                      alert("결제를 실패하였습니다.");
                     }
                   });
               } catch (error) {
                 // TODO: 에러 처리
                 console.log(error);
-                alert("결제를 실패하였습니다.2");
+
+                if (error.message != "사용자가 결제를 취소하였습니다") {
+                  alert(error.message);
+                }
+                // alert("결제를 실패하였습니다.2");
               }
             }}
           >

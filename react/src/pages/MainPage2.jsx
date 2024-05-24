@@ -11,6 +11,7 @@ import img5 from "../assets/products/product-test5.png";
 import img6 from "../assets/products/product-test6.png";
 import MainSlider from "../components/main/MainSlider";
 import axios from "axios";
+import { Box, SpeedDial, SpeedDialIcon } from "@mui/material";
 
 const MainPage2 = () => {
   const [mainProducts, setMainProducts] = useState([]);
@@ -51,34 +52,35 @@ const MainPage2 = () => {
   ];
 
   return (
-    <S.MainLayout>
-      <S.MainSection>
-        <MainSlider />
-      </S.MainSection>
-      <S.MainSection bgc="#fff">
-        <S.GlobProdWrapper>
-          <S.GlobProdList>
-            {mainProducts.map((item, index) => (
-              <GlobProdItem item={item} key={index} />
-            ))}
-          </S.GlobProdList>
-        </S.GlobProdWrapper>
-      </S.MainSection>
-      <S.MainSection bgc="#f9fafc">
-        <S.MainPortfolioWrapper>
-          <S.PortfolioTextBox>
-            <S.PortfolioTitle>스노우플래닛 Portfolio</S.PortfolioTitle>
-          </S.PortfolioTextBox>
-          <S.PortfolioList>
-            {test_pf.map((item, index) => (
-              <PortfolioItem item={item} key={index} />
-            ))}
-          </S.PortfolioList>
-        </S.MainPortfolioWrapper>
-      </S.MainSection>
-      <S.MainSection>
-        <S.MainBottomBannerBox img={"/asserts/banner/bottom_banner.png"}>
-          {/* <div className="inner">
+    <>
+      <S.MainLayout>
+        <S.MainSection>
+          <MainSlider />
+        </S.MainSection>
+        <S.MainSection bgc="#fff">
+          <S.GlobProdWrapper>
+            <S.GlobProdList>
+              {mainProducts.map((item, index) => (
+                <GlobProdItem item={item} key={index} />
+              ))}
+            </S.GlobProdList>
+          </S.GlobProdWrapper>
+        </S.MainSection>
+        <S.MainSection bgc="#f9fafc">
+          <S.MainPortfolioWrapper>
+            <S.PortfolioTextBox>
+              <S.PortfolioTitle>스노우플래닛 Portfolio</S.PortfolioTitle>
+            </S.PortfolioTextBox>
+            <S.PortfolioList>
+              {test_pf.map((item, index) => (
+                <PortfolioItem item={item} key={index} />
+              ))}
+            </S.PortfolioList>
+          </S.MainPortfolioWrapper>
+        </S.MainSection>
+        <S.MainSection>
+          <S.MainBottomBannerBox img={"/asserts/banner/bottom_banner.png"}>
+            {/* <div className="inner">
             <h1>무한대의 명함을 경험하다.</h1>
             <h2>
               한번 보면 빠져들 수밖에 없는 매력적인 명함
@@ -87,9 +89,10 @@ const MainPage2 = () => {
               직접 보고 느껴보세요!
             </h2>
           </div> */}
-        </S.MainBottomBannerBox>
-      </S.MainSection>
-    </S.MainLayout>
+          </S.MainBottomBannerBox>
+        </S.MainSection>
+      </S.MainLayout>
+    </>
   );
 };
 

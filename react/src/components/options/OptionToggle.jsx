@@ -17,6 +17,7 @@ import { Banner_price, Stand_price, XBanner_price } from "./OptionsPrices";
 
 const OptionToggle = ({
   type,
+  PROD_NM,
   selOption,
   setSelOption,
   updateOptionAmt,
@@ -137,6 +138,7 @@ const OptionToggle = ({
   const [innerPaper, setInnerPaper] = useState("regularPaper");
   // 내지 용지 상세
   const [innerPaperDetail, setInnerPaperDetail] = useState("백색모조");
+
   // 내지 용지 무게
   const [innerPaperWeight, setInnerPaperWeight] = useState(80);
   // 내지 컬러
@@ -147,6 +149,7 @@ const OptionToggle = ({
   const [innerPage, setInnerPage] = useState(20);
   // 제본
   const [bindingType, setBindingType] = useState("ironBinding");
+
   // 커버코팅
   const [coverCoating, setCoverCoating] = useState("선택안함");
   // 금박
@@ -155,6 +158,29 @@ const OptionToggle = ({
   const [bookletEmbossing, setBookletEmbossing] = useState("none");
   // 부분코팅
   const [bookletSpotCoatting, setBookletSpotCoatting] = useState("none");
+
+  // 책자 상품 별 초기값 세팅
+  useEffect(() => {
+    const settingBindingType =
+      PROD_NM === "스프링노트" ? "springBinding" : "ironBinding";
+
+    const settingCoverPaperDetail =
+      PROD_NM === "브로슈어" ? "스노우화이트" : "백색모조";
+
+    const settingCoverPaperWeight = PROD_NM === "브로슈어" ? 200 : 180;
+
+    const settingInnerPaperDetail =
+      PROD_NM === "브로슈어" ? "스노우화이트" : "백색모조";
+    const settingInnerPaperWeight = PROD_NM === "브로슈어" ? 150 : 80;
+    const settingInnerPage = PROD_NM === "브로슈어" ? 12 : 40;
+    setBindingType(settingBindingType);
+
+    setCoverPaperDetail(settingCoverPaperDetail);
+    setCoverPaperWeight(settingCoverPaperWeight);
+    setInnerPaperDetail(settingInnerPaperDetail);
+    setInnerPaperWeight(settingInnerPaperWeight);
+    setInnerPage(settingInnerPage);
+  }, [PROD_NM]);
 
   // 책자 커버 평량
   const bookletCoverWeights = {
@@ -1208,8 +1234,21 @@ const OptionToggle = ({
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"ironBinding"}>중철</ToggleButton>
-                  <ToggleButton value={"wirelessBinding"}>무선</ToggleButton>
+                  {PROD_NM === "스프링노트" ? (
+                    <>
+                      <ToggleButton value={"springBinding"}>
+                        스프링
+                      </ToggleButton>
+                    </>
+                  ) : (
+                    <>
+                      <ToggleButton value={"ironBinding"}>중철</ToggleButton>
+                      <ToggleButton value={"wirelessBinding"}>
+                        무선
+                      </ToggleButton>
+                    </>
+                  )}
+
                   {/* <ToggleButton value={"springBinding"}>스프링</ToggleButton> */}
                 </ToggleButtonGroup>
               </S.OptionBtns>
