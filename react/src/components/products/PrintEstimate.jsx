@@ -72,7 +72,7 @@ const PrintEstimate = ({ printVisible, handlePrintVisible, estimateData }) => {
               </tr>
               <tr>
                 <th>사업장주소</th>
-                <td colSpan={3}>경기도 고양시 일산동구 장대길42-17</td>
+                <td colSpan={3}>경기도 고양시 일산동구 장대길42-13 (장항동)</td>
               </tr>
               <tr>
                 <th>업태</th>

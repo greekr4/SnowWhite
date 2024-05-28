@@ -1,4 +1,5 @@
 const { getConnection, Connection } = require("../utils/dbUtils");
+const { v1: uuidv1 } = require("uuid");
 
 exports.select_board = async (req, res) => {
   const type = req.query.type;
@@ -144,4 +145,44 @@ where
   const res_data = await getConnection(qry);
   if (res_data.state === false) return res.status(401).send("DB Error.");
   return res.status(200).send(res_data.row);
+};
+
+exports.insert_comment = async (req, res) => {
+  const { BOARD_SID, USER_ID, COMMENT_WRITER, COMMENT_TITLE, COMMENT_CONTENT } =
+    req.body;
+
+  const sid = uuidv1();
+
+  const qry = `
+insert
+	into
+	TB_COMMENT (
+  COMMENT_SID,
+	BOARD_SID,
+	USER_ID,
+	COMMENT_WRITER,
+	COMMENT_TITLE,
+	COMMENT_CONTENT,
+	COMMENT_FILE,
+	COMMNET_HIT,
+	COMMENT_REGDATE,
+	COMMENT_MODIDATE,
+	COMMENT_DELETE)
+values(
+'${sid}',
+'${BOARD_SID}',
+'${USER_ID}',
+'${COMMENT_WRITER}',
+'${COMMENT_TITLE}',
+'${COMMENT_CONTENT}',
+null,
+null,
+now(),
+null,
+'N'
+);`;
+
+  const res_qry = await getConnection(qry);
+  if (res_qry.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send("OK");
 };

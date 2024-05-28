@@ -1,8 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import usePikaso from "pikaso-react-hook";
-
-import Pikaso, { Konva } from "pikaso";
-import { shapes } from "konva/lib/Shape";
 import EditorHeader from "../components/editor/EditorHeader";
 import * as S from "../styles/new_styles";
 import EditorSidebar from "../components/editor/EditorSidebar";
@@ -98,7 +94,7 @@ const TestKonva3 = () => {
                 obj={{ type: "rect" }}
                 objnodes={objNodes}
                 objx={objx + (objx - objx * zoom)}
-                objy={objy + (100 - 100 * zoom)}
+                objy={objy + 300}
                 objSelection={objSelection}
                 setIsPopVisible={setIsPopVisible}
                 editor={myRef[selectedEditor]}
@@ -113,9 +109,6 @@ const TestKonva3 = () => {
           </S.CanvasPopupBox>
         </S.EditorWrapper>
       </S.MainLayout>
-      <br />
-      <button>레이어 보자</button>
-      <br />
     </>
   );
 };

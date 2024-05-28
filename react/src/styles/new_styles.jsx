@@ -918,7 +918,7 @@ export const PopLogisItem = styled.div`
     background: #ffffff;
     z-index: 10;
     &.selected {
-      background-color: #03a9f4;
+      background-color: #bdced6;
     }
   }
   & div.linebox {
@@ -928,7 +928,7 @@ export const PopLogisItem = styled.div`
   & div.line {
     position: absolute;
     width: 2px;
-    height: 80px;
+    height: 100px;
     background: #03a9f4;
     left: -27px;
     top: 18px;
@@ -3430,8 +3430,10 @@ export const CanvasPopup = styled.div`
   border: 1px solid rgb(204, 204, 204);
   box-sizing: border-box;
   width: 260px;
-  top: ${(props) => props.objy - 190 + "px"};
-  left: ${(props) => props.objx + 425 + "px"};
+  /* top: ${(props) => props.objy - 190 + "px"};
+  left: ${(props) => props.objx + 425 + "px"}; */
+  left: 140px;
+  top: 50px;
   z-index: 999;
 
   & div.line {

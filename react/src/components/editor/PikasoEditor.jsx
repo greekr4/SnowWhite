@@ -40,10 +40,10 @@ const PikasoEditor = forwardRef(
       editor?.snapGrid.setOffset(10); // default is
 
       // 배경 설정
-      editor?.board.background.setImageFromUrl(
-        "/asserts/editor/backgorund1.png"
-      );
-      editor?.loadFromUrl("/asserts/editor/background1.png");
+
+      const imageUrl = "/asserts/editor/900_500.png";
+      editor?.board.background.setImageFromUrl(imageUrl);
+      editor?.loadFromUrl(imageUrl);
 
       functions.createBackgorund("#fff");
 
@@ -77,6 +77,12 @@ const PikasoEditor = forwardRef(
         ["selection:change", "selection:dragend", "selection:transformend"],
         (data) => {
           // 선택 예외 추가
+          console.log(data);
+
+          if (data.shapes.length === 0) {
+            setIsPopVisible(false);
+          }
+
           editor?.board.selection.list.forEach((obj) => {
             if (
               obj.node.attrs.name === "guide" ||
@@ -84,25 +90,11 @@ const PikasoEditor = forwardRef(
             ) {
               obj.deselect();
             } else {
-              console.log(data);
-              console.log(obj);
-              console.log(editor.selection);
-              console.log(editor.selection.transformer);
             }
-
-            console.log(editor?.selection.transformer.attrs);
-
-            console.log(data);
-            console.log("노드임");
-
             setPopUpdate((popUpdate) => popUpdate + 1);
-            console.log("popup");
-            console.log(popUpdate);
-            console.log("popup");
+
             setObjSelection(editor?.selection);
-            console.log("셀ㄹ레겻ㄴ임");
-            console.log(editor?.selection);
-            console.log("셀ㄹ레겻ㄴ임");
+
             if (editor?.selection.list.length > 0) {
               if (editor?.selection.list[0].type === "label") {
                 setObjx(editor?.selection.transformer.getX());
@@ -213,7 +205,6 @@ const PikasoEditor = forwardRef(
         });
       },
       createBackgorund: (color) => {
-        console.log(editor?.board.shapes.node);
         editor?.board.shapes.forEach((obj) => {
           if (obj.node.attrs.name === "bgc") {
             console.log(obj);
@@ -325,10 +316,6 @@ const PikasoEditor = forwardRef(
         });
         console.log(
           editor.export.toImage({
-            x: 0,
-            y: 0,
-            width: 255,
-            height: 142,
             mimeType: "pdf",
             callback: () => {
               alert("d");

@@ -122,8 +122,8 @@ const Footer2 = ({ openPopup2 }) => {
             {/* 통신판매신고 2024-경기고양-0000 */}
           </S.FooterAboutText>
           <S.FooterAboutText>
-            개인정보보호책임자 : 김태균 | 경기도 고양시 일산동구 장대길 42-17
-            (스노우화이트)
+            개인정보보호책임자 : 김태균 | 경기도 고양시 일산동구 장대길 42-13
+            (장항동)
             {/* 고객만족센터 1588-0000 */}
           </S.FooterAboutText>
           <S.FooterAboutText>

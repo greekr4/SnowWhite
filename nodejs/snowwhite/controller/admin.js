@@ -642,7 +642,7 @@ order by ORDER_DATE desc
 };
 
 exports.update_order_status = async (req, res) => {
-  const { field, order_sid, order_status } = req.body;
+  const { field, order_sid, order_status, logis_nm, logis_no } = req.body;
 
   const fields = [];
 
@@ -652,6 +652,14 @@ exports.update_order_status = async (req, res) => {
 
   if (order_status === 2) {
     fields.push(` ORDER_PAYMENT_DATE = NOW()\r\n `);
+  }
+
+  if (logis_no !== undefined) {
+    fields.push(` ORDER_LOGIS_NO = '${logis_no}'\r\n `);
+  }
+
+  if (logis_nm !== undefined) {
+    fields.push(` ORDER_LOGIS_NM = '${logis_nm}'\r\n `);
   }
 
   const qry = `

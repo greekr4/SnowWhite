@@ -390,7 +390,7 @@ export const tem1_1 = {
         },
         {
           attrs: {
-            text: "A 경기도 고양시 일산동구 장대길 42-17",
+            text: "A 경기도 고양시 일산동구 장대길 42-13 (장항동)",
             fill: "#000",
             fontSize: "32",
             fontFamily: "고딕",

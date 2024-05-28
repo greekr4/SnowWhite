@@ -16,7 +16,7 @@ const IntroPage0 = () => {
             <h1>스노우플래닛</h1>
             <div className="sub">
               <h2>주소</h2>
-              <p>경기도 고양시 일산동구 장대길 42-17</p>
+              <p>경기도 고양시 일산동구 장대길 42-13 (장항동)</p>
             </div>
             <div className="sub">
               <h2>연락처</h2>

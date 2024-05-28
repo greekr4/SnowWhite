@@ -10,9 +10,10 @@ const LogisItem = ({ data, index, lastindex }) => {
       <div className={`circle ${index === 0 ? "selected" : ""}`} />
       {index != lastindex - 1 && (
         <div className="linebox">
-          <div className="line"></div>
+          <div className="line" />
         </div>
       )}
+
       <div className="info">
         {" "}
         <span className="location">
