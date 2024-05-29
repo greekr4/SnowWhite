@@ -124,6 +124,7 @@ const {
 } = require("./snowwhite/controller/board");
 const { tosspayConfirm } = require("./snowwhite/controller/tosspay");
 const { paperExcelUpload } = require("./snowwhite/controller/excel");
+const { calcPrice } = require("./snowwhite/controller/price");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -338,6 +339,8 @@ app.post("/api/paper_excel", auth, paperExcelUpload);
 app.post("/api/admin/prod_option", auth, insert_products_option);
 
 app.post("/api/admin/prod_paper", auth, insert_products_paper);
+
+app.get("/api/calc_price", calcPrice);
 
 //app.put("/api/admin/product_global", auth);
 

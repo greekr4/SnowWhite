@@ -76,6 +76,14 @@ function App({ queryClient }) {
     setIsPopupOpen2(false);
   };
 
+  // 배포 환경에서 console.log, console.warn 지우기
+  if (process.env.NODE_ENV === "production") {
+    console = window.console || {};
+    console.log = function no_console() {};
+    console.warn = function no_console() {};
+    console.error = function () {};
+  }
+
   return (
     <>
       <BrowserRouter>

@@ -138,24 +138,24 @@ const OptionToggle = ({
   // 표지 용지 타입
   const [coverPaper, setCoverPaper] = useState("regularPaper");
   // 표지 용지 상세
-  const [coverPaperDetail, setCoverPaperDetail] = useState("백색모조");
+  const [coverPaperDetail, setCoverPaperDetail] = useState("백상지");
   // 표지 용지 무게
   const [coverPaperWeight, setCoverPaperWeight] = useState(180);
   // 표지 양 단면
-  const [coverPage, setCoverPage] = useState("doubleSide");
+  const [coverSide, setCoverSide] = useState("double");
   // 규격
   const [paperSize, setPaperSize] = useState("A4");
   // 내지 용지
   const [innerPaper, setInnerPaper] = useState("regularPaper");
   // 내지 용지 상세
-  const [innerPaperDetail, setInnerPaperDetail] = useState("백색모조");
+  const [innerPaperDetail, setInnerPaperDetail] = useState("백상지");
 
   // 내지 용지 무게
-  const [innerPaperWeight, setInnerPaperWeight] = useState(80);
+  const [innerPaperWeight, setInnerPaperWeight] = useState(100);
   // 내지 컬러
   const [innerColor, setInnerColor] = useState("양면8도컬러");
   // 내지 양 단면
-  const [innerSide, setInnerSide] = useState("doubleSide");
+  const [innerSide, setInnerSide] = useState("double");
   // 내지 페이지수
   const [innerPage, setInnerPage] = useState(20);
   // 제본
@@ -176,13 +176,13 @@ const OptionToggle = ({
       PROD_NM === "스프링노트" ? "springBinding" : "ironBinding";
 
     const settingCoverPaperDetail =
-      PROD_NM === "브로슈어" ? "스노우화이트" : "백색모조";
+      PROD_NM === "브로슈어" ? "스노우화이트" : "백상지";
 
     const settingCoverPaperWeight = PROD_NM === "브로슈어" ? 200 : 180;
 
     const settingInnerPaperDetail =
-      PROD_NM === "브로슈어" ? "스노우화이트" : "백색모조";
-    const settingInnerPaperWeight = PROD_NM === "브로슈어" ? 150 : 80;
+      PROD_NM === "브로슈어" ? "스노우화이트" : "백상지";
+    const settingInnerPaperWeight = PROD_NM === "브로슈어" ? 150 : 100;
     const settingInnerPage = PROD_NM === "브로슈어" ? 12 : 40;
     setBindingType(settingBindingType);
 
@@ -195,30 +195,28 @@ const OptionToggle = ({
 
   // 책자 커버 평량
   const bookletCoverWeights = {
-    백색모조: [180, 220, 260],
-    스노우화이트: [180, 200, 250],
-    아트: [180, 200, 250],
-    아르떼: [160, 190, 210, 240],
-    랑데부: [160, 190, 210, 240],
-    몽블랑: [160, 190, 210, 240],
+    백상지: [180, 220, 260],
+    스노우화이트: [180, 200, 250, 300],
+    아트: [180, 200, 250, 300],
+    아르떼: [190, 210, 240],
+    랑데부: [190, 210, 240],
+    몽블랑: [190, 210, 240],
   };
 
   // 책자 내지 평량
   const bookletInnerWeights = {
-    백색모조: [80, 100, 120, 150],
-    미색모조: [80, 100, 120],
-    스노우화이트: [80, 100, 120, 150],
-    아트: [80, 100, 120, 150],
-    아르떼: [105, 130, 160, 190, 210],
-    랑데부: [105, 130, 160, 190, 210],
-    몽블랑: [105, 130, 160, 190, 210],
+    백상지: [100, 120, 150, 180, 220, 260],
+    스노우화이트: [100, 120, 150, 180, 200, 250, 300],
+    아트: [100, 120, 150, 180, 200, 250, 300],
+    아르떼: [105, 130, 160, 190, 210, 240],
+    랑데부: [105, 130, 160, 190, 210, 240],
+    몽블랑: [105, 130, 160, 190, 210, 240],
   };
 
   const flyerLeafletPaperWeights = {
-    백색모조: [100, 120, 150, 180, 220, 260],
-    미색모조: [100, 120],
-    스노우화이트: [100, 120, 150, 180, 200, 250],
-    아트: [100, 120, 150, 180, 200, 250],
+    백상지: [100, 120, 150, 180, 220, 260],
+    스노우화이트: [100, 120, 150, 180, 200, 250, 300],
+    아트: [100, 120, 150, 180, 200, 250, 300],
     아르떼: [105, 130, 160, 190, 210, 240],
     랑데부: [105, 130, 160, 190, 210, 240],
     몽블랑: [105, 130, 160, 190, 210, 240],
@@ -448,7 +446,7 @@ const OptionToggle = ({
    */
 
   const [flyerLeafletStandard, setFlyerLeafletStandard] = useState("420*297");
-  const [flyerLeafletPaper, setFlyerLeafletPaper] = useState("백색모조");
+  const [flyerLeafletPaper, setFlyerLeafletPaper] = useState("백상지");
   const [flyerLeafletWeights, setFlyerLeafletWeights] = useState(100);
   const [flyerLeafletSide, setFlyerLeafletSide] = useState("양면");
   const [flyerLeafletCoating, setFlyerLeafletCoating] = useState("선택안함");
@@ -580,7 +578,7 @@ const OptionToggle = ({
     copy.coverPaper = coverPaper;
     copy.coverPaperDetail = coverPaperDetail;
     copy.coverPaperWeight = coverPaperWeight;
-    copy.coverPage = coverPage;
+    copy.coverSide = coverSide;
     copy.paperSize = paperSize;
     copy.innerPaper = innerPaper;
     copy.innerPaperDetail = innerPaperDetail;
@@ -599,7 +597,7 @@ const OptionToggle = ({
     updateOptionAmt();
   }, [
     coverPaper,
-    coverPage,
+    coverSide,
     paperSize,
     innerPaper,
     innerColor,
@@ -1106,7 +1104,7 @@ const OptionToggle = ({
                   }}
                   fullWidth
                 >
-                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
+                  <MenuItem value={"백상지"}>백상지</MenuItem>
                   <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
                   <MenuItem value={"아트"}>아트</MenuItem>
                   <MenuItem value={"아르떼"}>아르떼</MenuItem>
@@ -1142,17 +1140,17 @@ const OptionToggle = ({
               <S.OptionBtns>
                 <ToggleButtonGroup
                   color="primary"
-                  value={coverPage}
+                  value={coverSide}
                   exclusive
                   onChange={(e) => {
-                    setCoverPage(e.target.value);
+                    setCoverSide(e.target.value);
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"doubleSide"}>양면</ToggleButton>
-                  <ToggleButton value={"singleSide"}>단면</ToggleButton>
+                  <ToggleButton value={"double"}>양면</ToggleButton>
+                  <ToggleButton value={"single"}>단면</ToggleButton>
                 </ToggleButtonGroup>
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
@@ -1232,8 +1230,7 @@ const OptionToggle = ({
                   }}
                   fullWidth
                 >
-                  <MenuItem value={"백색모조"}>백색모조</MenuItem>
-                  <MenuItem value={"미색모조"}>미색모조</MenuItem>
+                  <MenuItem value={"백상지"}>백상지</MenuItem>
                   <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
                   <MenuItem value={"아트"}>아트</MenuItem>
                   <MenuItem value={"아르떼"}>아르떼</MenuItem>
@@ -1277,8 +1274,8 @@ const OptionToggle = ({
                   style={{ width: "100%" }}
                   className="group"
                 >
-                  <ToggleButton value={"doubleSide"}>양면</ToggleButton>
-                  <ToggleButton value={"singleSide"}>단면</ToggleButton>
+                  <ToggleButton value={"double"}>양면</ToggleButton>
+                  <ToggleButton value={"single"}>단면</ToggleButton>
                 </ToggleButtonGroup>
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
