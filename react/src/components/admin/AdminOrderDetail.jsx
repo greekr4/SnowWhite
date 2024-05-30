@@ -1,62 +1,57 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as S from "../../styles/new_styles";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import axios from "axios";
-import { formatDate, formatTime } from "../../hooks/Utill";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { formatDateAndTime, formatNumber } from "../../hooks/Utill";
+import { Padding } from "@mui/icons-material";
 
-const AdminOrderDetail = ({ orderData }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
+const AdminOrderDetail = () => {
+  const { order_sid } = useParams();
 
-  const [selectedItem, setSelectedItem] = useState([]);
-  const allCheckbox = useRef(null);
-
-  useEffect(() => {
-    initdb();
-  }, [orderData]);
-
-  useEffect(() => {
-    const initSelectedItem = Array.from({ length: items?.length }, () => false);
-    console.log(initSelectedItem);
-    setSelectedItem(initSelectedItem);
-  }, [items]);
+  const [orderData, setOrderData] = useState();
+  const [customProdData, setCustomProdData] = useState();
 
   const initdb = async () => {
-    getItem();
-    allCheckbox.current.checked = false;
-  };
-
-  const getItem = async () => {
-    const item_sids = [];
-    orderData?.ITEM_SIDS.split(",").map((orderData) =>
-      item_sids.push(orderData)
+    const res_order = await axios.get(
+      process.env.REACT_APP_DB_HOST + "/api/order_detail",
+      {
+        params: {
+          order_sid: order_sid,
+        },
+      }
     );
-    setIsLoading(true);
-    const res = await axios.post(
-      process.env.REACT_APP_DB_HOST + "api/orderlist/item",
+    const item_sids = res_order.data.ITEM_SIDS.split(",");
+    console.log(res_order.data.ITEM_SIDS.split(","));
+
+    const res_custom_prod = await axios.post(
+      process.env.REACT_APP_DB_HOST + "/api/orderlist/item",
       {
         item_sids: item_sids,
       }
     );
-    setItems(res.data);
-    console.log(res);
-    setIsLoading(false);
+
+    setCustomProdData(res_custom_prod.data);
+    setOrderData(res_order.data);
   };
 
-  const renderItemStatus = (status) => {
-    switch (status) {
-      case 1:
-        return "미처리";
-      case 2:
-        return "준비중";
-      case 3:
-        return "준비완료";
-      case 4:
-        return "";
+  useEffect(() => {
+    initdb();
+  }, []);
 
-      default:
-        return "??";
-    }
-  };
+  const HeadCell = styled(TableCell)`
+    font-weight: 550;
+  `;
 
   const renderOrderStatus = (status) => {
     switch (status) {
@@ -70,218 +65,179 @@ const AdminOrderDetail = ({ orderData }) => {
         return "배송 중";
       case 5:
         return "배송 완료";
+      case 9:
+        return "취소";
       default:
-        return "error";
+        return "Code error";
     }
-  };
-
-  const updateStatus = async (value) => {
-    const result = window.confirm("변경 하시겠습니까?");
-    if (!result) {
-      return false;
-    }
-
-    const item_sids = [];
-
-    console.log(items);
-    console.log(selectedItem);
-    selectedItem.map((el, index) => {
-      if (el) {
-        item_sids.push(items[index].ITEM_SID);
-      }
-    });
-
-    console.log(item_sids);
-
-    const res = await axios.put(
-      process.env.REACT_APP_DB_HOST + "/api/admin/custom_item",
-      {
-        item_sid: item_sids,
-        field: "ITEM_STATUS",
-        item_status: value,
-      }
-    );
-
-    initdb();
-    allCheckbox.current.checked = false;
   };
 
   return (
-    <S.MainLayout>
-      <S.AdminWrapper>
-        주문 정보
-        <S.AdminTable>
-          <thead>
-            <tr>
-              <th style={{ width: "5%" }}></th>
-              <th style={{ width: "10%" }}>주문일 (결제일)</th>
-              <th style={{ width: "10%" }}>주문번호</th>
-              <th style={{ width: "10%" }}>주문자</th>
-              <th style={{ width: "15%" }}>상품명</th>
-              <th style={{ width: "10%" }}>결제금액</th>
-              <th style={{ width: "5%" }}>결제수단</th>
-              <th style={{ width: "7%" }}>결제상태</th>
-              <th style={{ width: "10%" }}>택배사</th>
-              <th style={{ width: "10%" }}>요청사항</th>
-              <th style={{ width: "10%" }}>비고</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style={{ height: "100px" }}>
-              <th></th>
-              <th>
-                <p>{formatDate(orderData.ORDER_DATE)}</p>
-                <p>{formatTime(orderData.ORDER_DATE)}</p>
-                <p>------</p>
-                <p>{formatDate(orderData.ORDER_PAYMENT_DATE)}</p>
-                <p>{formatTime(orderData.ORDER_PAYMENT_DATE)}</p>
-              </th>
-              <th>{orderData.ORDER_SID}</th>
-              <th>
-                <p>
-                  {orderData.USER_ID} ({orderData.ORDER_NM})
-                </p>
-                <p>{orderData.ORDER_TEL}</p>
-              </th>
-              <th>
-                <p>{orderData.ORDER_CORE_PROD}</p>
-                {orderData.ITEM_SIDS.split(",").length - 1 > 0 ? (
-                  <p
-                    style={{
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      fontSize: "0.8em",
-                      paddingTop: "0.5em",
-                    }}
-                    // onClick={() => {
-                    //   openPopup("orderDetail", { ITEMS: orderData.ITEM_SIDS });
-                    // }}
-                  >
-                    외 {orderData.ITEM_SIDS.split(",").length - 1}건
-                  </p>
-                ) : null}
-              </th>
-              <th>{orderData.ORDER_AMOUNT.toLocaleString("ko-kr")}</th>
-              <th>{orderData.ORDER_PAYMENT_TYPE}</th>
-              <th>{renderOrderStatus(orderData.ORDER_STATUS)}</th>
-              <th>
-                <p>{orderData.ORDER_LOGIS_NM}</p>
-                <p>{orderData.ORDER_LOGIS_NO}</p>
-              </th>
-              <th>{orderData.ORDER_REQ}</th>
-              <th></th>
-            </tr>
-          </tbody>
-        </S.AdminTable>
-        주문 상품
-        <div>
-          <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(1)}>
-            미처리
-          </S.Btn>
-          <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(2)}>
-            준비중 처리
-          </S.Btn>
-          <S.Btn margin="0 0.5em 0.5em 0" onClick={() => updateStatus(3)}>
-            준비완료 처리
-          </S.Btn>
-        </div>
-        <S.AdminTable>
-          <thead>
-            <tr>
-              <th style={{ width: "5%" }}>
-                <input
-                  type="checkbox"
-                  ref={allCheckbox}
-                  onChange={(e) => {
-                    const updated = [...selectedItem];
-                    updated.map((el, index) => {
-                      el = updated[index] = e.target.checked;
-                    });
-                    setSelectedItem(updated);
-                  }}
-                />
-              </th>
-              <th style={{ width: "10%" }}>주문상품</th>
-              <th style={{ width: "36%" }}>옵션</th>
-              <th style={{ width: "8" }}>직접 디자인</th>
-              <th style={{ width: "8%" }}>디자인 파일</th>
-              <th style={{ width: "8%" }}>수량</th>
-              <th style={{ width: "8%" }}>상품금액</th>
-              <th style={{ width: "8%" }}>할인금액</th>
-              <th style={{ width: "7%" }}>상태</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr style={{ height: "50px" }}>
-                <th colSpan={"100%"}>Loading...</th>
-              </tr>
-            ) : (
-              items.map((orderData, index) => (
-                <tr style={{ height: "50px" }}>
-                  <th>
-                    <input
-                      type="checkbox"
-                      onChange={() => {
-                        const updated = [...selectedItem];
-                        updated[index] = !updated[index];
-                        setSelectedItem(updated);
-                        console.log(updated);
-                      }}
-                      checked={selectedItem[index]}
-                    />
-                  </th>
-                  <th>{orderData.PROD_NM}</th>
-                  <th>{orderData.ITEM_OPTION}</th>
-                  <th></th>
-                  <th>
-                    {orderData.ITEM_FILE_LOCATION && (
-                      <S.Btn
-                        onClick={() => {
-                          window.open(orderData.ITEM_FILE_LOCATION);
-                        }}
-                      >
-                        보기
-                      </S.Btn>
-                    )}
-                  </th>
-                  <th>{orderData.ITEM_QUANTITY.toLocaleString("ko-kr")}</th>
-                  <th>{orderData.ITEM_AMOUNT.toLocaleString("ko-kr")}</th>
-                  <th>{0}</th>
-                  <th>{renderItemStatus(orderData.ITEM_STATUS)}</th>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </S.AdminTable>
-        배송지 정보
-        <S.AdminTable>
-          <thead>
-            <tr>
-              <th style={{ width: "30%" }}>배송지 주소</th>
-              <th style={{ width: "15%" }}>나머지 주소</th>
-              <th style={{ width: "10%" }}>우편번호</th>
-              <th style={{ width: "15%" }}>받는 분</th>
-              <th style={{ width: "15%" }}>요청사항</th>
-              <th style={{ width: "15%" }}>송장번호</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style={{ height: "50px" }}>
-              <th>{orderData.ORDER_ADDRESS}</th>
-              <th>{orderData.ORDER_ADD_ADDRESS}</th>
-              <th>{orderData.ORDER_POSTCODE}</th>
-              <th>
-                <p>{orderData.ORDER_REC}</p>
-                <p>{orderData.ORDER_TEL}</p>
-              </th>
-              <th>{orderData.ORDER_REQ}</th>
-              <th>{orderData.ORDER_INVOICE}</th>
-            </tr>
-          </tbody>
-        </S.AdminTable>
-      </S.AdminWrapper>
-    </S.MainLayout>
+    <>
+      {orderData !== undefined && customProdData !== undefined ? (
+        <>
+          <Box
+            sx={{
+              textAlign: "center",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              padding: "24px",
+              fontSize: "24px",
+            }}
+          >
+            주문 상세
+          </Box>
+          <Box sx={{}}>
+            <TableContainer>
+              <Table>
+                <TableHead sx={{ backgroundColor: "#fafafa" }}>
+                  <TableRow>
+                    <HeadCell>주문일</HeadCell>
+                    <HeadCell>결제일</HeadCell>
+                    <HeadCell>주문번호</HeadCell>
+                    <HeadCell>주문자</HeadCell>
+                    <HeadCell>상품명</HeadCell>
+                    <HeadCell>결제금액</HeadCell>
+                    <HeadCell>결제수단</HeadCell>
+                    <HeadCell>결제상태</HeadCell>
+                    <HeadCell>택배사</HeadCell>
+                    <HeadCell>요청사항</HeadCell>
+                    <HeadCell>비고</HeadCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      {formatDateAndTime(orderData?.ORDER_DATE)}
+                    </TableCell>
+                    <TableCell>
+                      {formatDateAndTime(orderData?.ORDER_PAYMENT_DATE)}
+                    </TableCell>
+                    <TableCell>{orderData?.ORDER_SID}</TableCell>
+                    <TableCell>{orderData?.ORDER_NM}</TableCell>
+                    <TableCell>
+                      {orderData?.ORDER_CORE_PROD}{" "}
+                      {customProdData?.length > 1
+                        ? `외 ${customProdData?.length - 1}건`
+                        : ""}
+                    </TableCell>
+                    <TableCell>
+                      {formatNumber(orderData?.ORDER_AMOUNT)}
+                    </TableCell>
+                    <TableCell>
+                      {orderData?.ORDER_PAYMENT_TYPE === "pm1"
+                        ? "일반 결제"
+                        : orderData?.ORDER_PAYMENT_TYPE === "pm2"
+                        ? "무통장 결제"
+                        : "?"}
+                    </TableCell>
+                    <TableCell>
+                      {renderOrderStatus(orderData?.ORDER_STATUS)}
+                    </TableCell>
+                    <TableCell>
+                      <p>{orderData?.ORDER_LOGIS_NM}</p>
+                      <p>{orderData?.ORDER_LOGIS_NO}</p>
+                    </TableCell>
+                    <TableCell>{orderData?.ORDER_REQ}</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box
+            sx={{
+              textAlign: "center",
+              backgroundColor: "#fff",
+              color: "#333",
+              padding: "24px",
+              fontSize: "24px",
+            }}
+          >
+            상품 상세
+          </Box>
+          <Box sx={{}}>
+            <TableContainer>
+              <Table>
+                <TableHead sx={{ backgroundColor: "#fafafa" }}>
+                  <TableRow>
+                    <HeadCell>주문상품</HeadCell>
+                    <HeadCell>옵션</HeadCell>
+                    <HeadCell>디자인</HeadCell>
+                    <HeadCell>수량</HeadCell>
+                    <HeadCell>금액</HeadCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {customProdData?.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.PROD_NM}</TableCell>
+                      <TableCell>{item.ITEM_OPTION}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            window.open(item.ITEM_FILE_LOCATION);
+                          }}
+                        >
+                          시안 확인
+                        </Button>
+                      </TableCell>
+                      <TableCell>{formatNumber(item.ITEM_QUANTITY)}</TableCell>
+                      <TableCell>{formatNumber(item.ITEM_AMOUNT)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box
+            sx={{
+              textAlign: "center",
+              backgroundColor: "#fff",
+              color: "#333",
+              padding: "24px",
+              fontSize: "24px",
+            }}
+          >
+            배송지 상세
+          </Box>
+          <Box sx={{}}>
+            <TableContainer>
+              <Table>
+                <TableHead sx={{ backgroundColor: "#fafafa" }}>
+                  <TableRow>
+                    <HeadCell>배송지 주소</HeadCell>
+                    <HeadCell>받는분</HeadCell>
+                    <HeadCell>받는분 전화번호</HeadCell>
+                    <HeadCell>요청사항</HeadCell>
+                    <HeadCell>택배사</HeadCell>
+                    <HeadCell>송장번호</HeadCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      {orderData?.ORDER_ADDRESS} {orderData?.ORDER_ADD_ADDRESS}{" "}
+                      ({orderData?.ORDER_POSTCODE})
+                    </TableCell>
+                    <TableCell>{orderData?.ORDER_REC}</TableCell>
+                    <TableCell>{orderData?.REC_TEL}</TableCell>
+                    <TableCell>{orderData?.ORDER_REQ}</TableCell>
+                    <TableCell>{orderData?.ORDER_LOGIS_NM}</TableCell>
+                    <TableCell>{orderData?.ORDER_LOGIS_NO}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </>
+      ) : (
+        <>
+          <CircularProgress />
+        </>
+      )}
+    </>
   );
 };
 

@@ -104,6 +104,7 @@ const {
   insert_products_option,
   insert_products_paper,
   update_products_show,
+  select_order_detail,
 } = require("./snowwhite/controller/admin");
 const {
   upload,
@@ -122,7 +123,11 @@ const {
   select_comment,
   insert_comment,
 } = require("./snowwhite/controller/board");
-const { tosspayConfirm } = require("./snowwhite/controller/tosspay");
+const {
+  tosspayConfirm,
+  tosspayConfirm_real,
+  tosspayConfirm_live,
+} = require("./snowwhite/controller/tosspay");
 const { paperExcelUpload } = require("./snowwhite/controller/excel");
 const { calcPrice } = require("./snowwhite/controller/price");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
@@ -293,6 +298,7 @@ app.post("/api/comment", auth, insert_comment);
 // 토스페이
 
 app.post("/api/tosspay/confirm", tosspayConfirm);
+app.post("/api/tosspay/confirm_live", tosspayConfirm_live);
 
 //mypage
 
@@ -341,6 +347,9 @@ app.post("/api/admin/prod_option", auth, insert_products_option);
 app.post("/api/admin/prod_paper", auth, insert_products_paper);
 
 app.get("/api/calc_price", calcPrice);
+
+// 주문 상세
+app.get("/api/order_detail", auth, select_order_detail);
 
 //app.put("/api/admin/product_global", auth);
 

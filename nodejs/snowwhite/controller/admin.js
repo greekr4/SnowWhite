@@ -1220,3 +1220,20 @@ set
   ${FILED}
   `;
 };
+
+exports.select_order_detail = async (req, res) => {
+  const { order_sid } = req.query;
+
+  const qry = `
+select
+	*
+from
+	TB_ORDER
+where
+	ORDER_SID = '${order_sid}'
+`;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(402).send("DB Error.");
+  return res.status(200).send(res_data.row[0]);
+};

@@ -165,6 +165,8 @@ const OptionToggle = ({
   const [coverCoating, setCoverCoating] = useState("선택안함");
   // 금박
   const [bookletGoldFoil, setbookletGoldFoil] = useState("none");
+  const [bookletGoldFoilDetail, setbookletGoldFoilDetail] =
+    useState("유광금박");
   // 형압
   const [bookletEmbossing, setBookletEmbossing] = useState("none");
   // 부분코팅
@@ -276,6 +278,10 @@ const OptionToggle = ({
   // X배너 소재
   const [xBannerMaterial, setXBannerMaterial] = useState("무광PET");
 
+  // X배너 열재단ㄷ
+  const [xBannerThermalCutting, setXBannerThermalCutting] =
+    useState("사방여백");
+
   // X배너 후가공
   const [xBannerFinishing, setXBannerFinishing] = useState("선택안함");
 
@@ -326,7 +332,10 @@ const OptionToggle = ({
     const standPrice = findedPrice_stand.price * xBannerQty;
 
     const gPrice = unitPrice * xBannerQty;
-    const gOption = XBanner_price[xBannerFinishing] * xBannerQty + standPrice;
+    const gOption =
+      (XBanner_price[xBannerFinishing] + XBanner_price[xBannerThermalCutting]) *
+        xBannerQty +
+      standPrice;
     const gTax = Math.round(((gPrice + gOption) * 0.1) / 10) * 10;
 
     setGlobalAmt(gPrice);
@@ -341,6 +350,7 @@ const OptionToggle = ({
     xBannerQty,
     xBanneSqm,
     xBannerStand,
+    xBannerThermalCutting,
   ]);
 
   /**
@@ -360,6 +370,9 @@ const OptionToggle = ({
 
   //배너 소재
   const [bannerMaterial, setBannerMaterial] = useState("일반현수막");
+
+  //배너 열재단
+  const [bannerThermalCutting, setBannerThermalCutting] = useState("사방여백");
 
   // 배너 후가공
   const [bannerFinishing, setBannerFinishing] = useState("선택안함");
@@ -392,7 +405,9 @@ const OptionToggle = ({
     console.log(`단위가격 ${unitPrice}`);
 
     const gPrice = unitPrice * bannerQty;
-    const gOption = Banner_price[bannerFinishing] * bannerQty;
+    const gOption =
+      (Banner_price[bannerFinishing] + Banner_price[bannerThermalCutting]) *
+      bannerQty;
     const gTax = Math.round(((gPrice + gOption) * 0.1) / 10) * 10;
     setGlobalAmt(gPrice);
     setGlobalOptionAmt(gOption);
@@ -404,6 +419,7 @@ const OptionToggle = ({
       세로: bannerHeight + "mm",
       소재: bannerMaterial,
       후가공: bannerFinishing,
+      열재단: bannerThermalCutting,
     };
 
     setSelOption(copy);
@@ -414,6 +430,7 @@ const OptionToggle = ({
     bannerFinishing,
     bannerSqm,
     bannerQty,
+    bannerThermalCutting,
   ]);
 
   /**
@@ -589,6 +606,7 @@ const OptionToggle = ({
     copy.bindingType = bindingType;
     copy.coverCoating = coverCoating;
     copy.bookletGoldFoil = bookletGoldFoil;
+    copy.bookletGoldFoilDetail = bookletGoldFoilDetail;
     copy.bookletEmbossing = bookletEmbossing;
     copy.bookletSpotCoatting = bookletSpotCoatting;
 
@@ -612,6 +630,7 @@ const OptionToggle = ({
     bookletSpotCoatting,
     coverPaperWeight,
     innerPaperWeight,
+    bookletGoldFoilDetail,
   ]);
 
   //X배너
@@ -624,6 +643,7 @@ const OptionToggle = ({
       소재: xBannerMaterial,
       후가공: xBannerFinishing,
       거치대: xBannerStand,
+      열재단: xBannerThermalCutting,
     };
 
     setSelOption(copy);
@@ -636,6 +656,7 @@ const OptionToggle = ({
     xBannerQty,
     xBanneSqm,
     xBannerStand,
+    xBannerThermalCutting,
   ]);
 
   return (
@@ -1354,6 +1375,7 @@ const OptionToggle = ({
                   exclusive
                   onChange={(e) => {
                     setbookletGoldFoil(e.target.value);
+                    setbookletGoldFoilDetail("유광금박");
                   }}
                   aria-label="Platform"
                   style={{ width: "100%" }}
@@ -1365,6 +1387,25 @@ const OptionToggle = ({
               </S.OptionBtns>
             </S.Product_Detail_Option_ItemBox>
           </Box>
+          {bookletGoldFoil === "goldfoil" && (
+            <Box sx={{ marginTop: "20px", width: "48%" }}>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={bookletGoldFoilDetail}
+                onChange={(e) => {
+                  setbookletGoldFoilDetail(e.target.value);
+                }}
+                fullWidth
+              >
+                <MenuItem value={"유광금박"}>유광금박</MenuItem>
+                <MenuItem value={"무광금박"}>무광금박</MenuItem>
+                <MenuItem value={"유광은박"}>유광은박</MenuItem>
+                <MenuItem value={"무광은박"}>무광은박</MenuItem>
+              </Select>
+            </Box>
+          )}
+
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.OptionBtns>
@@ -1517,6 +1558,29 @@ const OptionToggle = ({
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
+                열재단
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={xBannerThermalCutting}
+                  exclusive
+                  onChange={(e) => {
+                    setXBannerThermalCutting(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"여백없음"}>여백없음</ToggleButton>
+                  <ToggleButton value={"사방여백"}>사방여백</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
                 후가공
               </S.Product_Detail_Option_ItemText>
               <S.OptionBtns2>
@@ -1538,6 +1602,7 @@ const OptionToggle = ({
               </S.OptionBtns2>
             </S.Product_Detail_Option_ItemBox>
           </Box>
+
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
@@ -1679,6 +1744,31 @@ const OptionToggle = ({
               </Box>
             </S.Product_Detail_Option_SelectBox>
           </Box>
+
+          <Box sx={{}}>
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                열재단
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={bannerThermalCutting}
+                  exclusive
+                  onChange={(e) => {
+                    setBannerThermalCutting(e.target.value);
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"여백없음"}>여백없음</ToggleButton>
+                  <ToggleButton value={"사방여백"}>사방여백</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+          </Box>
+
           <Box sx={{}}>
             <S.Product_Detail_Option_ItemBox>
               <S.Product_Detail_Option_ItemText>
@@ -2102,67 +2192,6 @@ const OptionToggle = ({
           <Box
             sx={{
               marginBottom: "20px",
-              // paddingBottom: "20px",
-              // borderBottom: "1px solid #ddd",
-            }}
-          >
-            <S.Product_Detail_Option_ItemBox>
-              <S.Product_Detail_Option_ItemText>
-                접지
-              </S.Product_Detail_Option_ItemText>
-              <S.OptionBtns2>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={flyerLeafletGrounding}
-                  exclusive
-                  onChange={(e) => {
-                    setFlyerLeafletGrounding(e.target.value);
-                    if (e.target.value === "접지") {
-                      setFlyerLeafletGroundingDetail("2단접지");
-                    }
-                  }}
-                  aria-label="Platform"
-                  style={{ width: "100%" }}
-                  className="group"
-                >
-                  <ToggleButton value={"접지"}>접지</ToggleButton>
-                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
-                </ToggleButtonGroup>
-              </S.OptionBtns2>
-            </S.Product_Detail_Option_ItemBox>
-
-            {flyerLeafletGrounding === "접지" && (
-              <Box sx={{}}>
-                <S.Product_Detail_Option_SelectBox>
-                  <Box sx={{ width: "48%" }}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={flyerLeafletGroundingDetail}
-                      onChange={(e) => {
-                        setFlyerLeafletGroundingDetail(e.target.value);
-                      }}
-                      fullWidth
-                    >
-                      <MenuItem value={"2단접지"}>2단접지</MenuItem>
-                      <MenuItem value={"3단접지"}>3단접지</MenuItem>
-                      <MenuItem value={"3단N접지"}>3단N접지</MenuItem>
-                      <MenuItem value={"두루마리접지"}>두루마리접지</MenuItem>
-                      <MenuItem value={"대문접지"}>대문접지</MenuItem>
-                      <MenuItem value={"십자접지"}>십자접지</MenuItem>
-                      <MenuItem value={"병풍4단접지"}>병풍4단접지</MenuItem>
-                      <MenuItem value={"병풍5단접지"}>병풍5단접지</MenuItem>
-                      <MenuItem value={"병풍6단접지"}>병풍6단접지</MenuItem>
-                    </Select>
-                  </Box>
-                </S.Product_Detail_Option_SelectBox>
-              </Box>
-            )}
-          </Box>
-
-          <Box
-            sx={{
-              marginBottom: "20px",
             }}
           >
             <S.Product_Detail_Option_ItemBox>
@@ -2229,6 +2258,67 @@ const OptionToggle = ({
                     </ToggleButtonGroup>
                   </S.OptionBtns2>
                 </S.Product_Detail_Option_ItemBox>
+              </Box>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              marginBottom: "20px",
+              // paddingBottom: "20px",
+              // borderBottom: "1px solid #ddd",
+            }}
+          >
+            <S.Product_Detail_Option_ItemBox>
+              <S.Product_Detail_Option_ItemText>
+                접지
+              </S.Product_Detail_Option_ItemText>
+              <S.OptionBtns2>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={flyerLeafletGrounding}
+                  exclusive
+                  onChange={(e) => {
+                    setFlyerLeafletGrounding(e.target.value);
+                    if (e.target.value === "접지") {
+                      setFlyerLeafletGroundingDetail("2단접지");
+                    }
+                  }}
+                  aria-label="Platform"
+                  style={{ width: "100%" }}
+                  className="group"
+                >
+                  <ToggleButton value={"접지"}>접지</ToggleButton>
+                  <ToggleButton value={"선택안함"}>선택안함</ToggleButton>
+                </ToggleButtonGroup>
+              </S.OptionBtns2>
+            </S.Product_Detail_Option_ItemBox>
+
+            {flyerLeafletGrounding === "접지" && (
+              <Box sx={{}}>
+                <S.Product_Detail_Option_SelectBox>
+                  <Box sx={{ width: "48%" }}>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={flyerLeafletGroundingDetail}
+                      onChange={(e) => {
+                        setFlyerLeafletGroundingDetail(e.target.value);
+                      }}
+                      fullWidth
+                    >
+                      <MenuItem value={"2단접지"}>2단접지</MenuItem>
+                      <MenuItem value={"3단접지"}>3단접지</MenuItem>
+                      <MenuItem value={"3단N접지"}>3단N접지</MenuItem>
+                      <MenuItem value={"두루마리접지"}>두루마리접지</MenuItem>
+                      <MenuItem value={"대문접지"}>대문접지</MenuItem>
+                      <MenuItem value={"십자접지"}>십자접지</MenuItem>
+                      <MenuItem value={"병풍4단접지"}>병풍4단접지</MenuItem>
+                      <MenuItem value={"병풍5단접지"}>병풍5단접지</MenuItem>
+                      <MenuItem value={"병풍6단접지"}>병풍6단접지</MenuItem>
+                    </Select>
+                  </Box>
+                </S.Product_Detail_Option_SelectBox>
               </Box>
             )}
           </Box>

@@ -545,6 +545,8 @@ order by ORDER_DATE DESC
 exports.select_order_item = async (req, res) => {
   const { item_sids } = req.body;
 
+  console.log(item_sids);
+
   const qry = `
   select
   ITEM_SID,
@@ -573,8 +575,10 @@ where
 order by ITEM_REGDATE DESC
   `;
 
+  console.log(qry);
+
   const res_data = await getConnection(qry, [item_sids]);
-  if (res_data.state === false) return res.status(401).send("DB Error.");
+  if (res_data.state === false) return res.status(402).send("DB Error.");
   return res.status(200).send(res_data.row);
 };
 

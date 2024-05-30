@@ -319,15 +319,20 @@ const AdminOrder = ({ openPopup }) => {
                     <th>
                       <S.Btn
                         onClick={() => {
-                          if (
-                            orderDetail === el &&
-                            orderDetailVisible === true
-                          ) {
-                            setOrderDetailVisible(false);
-                            return false;
-                          }
-                          setOrderDetail(el);
-                          setOrderDetailVisible(true);
+                          window.open(
+                            "/admin/order/" + el.ORDER_SID,
+                            "주문 상세",
+                            "width=1250,height=700,top=100,left=200"
+                          );
+                          // if (
+                          //   orderDetail === el &&
+                          //   orderDetailVisible === true
+                          // ) {
+                          //   setOrderDetailVisible(false);
+                          //   return false;
+                          // }
+                          // setOrderDetail(el);
+                          // setOrderDetailVisible(true);
                         }}
                       >
                         상세보기

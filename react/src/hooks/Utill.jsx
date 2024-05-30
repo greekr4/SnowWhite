@@ -55,3 +55,7 @@ export const hyphenFormatter = (value) => {
 
   return formattedInput;
 };
+
+export const formatNumber = (value) => {
+  return parseInt(value).toLocaleString("ko-KR");
+};

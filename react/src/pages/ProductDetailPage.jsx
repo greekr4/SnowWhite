@@ -559,7 +559,10 @@ const ProductDetailPage = ({ openPopup }) => {
       const makeBinding =
         selOption.bindingType === "ironBinding" ? "중철제본" : "무선제본";
       //후가공 금박 여부
-      const makeGoldFoil = selOption.bookletGoldFoil === "none" ? "" : "금박";
+      const makeGoldFoil =
+        selOption.bookletGoldFoil === "none"
+          ? ""
+          : selOption.bookletGoldFoilDetail;
       const makeEmbossing = selOption.bookletEmbossing === "none" ? "" : "형압";
       const makeSpotCoatting =
         selOption.bookletSpotCoatting === "none" ? "" : "부분코팅";
@@ -1453,7 +1456,7 @@ const ProductDetailPage = ({ openPopup }) => {
                         window.open(designFile);
                       }}
                     >
-                      디자인 파일 열기
+                      업로드 파일 확인
                     </S.Btn>
                   </S.ProdDetailDesignBtns>
                 )}

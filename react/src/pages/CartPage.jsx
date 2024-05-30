@@ -313,7 +313,7 @@ const CartPage = () => {
                             window.open(el.ITEM_FILE_LOCATION);
                           }}
                         >
-                          디자인보기
+                          시안 확인
                         </S.Btn>
                       </td>
                       <td>

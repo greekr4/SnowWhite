@@ -72,7 +72,7 @@ where
   } else if (PRINT_TYPE === "double") {
     const final_price =
       Math.round(
-        (UNIT_PRICE_MULTI * A4Price_double * SIZE_PRICE_MULTI * QTY) / 10
+        (UNIT_PRICE_MULTI * A4Price_double * SIZE_PRICE_MULTI * (QTY / 2)) / 10
       ) * 10;
 
     return res.status(200).json({ final_price });
@@ -81,6 +81,4 @@ where
   /////
 
   return res.status(200).send("OK");
-
-  res.send("ㅇㅇ");
 };

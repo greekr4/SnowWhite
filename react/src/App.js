@@ -44,6 +44,8 @@ import { CheckoutPage } from "./tossPay/Checkout.jsx";
 import { SuccessPage } from "./tossPay/Success.jsx";
 import { FailPage } from "./tossPay/Fail.jsx";
 import DefaultLayout from "./components/global/DefaultLayout.jsx";
+import OrderPage_real from "./pages/OrderPage_real.jsx";
+import AdminOrderDetail from "./components/admin/AdminOrderDetail.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -127,6 +129,10 @@ function App({ queryClient }) {
               element={<OrderPage openPopup={openPopup} />}
             />
             <Route
+              path="/order_real/:item_sids"
+              element={<OrderPage_real openPopup={openPopup} />}
+            />
+            <Route
               path="/orderlist"
               element={<OrderListPage openPopup={openPopup} />}
             />
@@ -145,6 +151,10 @@ function App({ queryClient }) {
           <Route path="/test3" element={<TestKonva3 />} />
           <Route path="/admin" element={<AdminPage openPopup={openPopup} />} />
           <Route path="/admin/prod/:prod_sid" element={<AdminProdDetail />} />
+          <Route
+            path="/admin/order/:order_sid"
+            element={<AdminOrderDetail />}
+          />
           <Route path="/tosspay/success" element={<SuccessPage />} />
           <Route path="/tosspay/fail" element={<FailPage />} />
 
