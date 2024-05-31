@@ -1,6 +1,6 @@
 import React from "react";
 import * as S from "../../styles/new_styles";
-import logo_sample from "../../assets/logo_sample.png";
+import logo_sample from "../../assets/logo.png";
 
 //이미지로드
 const imagesContext = require.context(

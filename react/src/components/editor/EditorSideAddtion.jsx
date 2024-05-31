@@ -240,26 +240,20 @@ const EditorSideAddtion = ({ functions, type, editor, myRef }) => {
         <S.ESideAddBox>
           <h1>클립아트</h1>
           <S.ESideAddShapesBox>
+            {Array.from({ length: 14 }).map((item, index) => (
+              <S.ESideAddShapesItem>
+                <S.Glob_Icon
+                  onClick={handleCreateImage}
+                  icon={`/asserts/editor/clipart/animal/${index + 1}.png`}
+                  width="75px"
+                  height="75px"
+                />
+              </S.ESideAddShapesItem>
+            ))}
             <S.ESideAddShapesItem>
               <S.Glob_Icon
                 onClick={handleCreateImage}
                 icon={"/asserts/editor/clipart/clipart1.png"}
-                width="75px"
-                height="75px"
-              />
-            </S.ESideAddShapesItem>
-            <S.ESideAddShapesItem>
-              <S.Glob_Icon
-                onClick={handleCreateImage}
-                icon={"/asserts/editor/clipart/clipart2.png"}
-                width="75px"
-                height="75px"
-              />
-            </S.ESideAddShapesItem>
-            <S.ESideAddShapesItem>
-              <S.Glob_Icon
-                onClick={handleCreateImage}
-                icon={"/asserts/editor/clipart/clipart3.png"}
                 width="75px"
                 height="75px"
               />

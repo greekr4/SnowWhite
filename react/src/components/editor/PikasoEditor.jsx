@@ -200,8 +200,8 @@ const PikasoEditor = forwardRef(
         editor?.shapes.image.insert(image, {
           x: editor?.board.stage.attrs.width / 2 - 50,
           y: editor?.board.stage.attrs.height / 2 - 50,
-          width: 100,
-          height: 100,
+          width: 250,
+          height: 250,
         });
       },
       createBackgorund: (color) => {
