@@ -1974,7 +1974,7 @@ const OptionToggle = ({
               <Box sx={{ width: "48%" }}>
                 <InputLabel
                   sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
-                >
+                > 
                   용지
                 </InputLabel>
                 <Select

@@ -46,6 +46,7 @@ import { FailPage } from "./tossPay/Fail.jsx";
 import DefaultLayout from "./components/global/DefaultLayout.jsx";
 import OrderPage_real from "./pages/OrderPage_real.jsx";
 import AdminOrderDetail from "./components/admin/AdminOrderDetail.jsx";
+import ProductDetailPage2 from "./pages/ProductDetailPage2.jsx";
 
 function App({ queryClient }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -120,7 +121,7 @@ function App({ queryClient }) {
             <Route path="/products/:cateid" element={<ProductsPage />} />
             <Route
               path="/products/detail/:prod_sid"
-              element={<ProductDetailPage openPopup={openPopup} />}
+              element={<ProductDetailPage2 openPopup={openPopup} />}
             />
 
             <Route path="/cart" element={<CartPage />} />

@@ -91,3 +91,7 @@ a {
   display: block;
   margin: 0 auto 20px auto;
 }
+
+.custom-label {
+  font-size: 14px !important;
+}

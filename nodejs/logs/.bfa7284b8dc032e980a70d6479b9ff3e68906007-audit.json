@@ -6,36 +6,6 @@
     "auditLog": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\.bfa7284b8dc032e980a70d6479b9ff3e68906007-audit.json",
     "files": [
         {
-            "date": 1715220857384,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-09.log",
-            "hash": "5d8045a402ed385e8aa72ec48c1e8aed73d3948b3e11aca0c45461caf6f438da"
-        },
-        {
-            "date": 1715300821815,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-10.log",
-            "hash": "524f2a458721116ee824fd902544b676c0180b30e70855000846c82072d7a60e"
-        },
-        {
-            "date": 1715560117778,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-13.log",
-            "hash": "c28b31170575bf70d15b657c15b19d9a0cfc6e42124cc34130d55207f24c9e21"
-        },
-        {
-            "date": 1715646573813,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-14.log",
-            "hash": "3659eba9ea9120d376693ddc02b3b3b5e2d4a09a86fabc876bbd25977c4bcfc7"
-        },
-        {
-            "date": 1715819343680,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-16.log",
-            "hash": "e7a5868821056365a781ae5a9dd3547b98b16a48d183fe83bdec1445e60138cc"
-        },
-        {
-            "date": 1715905722458,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-17.log",
-            "hash": "bd3dcc7949e11c7c9bff8187b12f55f9dca4ff14e923bb4d6e9042b00409f28e"
-        },
-        {
             "date": 1716165269330,
             "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-20.log",
             "hash": "e3069590826b438ce93a62f09b5c2380dee79b23d8084d981a23d51d3829eb45"
@@ -84,6 +54,16 @@
             "date": 1717115957765,
             "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-31.log",
             "hash": "b73b0979f3657833b0e7b64852a821388e04302c6ba8be2205f76ed95a0e34e3"
+        },
+        {
+            "date": 1717497596107,
+            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-06-04.log",
+            "hash": "e0ec0160078391917455eced0c101818db6eaf836163238a1da7f35a732a2a3a"
+        },
+        {
+            "date": 1718584242969,
+            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-06-17.log",
+            "hash": "771c7ff7c7ec1746fc409696b4de33cc691902dd49366e9a251ea93aef675d73"
         }
     ],
     "hashType": "sha256"

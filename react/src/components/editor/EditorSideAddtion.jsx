@@ -254,7 +254,7 @@ const EditorSideAddtion = ({ functions, type, editor, myRef }) => {
               <S.Glob_Icon
                 onClick={handleCreateImage}
                 icon={"/asserts/editor/clipart/clipart1.png"}
-                width="75px"
+                width="75px" 
                 height="75px"
               />
             </S.ESideAddShapesItem>

@@ -1410,8 +1410,9 @@ export const ProdDetailDesc = styled.p`
 
 export const Product_Detail_Option_ItemWrapper = styled.div`
   /* padding-bottom: 1rem; */
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #ddd;
+  /* margin-bottom: 1rem;
+  margin-top: 1rem;
+  border-bottom: 1px solid #ddd; */
 `;
 
 export const Product_Detail_Option_ItemBox = styled.div`
@@ -1529,12 +1530,14 @@ export const Product_Detail_Option_Button_Span = styled.span`
 `;
 
 export const ProdDetailDesignBtns = styled.div`
-  border-top: 1px solid #ddd;
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  margin: 0 auto;
+  /* border-top: 1px solid #ddd; */
+  /* margin-top: 0.5rem; */
+  /* padding-top: 1rem;
+  padding-bottom: 1rem; */
+  padding-bottom: 12px;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -1577,7 +1580,7 @@ export const ProdDetailPayButton = styled.div`
   background-color: #469cff;
   border: 1px solid #469cff;
   width: 200px;
-  margin: 0 auto;
+  margin: 0 12px;
 `;
 
 export const ProdDetailContentWrapper = styled.div`
@@ -4244,4 +4247,9 @@ export const CustomTextare = styled.textarea`
   outline-color: #1976d2;
   padding-top: 8px;
   padding-left: 12px;
+`;
+
+export const ProductOrderBox = styled.div`
+  width: 1140px;
+  margin: 30px auto;
 `;
