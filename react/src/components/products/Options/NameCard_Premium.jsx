@@ -11,8 +11,8 @@ import React, { useEffect, useState } from "react";
 import * as S from "../../../styles/new_styles";
 
 const NameCard_Premium = ({ SelectOptions, setSelectOptions }) => {
-  const [DefaultPaper, setDefaultPaper] = useState("스노우화이트");
-  const [DefaultGram, setDefaultGram] = useState("250g");
+  const [DefaultPaper, setDefaultPaper] = useState("아르떼");
+  const [DefaultGram, setDefaultGram] = useState("210g");
   const [DefaultQuantity, setDefaultQuantity] = useState("100");
 
   useEffect(() => {
@@ -31,7 +31,12 @@ const NameCard_Premium = ({ SelectOptions, setSelectOptions }) => {
     <Box>
       <Box sx={{}}>
         <InputLabel
-          sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+          sx={{
+            fontSize: "0.8em",
+            fontWeight: "500",
+            color: "#000",
+            marginBottom: "6px",
+          }}
         >
           용지
         </InputLabel>
@@ -71,7 +76,12 @@ const NameCard_Premium = ({ SelectOptions, setSelectOptions }) => {
       </Box>
       <Box sx={{ marginTop: "12px" }}>
         <InputLabel
-          sx={{ fontSize: "0.8em", fontWeight: "500", color: "#000" }}
+          sx={{
+            fontSize: "0.8em",
+            fontWeight: "500",
+            color: "#000",
+            marginBottom: "6px",
+          }}
         >
           수량
         </InputLabel>
@@ -114,18 +124,6 @@ const NameCard_Premium = ({ SelectOptions, setSelectOptions }) => {
           후가공
         </InputLabel>
 
-        <FormControlLabel
-          value="코팅"
-          control={<Checkbox size="small" />}
-          label="코팅"
-          labelPlacement="top"
-          classes={{ label: "custom-label" }}
-          onChange={(e) => {
-            const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
-            setSelectOptions(copyOptions);
-          }}
-        />
         <FormControlLabel
           value="귀도리"
           control={<Checkbox size="small" />}

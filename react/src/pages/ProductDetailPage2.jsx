@@ -1283,7 +1283,7 @@ const ProductDetailPage = ({ openPopup }) => {
     bookBindingAmt,
   ]);
 
-  const [SelectOptions, setSelectOptions] = useState({ 명함: {} });
+  const [SelectOptions, setSelectOptions] = useState({ 명함: {}, 전단지: {} });
 
   useEffect(() => {
     console.log(SelectOptions);
@@ -1367,7 +1367,7 @@ const ProductDetailPage = ({ openPopup }) => {
                   sx={{
                     textAlign: "center",
                     borderBottom: "1px solid rgba(224, 224, 224, 1)",
-                    paddingBottom: "12px",
+                    paddingBottom: "24px",
                   }}
                 >
                   견적서
