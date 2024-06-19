@@ -21,7 +21,7 @@ const papers = {
 };
 
 const Flyer = ({ SelectOptions, setSelectOptions }) => {
-  const [PaperSize, setPaperSize] = useState("420*297");
+  const [PaperSize, setPaperSize] = useState("420x297");
   const [DefaultPaper, setDefaultPaper] = useState("백색모조");
   const [DefaultGram, setDefaultGram] = useState("80g");
   const [PrintMethod, setPrintMethod] = useState("양면");
@@ -52,20 +52,28 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
         </InputLabel>
         <Box sx={{ display: "flex" }}>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{ width: "98%", height: "40px", fontSize: "14px" }}
             fullWidth
             value={PaperSize}
             onChange={(e) => {
               setPaperSize(e.target.value);
             }}
           >
-            <MenuItem value={"420*297"}>A3 (420*297)</MenuItem>
-            <MenuItem value={"210*297"}>A4 (210*297)</MenuItem>
-            <MenuItem value={"148*210"}>A5 (148*210)</MenuItem>
-            <MenuItem value={"105*148"}>A6 (105*148)</MenuItem>
-            <MenuItem value={"직접입력"}>직접입력</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"420x297"}>
+              A3 (420mm x 297mm)
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"210x297"}>
+              A4 (210mm x 297mm)
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"148x210"}>
+              A5 (148mm x 210mm)
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"105x148"}>
+              A6 (105mm x 148mm)
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"직접입력"}>
+              직접입력
+            </MenuItem>
           </Select>
         </Box>
         {PaperSize === "직접입력" && (
@@ -77,8 +85,8 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
               alignItems: "center",
             }}
           >
-            <TextField sx={{ width: "48%" }} label="가로" /> *{" "}
-            <TextField sx={{ width: "48%" }} label="세로" />
+            <TextField size="small" sx={{ width: "48%" }} label="가로" /> x{" "}
+            <TextField size="small" sx={{ width: "48%" }} label="세로" />
           </Box>
         )}
       </Box>
@@ -97,25 +105,49 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultPaper}
             onChange={(e) => {
               setDefaultPaper(e.target.value);
             }}
           >
-            <MenuItem value={"백색모조"}>백색모조</MenuItem>
-            <MenuItem value={"미색모조"}>미색모조</MenuItem>
-            <MenuItem value={"스노우화이트"}>스노우화이트</MenuItem>
-            <MenuItem value={"아트"}>아트</MenuItem>
-            <MenuItem value={"아르떼"}>아르떼</MenuItem>
-            <MenuItem value={"랑데부"}>랑데부</MenuItem>
-            <MenuItem value={"몽블랑"}>몽블랑</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"백색모조"}>
+              백색모조
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"미색모조"}>
+              미색모조
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"스노우화이트"}>
+              스노우화이트
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"아트"}>
+              아트
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"아르떼"}>
+              아르떼
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"랑데부"}>
+              랑데부
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"몽블랑"}>
+              몽블랑
+            </MenuItem>
           </Select>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginLeft: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultGram}
             onChange={(e) => {
@@ -123,9 +155,13 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
             }}
           >
             {papers[DefaultPaper].map((gram) => (
-              <MenuItem value={gram + "g"}>{gram + "g"}</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={gram + "g"}>
+                {gram + "g"}
+              </MenuItem>
             ))}
-            <MenuItem value={"210g"}>210g</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
+              210g
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -142,17 +178,24 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
         </InputLabel>
         <Box sx={{ display: "flex" }}>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={PrintMethod}
             onChange={(e) => {
               setPrintMethod(e.target.value);
             }}
           >
-            <MenuItem value={"양면"}>양면</MenuItem>
-            <MenuItem value={"단면"}>단면</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"양면"}>
+              양면
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"단면"}>
+              단면
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -170,6 +213,7 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
         <Box sx={{ display: "flex" }}>
           <TextField
             sx={{ width: "48%" }}
+            size="small"
             value={Quantity}
             onChange={(e) => {
               let num = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 남기기

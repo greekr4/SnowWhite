@@ -21,7 +21,7 @@ const papers = {
 };
 
 const NoteBook = ({ SelectOptions, setSelectOptions }) => {
-  const [PaperSize, setPaperSize] = useState("210*297");
+  const [PaperSize, setPaperSize] = useState("210x297");
   const [DefaultPaper, setDefaultPaper] = useState("아트지");
   const [DefaultGram, setDefaultGram] = useState("80g");
   const [PrintMethod, setPrintMethod] = useState("양면");
@@ -53,19 +53,25 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           규격
         </InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          sx={{ width: "48%", marginRight: "2%" }}
+          sx={{ width: "98%", height: "40px", fontSize: "14px" }}
           fullWidth
           value={PaperSize}
           onChange={(e) => {
             setPaperSize(e.target.value);
           }}
         >
-          <MenuItem value={"210*297"}>A4 (210*297)</MenuItem>
-          <MenuItem value={"148*210"}>A5 (148*210)</MenuItem>
-          <MenuItem value={"188*257"}>B5 (188*257)</MenuItem>
-          <MenuItem value={"127*188"}>B6 (127*188)</MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"210x297"}>
+            A4 (210mm x 297mm)
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"148x210"}>
+            A5 (148mm x 210mm)
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"188x257"}>
+            B5 (188mm x 257mm)
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"127x188"}>
+            B6 (127mm x 188mm)
+          </MenuItem>
         </Select>
       </Box>
       <Divider sx={{ margin: "12px 0" }} />
@@ -84,23 +90,43 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultPaper}
             onChange={(e) => {
               setDefaultPaper(e.target.value);
             }}
           >
-            <MenuItem value={"아트지"}>아트지</MenuItem>
-            <MenuItem value={"모조지"}>모조지</MenuItem>
-            <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
-            <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
-            <MenuItem value={"유포지"}>유포지</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"아트지"}>
+              아트지
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"모조지"}>
+              모조지
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"투명데드롱"}>
+              투명데드롱
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"은데드롱"}>
+              은데드롱
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"유포지"}>
+              유포지
+            </MenuItem>
           </Select>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginLeft: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultGram}
             onChange={(e) => {
@@ -108,9 +134,13 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
             }}
           >
             {papers[DefaultPaper].map((gram) => (
-              <MenuItem value={gram + "g"}>{gram + "g"}</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={gram + "g"}>
+                {gram + "g"}
+              </MenuItem>
             ))}
-            <MenuItem value={"210g"}>210g</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
+              210g
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -134,14 +164,16 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           </InputLabel>
           <Box sx={{ display: "flex" }}>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              sx={{ width: "100%" }}
+              sx={{ width: "98%", height: "40px", fontSize: "14px" }}
               fullWidth
               defaultValue={"단면인쇄"}
             >
-              <MenuItem value={"양면인쇄"}>양면인쇄</MenuItem>
-              <MenuItem value={"단면인쇄"}>단면인쇄</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"양면인쇄"}>
+                양면인쇄
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"단면인쇄"}>
+                단면인쇄
+              </MenuItem>
             </Select>
           </Box>
         </Box>
@@ -163,23 +195,43 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultPaper}
             onChange={(e) => {
               setDefaultPaper(e.target.value);
             }}
           >
-            <MenuItem value={"아트지"}>아트지</MenuItem>
-            <MenuItem value={"모조지"}>모조지</MenuItem>
-            <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
-            <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
-            <MenuItem value={"유포지"}>유포지</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"아트지"}>
+              아트지
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"모조지"}>
+              모조지
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"투명데드롱"}>
+              투명데드롱
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"은데드롱"}>
+              은데드롱
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"유포지"}>
+              유포지
+            </MenuItem>
           </Select>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginLeft: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultGram}
             onChange={(e) => {
@@ -187,9 +239,13 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
             }}
           >
             {papers[DefaultPaper].map((gram) => (
-              <MenuItem value={gram + "g"}>{gram + "g"}</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={gram + "g"}>
+                {gram + "g"}
+              </MenuItem>
             ))}
-            <MenuItem value={"210g"}>210g</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
+              210g
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -208,12 +264,21 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             defaultValue={"양면인쇄"}
           >
-            <MenuItem value={"양면인쇄"}>양면인쇄</MenuItem>
-            <MenuItem value={"단면인쇄"}>단면인쇄</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"양면인쇄"}>
+              양면인쇄
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"단면인쇄"}>
+              단면인쇄
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -229,7 +294,7 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           페이지
         </InputLabel>
         <Box sx={{ display: "flex" }}>
-          <TextField sx={{ width: "48%" }} />
+          <TextField size="small" sx={{ width: "48%" }} />
         </Box>
       </Box>
       <Divider sx={{ margin: "12px 0" }} />
@@ -248,15 +313,24 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={StickerCoating}
             onChange={(e) => {
               setStickerCoating(e.target.value);
             }}
           >
-            <MenuItem value={"중철"}>중철</MenuItem>
-            <MenuItem value={"무선"}>무선</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"중철"}>
+              중철
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"무선"}>
+              무선
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -275,6 +349,7 @@ const NoteBook = ({ SelectOptions, setSelectOptions }) => {
         <Box sx={{ display: "flex" }}>
           <TextField
             sx={{ width: "48%" }}
+            size="small"
             value={Quantity}
             onChange={(e) => {
               let num = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 남기기

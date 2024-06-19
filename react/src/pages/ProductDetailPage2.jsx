@@ -1342,6 +1342,7 @@ const ProductDetailPage = ({ openPopup }) => {
                 </S.ProdDetailPayButton> */}
                 {/* </Link> */}
               </S.ProdDetailRight>
+              <S.ProdDetailRight2 />
             </S.ProdDetailBox>
           </S.ProdDetailWrapper>
         </S.MainSection>

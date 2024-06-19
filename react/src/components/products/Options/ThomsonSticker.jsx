@@ -19,7 +19,7 @@ const papers = {
 };
 
 const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
-  const [PaperSize, setPaperSize] = useState("210*297");
+  const [PaperSize, setPaperSize] = useState("210x297");
   const [DefaultPaper, setDefaultPaper] = useState("아트지");
   const [DefaultGram, setDefaultGram] = useState("80g");
   const [PrintMethod, setPrintMethod] = useState("양면");
@@ -53,18 +53,33 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          sx={{ width: "48%", marginRight: "2%" }}
+          sx={{
+            width: "48%",
+            marginRight: "2%",
+            height: "40px",
+            fontSize: "14px",
+          }}
           fullWidth
           value={ThomsonType}
           onChange={(e) => {
             setThomsonType(e.target.value);
           }}
         >
-          <MenuItem value={"원"}>원</MenuItem>
-          <MenuItem value={"라운드"}>라운드</MenuItem>
-          <MenuItem value={"하트"}>하트</MenuItem>
-          <MenuItem value={"타원"}>타원</MenuItem>
-          <MenuItem value={"CD형"}>CD형</MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"원"}>
+            원
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"라운드"}>
+            라운드
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"하트"}>
+            하트
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"타원"}>
+            타원
+          </MenuItem>
+          <MenuItem sx={{ fontSize: "14px" }} value={"CD형"}>
+            CD형
+          </MenuItem>
         </Select>
         <Box
           sx={{
@@ -74,8 +89,8 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
             alignItems: "center",
           }}
         >
-          <TextField sx={{ width: "48%" }} label="도무송-가로" /> *{" "}
-          <TextField sx={{ width: "48%" }} label="도무송-세로" />
+          <TextField size="small" sx={{ width: "48%" }} label="도무송-가로" /> x{" "}
+          <TextField size="small" sx={{ width: "48%" }} label="도무송-세로" />
         </Box>
         <Box
           sx={{
@@ -85,8 +100,8 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
             alignItems: "center",
           }}
         >
-          <TextField sx={{ width: "48%" }} label="재단-가로" /> *{" "}
-          <TextField sx={{ width: "48%" }} label="재단-세로" />
+          <TextField size="small" sx={{ width: "48%" }} label="재단-가로" /> x{" "}
+          <TextField size="small" sx={{ width: "48%" }} label="재단-세로" />
         </Box>
       </Box>
       <Box sx={{ marginTop: "12px" }}>
@@ -104,23 +119,43 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultPaper}
             onChange={(e) => {
               setDefaultPaper(e.target.value);
             }}
           >
-            <MenuItem value={"아트지"}>아트지</MenuItem>
-            <MenuItem value={"모조지"}>모조지</MenuItem>
-            <MenuItem value={"투명데드롱"}>투명데드롱</MenuItem>
-            <MenuItem value={"은데드롱"}>은데드롱</MenuItem>
-            <MenuItem value={"유포지"}>유포지</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"아트지"}>
+              아트지
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"모조지"}>
+              모조지
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"투명데드롱"}>
+              투명데드롱
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"은데드롱"}>
+              은데드롱
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"유포지"}>
+              유포지
+            </MenuItem>
           </Select>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginLeft: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={DefaultGram}
             onChange={(e) => {
@@ -128,9 +163,13 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
             }}
           >
             {papers[DefaultPaper].map((gram) => (
-              <MenuItem value={gram + "g"}>{gram + "g"}</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={gram + "g"}>
+                {gram + "g"}
+              </MenuItem>
             ))}
-            <MenuItem value={"210g"}>210g</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
+              210g
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -149,16 +188,27 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            sx={{ width: "48%", marginRight: "2%" }}
+            sx={{
+              width: "48%",
+              marginRight: "2%",
+              height: "40px",
+              fontSize: "14px",
+            }}
             fullWidth
             value={StickerCoating}
             onChange={(e) => {
               setStickerCoating(e.target.value);
             }}
           >
-            <MenuItem value={"유광코팅"}>유광코팅</MenuItem>
-            <MenuItem value={"무광코팅"}>무광코팅</MenuItem>
-            <MenuItem value={"코팅없음"}>코팅없음</MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"유광코팅"}>
+              유광코팅
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"무광코팅"}>
+              무광코팅
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"코팅없음"}>
+              코팅없음
+            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -177,6 +227,7 @@ const ThomsonSticker = ({ SelectOptions, setSelectOptions }) => {
         <Box sx={{ display: "flex" }}>
           <TextField
             sx={{ width: "48%" }}
+            size="small"
             value={Quantity}
             onChange={(e) => {
               let num = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 남기기

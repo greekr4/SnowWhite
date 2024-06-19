@@ -371,11 +371,21 @@ const OptionDetail = ({ SelectOptions, setSelectOptions }) => {
               size="small"
               defaultValue={"4mm"}
             >
-              <MenuItem value={"4mm"}>4mm</MenuItem>
-              <MenuItem value={"5mm"}>5mm</MenuItem>
-              <MenuItem value={"6mm"}>6mm</MenuItem>
-              <MenuItem value={"7mm"}>7mm</MenuItem>
-              <MenuItem value={"8mm"}>8mm</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"4mm"}>
+                4mm
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"5mm"}>
+                5mm
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"6mm"}>
+                6mm
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"7mm"}>
+                7mm
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"8mm"}>
+                8mm
+              </MenuItem>
             </Select>
             <Select
               sx={{ width: "150px", margin: "20px 0 20px 6px" }}
@@ -383,10 +393,18 @@ const OptionDetail = ({ SelectOptions, setSelectOptions }) => {
               size="small"
               defaultValue={"1개"}
             >
-              <MenuItem value={"1개"}>1개</MenuItem>
-              <MenuItem value={"2개"}>2개</MenuItem>
-              <MenuItem value={"3개"}>3개</MenuItem>
-              <MenuItem value={"4개"}>4개</MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"1개"}>
+                1개
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"2개"}>
+                2개
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"3개"}>
+                3개
+              </MenuItem>
+              <MenuItem sx={{ fontSize: "14px" }} value={"4개"}>
+                4개
+              </MenuItem>
             </Select>
           </Box>
         </Box>

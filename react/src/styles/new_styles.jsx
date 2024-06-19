@@ -1280,11 +1280,15 @@ export const ProdDetailWrapper = styled.div`
   padding-bottom: 3rem;
 `;
 export const ProdDetailLeft = styled.div`
-  flex-basis: 70%;
+  flex-basis: 60%;
 `;
 export const ProdDetailRight = styled.div`
-  flex-basis: 30%;
+  flex-basis: 34%;
   padding-left: 2rem;
+`;
+
+export const ProdDetailRight2 = styled.div`
+  flex-basis: 6%;
 `;
 
 export const ProdDetailBox = styled.div`
@@ -1357,7 +1361,7 @@ export const ProdDetailSliderPrev = styled.div`
 export const ProdDetailSliderNext = styled.div`
   position: relative;
   top: 233px;
-  left: 750px;
+  left: 635px;
   width: 38px;
   height: 38px;
   border: 1px solid rgba(255, 255, 255, 0);

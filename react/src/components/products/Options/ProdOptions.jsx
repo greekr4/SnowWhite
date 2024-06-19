@@ -13,6 +13,11 @@ import Brochure from "./Brochure";
 import Proposal from "./Proposal";
 import NoteBook from "./NoteBook";
 import SpringNoteBook from "./SpringNoteBook";
+import PackageBox from "./PackageBox";
+import PackageCorBox from "./PackageCorBox";
+import PackageShopBag from "./PackageShopBag";
+import Banner from "./Banner";
+import Xbanner from "./Xbanner";
 
 const ProdOptions = ({ prod, SelectOptions, setSelectOptions }) => {
   return (
@@ -98,6 +103,36 @@ const ProdOptions = ({ prod, SelectOptions, setSelectOptions }) => {
       )}
       {prod === "노트" && (
         <NoteBook
+          SelectOptions={SelectOptions}
+          setSelectOptions={setSelectOptions}
+        />
+      )}
+      {prod === "박스" && (
+        <PackageBox
+          SelectOptions={SelectOptions}
+          setSelectOptions={setSelectOptions}
+        />
+      )}
+      {prod === "합지박스" && (
+        <PackageCorBox
+          SelectOptions={SelectOptions}
+          setSelectOptions={setSelectOptions}
+        />
+      )}
+      {prod === "쇼핑백" && (
+        <PackageShopBag
+          SelectOptions={SelectOptions}
+          setSelectOptions={setSelectOptions}
+        />
+      )}
+      {prod === "현수막" && (
+        <Banner
+          SelectOptions={SelectOptions}
+          setSelectOptions={setSelectOptions}
+        />
+      )}
+      {prod === "X배너" && (
+        <Xbanner
           SelectOptions={SelectOptions}
           setSelectOptions={setSelectOptions}
         />
