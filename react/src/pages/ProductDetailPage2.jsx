@@ -42,6 +42,8 @@ import {
 import ProdOptions from "../components/products/Options/ProdOptions";
 import OptionDetail from "../components/products/Options/OptionDetail";
 import { FileCopy } from "@mui/icons-material";
+import ProdPrice from "../components/products/ProdPrice";
+import { PriceCalc } from "../components/products/Options/PriceCalc";
 
 const ProductDetailPage = ({ openPopup }) => {
   const [qty, setQty] = useState();
@@ -192,8 +194,6 @@ const ProductDetailPage = ({ openPopup }) => {
     );
   };
 
-  const navigate = useNavigate();
-
   const handleDropdown = (value) => {
     console.log(prodDetail?.PROD_QUANTITY?.split(","));
     setQty(value);
@@ -285,56 +285,6 @@ const ProductDetailPage = ({ openPopup }) => {
         severity: "success",
       });
     }
-  };
-
-  const handleUploadDesign = () => {
-    if (USER_ID === undefined) {
-      openPopup(0);
-      return false;
-    }
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", ".ai,.pdf");
-    input.click();
-    input.addEventListener("change", async () => {
-      const file = input.files[0];
-
-      //체크
-      const allowedExtensions = [".ai", ".pdf"];
-      const fileExtension = file.name.split(".").pop().toLowerCase();
-      if (!allowedExtensions.includes("." + fileExtension)) {
-        setSnackbar({
-          children: "올바른 파일 형식을 선택해주세요. (ai 또는 pdf)",
-          severity: "error",
-        });
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("type", "design");
-      formData.append("userid", USER_ID);
-      try {
-        const result = await axios.post(
-          process.env.REACT_APP_DB_HOST + "/api/upload_design",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        const designUrl = result.data;
-        setSnackbar({
-          children: "파일이 업로드 되었습니다.",
-          severity: "success",
-        });
-        setDesignFile(designUrl);
-        setDesignCheck(true);
-      } catch (error) {
-        console.log("실패");
-      }
-    });
   };
 
   const paperRef = useRef([]);
@@ -1283,11 +1233,77 @@ const ProductDetailPage = ({ openPopup }) => {
     bookBindingAmt,
   ]);
 
-  const [SelectOptions, setSelectOptions] = useState({ 명함: {}, 전단지: {} });
+  // 옵션 체크
+  const [SelectOptions, setSelectOptions] = useState({
+    일반지: {},
+    고급지: {},
+    전단지: {},
+  });
+
+  //옵션 나열
+  const [optionList, setOptionList] = useState({
+    일반지: {},
+  });
 
   useEffect(() => {
+    console.log(SelectOptions[prodDetail?.PROD_NM]);
     console.log(SelectOptions);
   }, [SelectOptions]);
+
+  useEffect(() => {
+    console.log(optionList);
+    console.log(optionList[prodDetail?.PROD_NM]);
+  }, [optionList]);
+
+  //단가표
+
+  const [priceTable, setPriceTable] = useState([]);
+
+  //단가표 불러오기
+  useEffect(() => {
+    getPrices();
+  }, [prodDetail?.PROD_NM]);
+
+  //변경시 단가 계산
+  useEffect(() => {
+    console.log(priceTable);
+    console.log(
+      PriceCalc(priceTable, prodDetail?.PROD_NM, SelectOptions, optionList)
+    );
+  }, [SelectOptions, optionList, []]);
+
+  const getPrices = async () => {
+    const price_data = (
+      await axios.get(process.env.REACT_APP_DB_HOST + "/api/global/prices", {
+        params: { PRICE_PROD_CATE: prodDetail?.PROD_NM },
+      })
+    ).data;
+
+    console.log("단가표 >>", price_data);
+    setPriceTable(price_data);
+
+    // console.log(price_data);
+
+    // console.log(
+    //   price_data.filter(
+    //     (el) => el.PRICE_OPTION_NM === SelectOptions[prodDetail?.PROD_NM].용지
+    //   )
+    // );
+
+    // const testdata = price_data.filter(
+    //   (el) => el.PRICE_OPTION_NM === SelectOptions[prodDetail?.PROD_NM].용지
+    // );
+
+    // console.log(
+    //   filterByQty(testdata, SelectOptions[prodDetail?.PROD_NM]?.수량)
+    // );
+
+    // const paperPrice =
+    //   filterByQty(testdata, SelectOptions[prodDetail?.PROD_NM]?.수량)
+    //     .PRICE_PRICE * SelectOptions[prodDetail?.PROD_NM]?.수량;
+
+    // console.log("용지가격 : ", paperPrice);
+  };
 
   return (
     <>
@@ -1297,7 +1313,7 @@ const ProductDetailPage = ({ openPopup }) => {
           <S.ProdDetailWrapper>
             <S.ProdDetailBox ref={DtailBox}>
               <S.ProdDetailLeft>
-                <S.ProdDetailSliderBox topValue={scrollPositon + 30}>
+                <S.ProdDetailSliderBox topValue={scrollPositon}>
                   <S.ProdDetailMainSlider>
                     <S.ProdDetailMainSliderView
                       img={prodImages[SliderIndex]?.IMAGE_LOCATION}
@@ -1330,6 +1346,8 @@ const ProductDetailPage = ({ openPopup }) => {
                     prod={prodDetail?.PROD_NM}
                     SelectOptions={SelectOptions}
                     setSelectOptions={setSelectOptions}
+                    optionList={optionList}
+                    setOptionList={setOptionList}
                   />
                 </S.Product_Detail_Option_ItemWrapper>
                 {prodDetail?.PROD_NOTI?.split("|").map((el, index) => (
@@ -1345,103 +1363,30 @@ const ProductDetailPage = ({ openPopup }) => {
               <S.ProdDetailRight2 />
             </S.ProdDetailBox>
           </S.ProdDetailWrapper>
+          {/* 견적서 */}
+          <ProdPrice
+            USER_ID={USER_ID}
+            openPopup={openPopup}
+            setSnackbar={setSnackbar}
+            designFile={designFile}
+            setDesignFile={setDesignFile}
+            designCheck={designCheck}
+            setDesignCheck={setDesignCheck}
+            handleSendCart={handleSendCart}
+            imgUrl={prodImages[SliderIndex]?.IMAGE_LOCATION}
+          />
+          {/* 견적서 끝 */}
         </S.MainSection>
         {/* 주문하기 및 옵션 선택 */}
         <S.MainSection>
           <S.ProductOrderBox>
             <OptionDetail
+              prod={prodDetail?.PROD_NM}
               SelectOptions={SelectOptions}
               setSelectOptions={setSelectOptions}
+              optionList={optionList}
+              setOptionList={setOptionList}
             />
-            <Box
-              className="orderBtn"
-              sx={{
-                border: "1px solid #ddd",
-                padding: "24px 0",
-                width: "500px",
-                margin: "24px auto",
-              }}
-            >
-              {/* 가격 */}
-              <Box>
-                <Typography
-                  sx={{
-                    textAlign: "center",
-                    borderBottom: "1px solid rgba(224, 224, 224, 1)",
-                    paddingBottom: "24px",
-                  }}
-                >
-                  견적서
-                </Typography>
-                <Table sx={{ marginBottom: "12px" }}>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell sx={{ border: "none" }}>용지</TableCell>
-                      <TableCell sx={{ border: "none" }} align="right">
-                        {optionAmt.toLocaleString()}원
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ border: "none" }}>후가공</TableCell>
-                      <TableCell sx={{ border: "none" }} align="right">
-                        {optionAmt.toLocaleString()}원
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ border: "" }}>총합</TableCell>
-                      <TableCell sx={{ border: "" }} align="right">
-                        {optionAmt.toLocaleString()}원
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </Box>
-              <S.ProdDetailDesignBtns>
-                <S.Btn
-                  width="200px"
-                  style={{ margin: "0 12px", height: "50px" }}
-                  onClick={() => {
-                    navigate("/editor");
-                  }}
-                  disabled
-                >
-                  직접 디자인하기
-                </S.Btn>
-                <S.Btn
-                  width="200px"
-                  style={{ margin: "0 12px", height: "50px" }}
-                  onClick={handleUploadDesign}
-                >
-                  파일 업로드
-                </S.Btn>
-              </S.ProdDetailDesignBtns>
-              {designCheck && (
-                <S.ProdDetailDesignBtns>
-                  <S.Btn
-                    style={{ margin: "0 12px", height: "50px", width: "200px" }}
-                    onClick={() => {
-                      window.open(designFile);
-                    }}
-                  >
-                    업로드 파일 확인
-                  </S.Btn>
-                </S.ProdDetailDesignBtns>
-              )}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <S.ProdDetailPayButton onClick={handleSendCart}>
-                  주문하기
-                </S.ProdDetailPayButton>
-                <S.ProdDetailPayButton onClick={handleSendCart}>
-                  장바구니에 담기
-                </S.ProdDetailPayButton>
-              </Box>
-            </Box>
           </S.ProductOrderBox>
         </S.MainSection>
         {/* 주문하기 및 옵션 선택 끝 */}

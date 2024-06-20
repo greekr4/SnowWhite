@@ -129,7 +129,10 @@ const {
   tosspayConfirm_live,
 } = require("./snowwhite/controller/tosspay");
 const { paperExcelUpload } = require("./snowwhite/controller/excel");
-const { calcPrice } = require("./snowwhite/controller/price");
+const {
+  calcPrice,
+  select_global_price,
+} = require("./snowwhite/controller/price");
 const SECRET_KEY = "MY-SECRET-KEY"; // JWT 시크릿 키
 
 app.use(bodyParser.json());
@@ -350,6 +353,9 @@ app.get("/api/calc_price", calcPrice);
 
 // 주문 상세
 app.get("/api/order_detail", auth, select_order_detail);
+
+//글로벌 단가표
+app.get("/api/global/prices", select_global_price);
 
 //app.put("/api/admin/product_global", auth);
 

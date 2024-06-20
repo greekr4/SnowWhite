@@ -82,3 +82,20 @@ where
 
   return res.status(200).send("OK");
 };
+
+exports.select_global_price = async (req, res) => {
+  const { PRICE_PROD_CATE } = req.query;
+
+  const qry = `
+select
+	*
+from
+	TB_GLOB_PRICE
+where
+	PRICE_PROD_CATE = '${PRICE_PROD_CATE}'
+  `;
+
+  const res_data = await getConnection(qry);
+  if (res_data.state === false) return res.status(401).send("DB Error.");
+  return res.status(200).send(res_data.row);
+};

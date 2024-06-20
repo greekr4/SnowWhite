@@ -8,22 +8,21 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import * as S from "../../../styles/new_styles";
 
-const NameCard = ({ SelectOptions, setSelectOptions }) => {
-  const [DefaultPaper, setDefaultPaper] = useState("스노우화이트");
-  const [DefaultGram, setDefaultGram] = useState("250g");
+const NameCard_Premium = ({ SelectOptions, setSelectOptions }) => {
+  const [DefaultPaper, setDefaultPaper] = useState("아르떼");
+  const [DefaultGram, setDefaultGram] = useState("210g");
   const [DefaultQuantity, setDefaultQuantity] = useState("100");
 
   useEffect(() => {
     const copyOptions = { ...SelectOptions };
-    copyOptions.명함.용지 = DefaultPaper + DefaultGram;
+    copyOptions.고급지.용지 = DefaultPaper + DefaultGram;
     setSelectOptions(copyOptions);
   }, [DefaultPaper, DefaultGram]);
 
   useEffect(() => {
     const copyOptions = { ...SelectOptions };
-    copyOptions.명함.수량 = DefaultQuantity;
+    copyOptions.고급지.수량 = DefaultQuantity;
     setSelectOptions(copyOptions);
   }, [DefaultQuantity]);
 
@@ -53,13 +52,15 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
             onChange={(e) => {
               setDefaultPaper(e.target.value);
             }}
-            size="small"
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"스노우화이트"}>
-              스노우화이트
+            <MenuItem sx={{ fontSize: "14px" }} value={"아르떼"}>
+              아르떼
             </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"아트지"}>
-              아트지
+            <MenuItem sx={{ fontSize: "14px" }} value={"랑데부"}>
+              랑데부
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"몽블랑"}>
+              몽블랑
             </MenuItem>
           </Select>
           <Select
@@ -75,12 +76,18 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
               setDefaultGram(e.target.value);
             }}
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"250g"}>
-              250g
+            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
+              210g
             </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"300g"}>
-              300g
-            </MenuItem>
+            {DefaultPaper === "아르떼" ? (
+              <MenuItem sx={{ fontSize: "14px" }} value={"230g"}>
+                230g
+              </MenuItem>
+            ) : (
+              <MenuItem sx={{ fontSize: "14px" }} value={"240g"}>
+                240g
+              </MenuItem>
+            )}
           </Select>
         </Box>
       </Box>
@@ -97,6 +104,8 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
         </InputLabel>
         <Box sx={{ display: "flex" }}>
           <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
             sx={{
               width: "48%",
               marginRight: "2%",
@@ -158,18 +167,6 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
         </InputLabel>
 
         <FormControlLabel
-          value="코팅"
-          control={<Checkbox size="small" />}
-          label="코팅"
-          labelPlacement="top"
-          classes={{ label: "custom-label" }}
-          onChange={(e) => {
-            const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
-            setSelectOptions(copyOptions);
-          }}
-        />
-        <FormControlLabel
           value="귀도리"
           control={<Checkbox size="small" />}
           label="귀도리"
@@ -177,7 +174,7 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.고급지[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -189,7 +186,7 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.고급지[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -201,7 +198,7 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.고급지[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -213,7 +210,7 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.고급지[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -222,4 +219,4 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default NameCard;
+export default NameCard_Premium;
