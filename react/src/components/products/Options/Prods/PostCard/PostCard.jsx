@@ -8,21 +8,21 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import * as S from "../../../styles/new_styles";
 
 const papers = {
-  백색모조: [80, 100, 120, 150, 180, 220],
-  미색모조: [80, 100, 120],
-  스노우화이트: [80, 100, 120, 150, 180, 200, 250, 300],
-  아트: [80, 100, 120, 150, 180, 200, 250, 300],
-  아르떼: [105, 130, 160, 190, 210, 230, 310],
+  백상지: [100, 120, 150, 180, 220],
+  아트지: [100, 120, 150, 180, 200, 250, 300],
+  스노우화이트: [100, 120, 150, 180, 200, 250, 300],
+  아르떼: [105, 130, 160, 190, 210, 230],
   랑데부: [105, 130, 160, 190, 210, 240],
   몽블랑: [105, 130, 160, 190, 210, 240],
 };
 
-const Flyer = ({ SelectOptions, setSelectOptions }) => {
-  const [PaperSize, setPaperSize] = useState("420x297");
-  const [DefaultPaper, setDefaultPaper] = useState("백색모조");
+const PostCard = ({ SelectOptions, setSelectOptions }) => {
+  const [PaperSize, setPaperSize] = useState("100x148");
+  const [PaperWidth, setPaperWidth] = useState(100);
+  const [PaperHeight, setPaperHeight] = useState(148);
+  const [DefaultPaper, setDefaultPaper] = useState("백상지");
   const [DefaultGram, setDefaultGram] = useState("80g");
   const [PrintMethod, setPrintMethod] = useState("양면");
   const [Quantity, setQuantity] = useState("1");
@@ -33,10 +33,22 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
 
   useEffect(() => {
     const copyOptions = { ...SelectOptions };
-    copyOptions.전단지.용지 = DefaultPaper + DefaultGram;
-    setSelectOptions(copyOptions);
-  }, [DefaultPaper, DefaultGram]);
 
+    copyOptions.엽서.가로 = parseInt(PaperWidth);
+    copyOptions.엽서.세로 = parseInt(PaperHeight);
+    copyOptions.엽서.용지 = DefaultPaper + DefaultGram;
+    copyOptions.엽서.인쇄 = PrintMethod;
+    copyOptions.엽서.수량 = parseInt(Quantity);
+    setSelectOptions(copyOptions);
+  }, [
+    PaperSize,
+    PaperWidth,
+    PaperHeight,
+    DefaultPaper,
+    DefaultGram,
+    Quantity,
+    PrintMethod,
+  ]);
   return (
     <Box>
       <Box sx={{}}>
@@ -59,17 +71,17 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
               setPaperSize(e.target.value);
             }}
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"420x297"}>
-              A3 (420mm x 297mm)
-            </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"210x297"}>
-              A4 (210mm x 297mm)
-            </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"148x210"}>
-              A5 (148mm x 210mm)
+            <MenuItem sx={{ fontSize: "14px" }} value={"100x148"}>
+              100mm x 148mm
             </MenuItem>
             <MenuItem sx={{ fontSize: "14px" }} value={"105x148"}>
-              A6 (105mm x 148mm)
+              105mm x 148mm
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"200x148"}>
+              200mm x 148mm
+            </MenuItem>
+            <MenuItem sx={{ fontSize: "14px" }} value={"210x148"}>
+              210mm x 148mm
             </MenuItem>
             <MenuItem sx={{ fontSize: "14px" }} value={"직접입력"}>
               직접입력
@@ -85,8 +97,25 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
               alignItems: "center",
             }}
           >
-            <TextField size="small" sx={{ width: "48%" }} label="가로" /> x{" "}
-            <TextField size="small" sx={{ width: "48%" }} label="세로" />
+            <TextField
+              size="small"
+              sx={{ width: "48%" }}
+              label="가로"
+              value={PaperWidth}
+              onChange={(e) => {
+                setPaperWidth(e.target.value);
+              }}
+            />{" "}
+            x{" "}
+            <TextField
+              size="small"
+              sx={{ width: "48%" }}
+              label="세로"
+              value={PaperHeight}
+              onChange={(e) => {
+                setPaperHeight(e.target.value);
+              }}
+            />
           </Box>
         )}
       </Box>
@@ -117,17 +146,14 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
               setDefaultPaper(e.target.value);
             }}
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"백색모조"}>
-              백색모조
+            <MenuItem sx={{ fontSize: "14px" }} value={"백상지"}>
+              백상지
             </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"미색모조"}>
-              미색모조
+            <MenuItem sx={{ fontSize: "14px" }} value={"아트지"}>
+              아트지
             </MenuItem>
             <MenuItem sx={{ fontSize: "14px" }} value={"스노우화이트"}>
               스노우화이트
-            </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"아트"}>
-              아트
             </MenuItem>
             <MenuItem sx={{ fontSize: "14px" }} value={"아르떼"}>
               아르떼
@@ -159,9 +185,6 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
                 {gram + "g"}
               </MenuItem>
             ))}
-            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
-              210g
-            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -178,6 +201,8 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
         </InputLabel>
         <Box sx={{ display: "flex" }}>
           <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
             sx={{
               width: "48%",
               marginRight: "2%",
@@ -249,7 +274,7 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.엽서[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -261,7 +286,7 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.엽서[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -273,7 +298,7 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.엽서[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -285,7 +310,7 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.엽서[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -297,7 +322,7 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
           classes={{ label: "custom-label" }}
           onChange={(e) => {
             const copyOptions = { ...SelectOptions };
-            copyOptions.명함[e.target.value] = e.target.checked;
+            copyOptions.엽서[e.target.value] = e.target.checked;
             setSelectOptions(copyOptions);
           }}
         />
@@ -306,4 +331,4 @@ const Flyer = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default Flyer;
+export default PostCard;

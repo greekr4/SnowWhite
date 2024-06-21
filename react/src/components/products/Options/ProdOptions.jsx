@@ -1,12 +1,9 @@
 import React from "react";
 import { Box } from "@mui/material";
-import Flyer from "./Flyer";
-import PostCard from "./PostCard";
+
 import Poster from "./Poster";
-import Leaflet from "./Leaflet";
 import DieCutSticker from "./DieCutSticker";
 import ThomsonSticker from "./ThomsonSticker";
-import Booklet from "./Booklet";
 import Brochure from "./Brochure";
 import Proposal from "./Proposal";
 import NoteBook from "./NoteBook";
@@ -18,6 +15,10 @@ import Banner from "./Banner";
 import Xbanner from "./Xbanner";
 import NameCard from "./Prods/NameCard/NameCard";
 import NameCard_Premium from "./Prods/NameCard/NameCard_Premium";
+import Flyer from "./Prods/Flyer/Flyer";
+import PostCard from "./Prods/PostCard/PostCard";
+import Leaflet from "./Prods/Leaflet/Leaflet";
+import Booklet from "./Prods/Booklet/Booklet";
 
 const ProdOptions = ({
   prod,

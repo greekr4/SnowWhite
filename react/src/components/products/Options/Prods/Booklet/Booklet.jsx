@@ -9,8 +9,6 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import * as S from "../../../styles/new_styles";
-import { Verified } from "@mui/icons-material";
 
 const papers = {
   아트지: [80, 100, 120, 150, 180, 220],
@@ -27,7 +25,6 @@ const Booklet = ({ SelectOptions, setSelectOptions }) => {
   const [PrintMethod, setPrintMethod] = useState("양면");
   const [Quantity, setQuantity] = useState("100");
   const [StickerCoating, setStickerCoating] = useState("유광코팅");
-  const [ThomsonType, setThomsonType] = useState("원");
 
   useEffect(() => {
     setDefaultGram(papers[DefaultPaper][0] + "g");

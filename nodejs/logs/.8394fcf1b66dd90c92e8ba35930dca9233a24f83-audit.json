@@ -6,11 +6,6 @@
     "auditLog": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\.8394fcf1b66dd90c92e8ba35930dca9233a24f83-audit.json",
     "files": [
         {
-            "date": 1716337704433,
-            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-22.error.log",
-            "hash": "f4d01824cdf2cf7513831bffc414eb6f5b44482330403fdf8a4c806c6e0413c0"
-        },
-        {
             "date": 1716424381118,
             "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-05-23.error.log",
             "hash": "b0048560417a2544118efea9a6cf025ca61f3f33b9170b258bffc8eef5f4be65"
@@ -69,6 +64,11 @@
             "date": 1718844689298,
             "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-06-20.error.log",
             "hash": "41cf94170ebd21636bcde0d404c0561de44684a5f71645ca91e7a249850418a8"
+        },
+        {
+            "date": 1718930511799,
+            "name": "C:\\Users\\Administrator\\Desktop\\TK\\project\\nodejs\\logs\\2024-06-21.error.log",
+            "hash": "537aed6e01474f6078d7bcdac5a68bd86a5b2ed1294185c9b8c294cda4aafb54"
         }
     ],
     "hashType": "sha256"

@@ -11,6 +11,7 @@ import React from "react";
 import * as S from "../../styles/new_styles";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { formatNumber } from "../../hooks/Utill";
 
 const ProdPrice = ({
   USER_ID,
@@ -22,6 +23,9 @@ const ProdPrice = ({
   setDesignCheck,
   handleSendCart,
   imgUrl,
+  printPrice,
+  optionPrice,
+  taxPrice,
 }) => {
   const navigate = useNavigate();
 
@@ -115,19 +119,25 @@ const ProdPrice = ({
             <TableRow>
               <TableCell sx={{ border: "none" }}>인쇄비</TableCell>
               <TableCell sx={{ border: "none" }} align="right">
-                {"0"}원
+                {formatNumber(printPrice)}원
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ border: "none" }}>후가공</TableCell>
               <TableCell sx={{ border: "none" }} align="right">
-                {"0"}원
+                {formatNumber(optionPrice)}원
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ border: "none" }}>부가세</TableCell>
+              <TableCell sx={{ border: "none" }} align="right">
+                {formatNumber(taxPrice)}원
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ border: "" }}>총합</TableCell>
               <TableCell sx={{ border: "" }} align="right">
-                {"0"}원
+                {formatNumber(printPrice + optionPrice + taxPrice)}원
               </TableCell>
             </TableRow>
           </TableBody>

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-const NameCardOptions = ({
+const PostCard_detail = ({
   SelectOptions,
   setSelectOptions,
   optionList,
@@ -34,14 +34,14 @@ const NameCardOptions = ({
 
   useEffect(() => {
     // 코팅 State 기본 세팅
-    if (SelectOptions.일반지.코팅 === true) {
+    if (SelectOptions.엽서.코팅 === true) {
       setCoatingDetail("단면무광코팅");
     } else {
       setCoatingDetail("");
     }
 
     // 귀도리 State 기본 세팅
-    if (SelectOptions.일반지.귀도리 === true) {
+    if (SelectOptions.엽서.귀도리 === true) {
       setRoundingAll(true);
       setRoundingRightUp(true);
       setRoundingRightDown(true);
@@ -56,21 +56,21 @@ const NameCardOptions = ({
     }
 
     // 오시 State 기본 세팅
-    if (SelectOptions.일반지.오시 === true) {
+    if (SelectOptions.엽서.오시 === true) {
       setOsiDetail("1줄");
     } else {
       setOsiDetail("");
     }
 
     // 미싱 State 기본 세팅
-    if (SelectOptions.일반지.미싱 === true) {
+    if (SelectOptions.엽서.미싱 === true) {
       setMissingDetail("1줄");
     } else {
       setMissingDetail("");
     }
 
     // 타공 State 기본 세팅
-    if (SelectOptions.일반지.타공 === true) {
+    if (SelectOptions.엽서.타공 === true) {
       setPunchingArea("4mm");
       setPunchingQty("1개");
     } else {
@@ -107,11 +107,11 @@ const NameCardOptions = ({
       if (roundingRightDown) rounding += "우하 ";
     }
 
-    copyOptionList.일반지.코팅 = coatingDetail;
-    copyOptionList.일반지.귀도리 = rounding;
-    copyOptionList.일반지.오시 = osiDetail;
-    copyOptionList.일반지.미싱 = missingDetail;
-    copyOptionList.일반지.타공 = `${punchingArea} ${punchingQty}`;
+    copyOptionList.엽서.코팅 = coatingDetail;
+    copyOptionList.엽서.귀도리 = rounding;
+    copyOptionList.엽서.오시 = osiDetail;
+    copyOptionList.엽서.미싱 = missingDetail;
+    copyOptionList.엽서.타공 = `${punchingArea} ${punchingQty}`;
 
     setOptionList(copyOptionList);
   }, [
@@ -129,8 +129,8 @@ const NameCardOptions = ({
 
   return (
     <>
-      {/* 일반지-코팅 */}
-      {SelectOptions.일반지.코팅 && (
+      {/* 엽서-코팅 */}
+      {SelectOptions.엽서.코팅 && (
         <Box sx={{ display: "flex", padding: "6px 0" }}>
           <Box
             sx={{
@@ -211,9 +211,9 @@ const NameCardOptions = ({
           </Box>
         </Box>
       )}
-      {/* 일반지-코팅 끝 */}
-      {/* 일반지-귀도리 */}
-      {SelectOptions.일반지.귀도리 && (
+      {/* 엽서-코팅 끝 */}
+      {/* 엽서-귀도리 */}
+      {SelectOptions.엽서.귀도리 && (
         <Box sx={{ display: "flex", padding: "6px 0" }}>
           <Box
             sx={{
@@ -320,9 +320,9 @@ const NameCardOptions = ({
           </Box>
         </Box>
       )}
-      {/* 일반지-귀도리 끝 */}
-      {/* 일반지-오시 */}
-      {SelectOptions.일반지.오시 && (
+      {/* 엽서-귀도리 끝 */}
+      {/* 엽서-오시 */}
+      {SelectOptions.엽서.오시 && (
         <Box sx={{ display: "flex", padding: "6px 0" }}>
           <Box
             sx={{
@@ -396,9 +396,9 @@ const NameCardOptions = ({
           </Box>
         </Box>
       )}
-      {/* 일반지-오시 끝 */}
-      {/* 일반지-미싱 */}
-      {SelectOptions.일반지.미싱 && (
+      {/* 엽서-오시 끝 */}
+      {/* 엽서-미싱 */}
+      {SelectOptions.엽서.미싱 && (
         <Box sx={{ display: "flex", padding: "6px 0" }}>
           <Box
             sx={{
@@ -472,9 +472,9 @@ const NameCardOptions = ({
           </Box>
         </Box>
       )}
-      {/* 일반지-미싱 끝 */}
-      {/* 일반지-타공 */}
-      {SelectOptions.일반지.타공 && (
+      {/* 엽서-미싱 끝 */}
+      {/* 엽서-타공 */}
+      {SelectOptions.엽서.타공 && (
         <Box sx={{ display: "flex", padding: "6px 0" }}>
           <Box
             sx={{
@@ -560,9 +560,9 @@ const NameCardOptions = ({
           </Box>
         </Box>
       )}
-      {/* 일반지-타공 끝 */}
+      {/* 엽서-타공 끝 */}
     </>
   );
 };
 
-export default NameCardOptions;
+export default PostCard_detail;

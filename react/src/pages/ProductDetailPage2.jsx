@@ -1238,11 +1238,43 @@ const ProductDetailPage = ({ openPopup }) => {
     일반지: {},
     고급지: {},
     전단지: {},
+    엽서: {},
+    포스터: {},
+    리플릿: {},
+    재단스티커: {},
+    도무송스티커: {},
+    단행본: {},
+    브로슈어: {},
+    스프링노트: {},
+    제안서: {},
+    노트: {},
+    박스: {},
+    합지박스: {},
+    쇼핑백: {},
+    현수막: {},
+    X배너: {},
   });
 
   //옵션 나열
   const [optionList, setOptionList] = useState({
     일반지: {},
+    고급지: {},
+    전단지: {},
+    엽서: {},
+    포스터: {},
+    리플릿: {},
+    재단스티커: {},
+    도무송스티커: {},
+    단행본: {},
+    브로슈어: {},
+    스프링노트: {},
+    제안서: {},
+    노트: {},
+    박스: {},
+    합지박스: {},
+    쇼핑백: {},
+    현수막: {},
+    X배너: {},
   });
 
   useEffect(() => {
@@ -1258,20 +1290,46 @@ const ProductDetailPage = ({ openPopup }) => {
   //단가표
 
   const [priceTable, setPriceTable] = useState([]);
+  const [priceTable_global, setPriceTable_global] = useState([]);
 
   //단가표 불러오기
   useEffect(() => {
     getPrices();
+    getPrices_global();
+    setPrintPrice(0);
+    setOptionPrice(0);
+    setTaxPrice(0);
   }, [prodDetail?.PROD_NM]);
+
+  const [printPrice, setPrintPrice] = useState(0);
+  const [optionPrice, setOptionPrice] = useState(0);
+  const [taxPrice, setTaxPrice] = useState(0);
 
   //변경시 단가 계산
   useEffect(() => {
-    console.log(priceTable);
-    console.log(
-      PriceCalc(priceTable, prodDetail?.PROD_NM, SelectOptions, optionList)
+    const finalPrice = PriceCalc(
+      priceTable,
+      priceTable_global,
+      prodDetail?.PROD_NM,
+      SelectOptions,
+      optionList
     );
+
+    if (finalPrice === undefined) return;
+
+    if (isNaN(finalPrice?.print) || isNaN(finalPrice?.option)) return;
+
+    const rounded_printPrice = Math.round(finalPrice?.print / 10) * 10;
+    const rounded_optionPrice = Math.round(finalPrice?.option / 10) * 10;
+    const rounded_taxPrice =
+      Math.round(((rounded_printPrice + rounded_optionPrice) * 0.1) / 10) * 10;
+
+    setPrintPrice(rounded_printPrice);
+    setOptionPrice(rounded_optionPrice);
+    setTaxPrice(rounded_taxPrice);
   }, [SelectOptions, optionList, []]);
 
+  // 상품별 단가표
   const getPrices = async () => {
     const price_data = (
       await axios.get(process.env.REACT_APP_DB_HOST + "/api/global/prices", {
@@ -1303,6 +1361,18 @@ const ProductDetailPage = ({ openPopup }) => {
     //     .PRICE_PRICE * SelectOptions[prodDetail?.PROD_NM]?.수량;
 
     // console.log("용지가격 : ", paperPrice);
+  };
+
+  // 공통 단가표
+  const getPrices_global = async () => {
+    const price_data = (
+      await axios.get(process.env.REACT_APP_DB_HOST + "/api/global/prices", {
+        params: { PRICE_PROD_CATE: "공통" },
+      })
+    ).data;
+
+    console.log("공통단가표 >>", price_data);
+    setPriceTable_global(price_data);
   };
 
   return (
@@ -1374,6 +1444,9 @@ const ProductDetailPage = ({ openPopup }) => {
             setDesignCheck={setDesignCheck}
             handleSendCart={handleSendCart}
             imgUrl={prodImages[SliderIndex]?.IMAGE_LOCATION}
+            printPrice={printPrice}
+            optionPrice={optionPrice}
+            taxPrice={taxPrice}
           />
           {/* 견적서 끝 */}
         </S.MainSection>
