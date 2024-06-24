@@ -175,9 +175,7 @@ const PackageBox = ({ SelectOptions, setSelectOptions }) => {
                 {gram + "g"}
               </MenuItem>
             ))}
-            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
-              210g
-            </MenuItem>
+
           </Select>
         </Box>
       </Box>

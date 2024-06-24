@@ -20,7 +20,7 @@ const papers = {
   유포지: [105, 130, 160, 190, 210, 230, 310],
 };
 
-const Brochure = ({ SelectOptions, setSelectOptions }) => {
+const SpringNoteBook = ({ SelectOptions, setSelectOptions }) => {
   const [PaperSize, setPaperSize] = useState("210x297");
   const [DefaultPaper, setDefaultPaper] = useState("아트지");
   const [DefaultGram, setDefaultGram] = useState("80g");
@@ -138,9 +138,6 @@ const Brochure = ({ SelectOptions, setSelectOptions }) => {
                 {gram + "g"}
               </MenuItem>
             ))}
-            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
-              210g
-            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -243,9 +240,6 @@ const Brochure = ({ SelectOptions, setSelectOptions }) => {
                 {gram + "g"}
               </MenuItem>
             ))}
-            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
-              210g
-            </MenuItem>
           </Select>
         </Box>
       </Box>
@@ -325,11 +319,8 @@ const Brochure = ({ SelectOptions, setSelectOptions }) => {
               setStickerCoating(e.target.value);
             }}
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"중철"}>
-              중철
-            </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"무선"}>
-              무선
+            <MenuItem sx={{ fontSize: "14px" }} value={"스프링"}>
+              스프링
             </MenuItem>
           </Select>
         </Box>
@@ -430,4 +421,4 @@ const Brochure = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default Brochure;
+export default SpringNoteBook;

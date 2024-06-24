@@ -76,9 +76,6 @@ const NameCard_Premium = ({ SelectOptions, setSelectOptions }) => {
               setDefaultGram(e.target.value);
             }}
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"210g"}>
-              210g
-            </MenuItem>
             {DefaultPaper === "아르떼" ? (
               <MenuItem sx={{ fontSize: "14px" }} value={"230g"}>
                 230g

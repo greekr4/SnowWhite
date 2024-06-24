@@ -28,7 +28,7 @@ const InnerPapers = {
   몽블랑: [105, 130, 160, 190, 210, 240],
 };
 
-const Booklet = ({ SelectOptions, setSelectOptions }) => {
+const Proposal = ({ SelectOptions, setSelectOptions }) => {
   const [PaperSize, setPaperSize] = useState("210x297");
   const [PaperWidth, setPaperWidth] = useState(210);
   const [PaperHeight, setPaperHeight] = useState(297);
@@ -527,4 +527,4 @@ const Booklet = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default Booklet;
+export default Proposal;

@@ -28,18 +28,18 @@ const InnerPapers = {
   몽블랑: [105, 130, 160, 190, 210, 240],
 };
 
-const Booklet = ({ SelectOptions, setSelectOptions }) => {
+const Brochure = ({ SelectOptions, setSelectOptions }) => {
   const [PaperSize, setPaperSize] = useState("210x297");
   const [PaperWidth, setPaperWidth] = useState(210);
   const [PaperHeight, setPaperHeight] = useState(297);
-  const [CoverPaper, setCoverPaper] = useState("백상지");
-  const [CoverGram, setCoverGram] = useState("180g");
+  const [CoverPaper, setCoverPaper] = useState("아르떼");
+  const [CoverGram, setCoverGram] = useState("190g");
   const [CoverPrintMethod, setCoverPrintMethod] = useState("양면");
   const [CoverSeneka, setCoverSeneka] = useState("0mm");
   const [InnerPaper, setInnerPaper] = useState("백상지");
   const [InnerGram, setInnerGram] = useState("100g");
   const [InnerPrintMethod, setInnerPrintMethod] = useState("양면");
-  const [InnerPage, setInnerPage] = useState(40);
+  const [InnerPage, setInnerPage] = useState(20);
   const [Binding, setBinding] = useState("무선");
   const [Quantity, setQuantity] = useState(10);
 
@@ -527,4 +527,4 @@ const Booklet = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default Booklet;
+export default Brochure;

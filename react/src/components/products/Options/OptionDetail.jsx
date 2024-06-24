@@ -15,6 +15,7 @@ import NameCard_Premium_detail from "./Prods/NameCard/NameCard_Premium_detail";
 import Flyer_detail from "./Prods/Flyer/Flyer_detail";
 import PostCard_detail from "./Prods/PostCard/PostCard_detail";
 import Leaflet_detail from "./Prods/Leaflet/Leaflet_detail";
+import Booklet_detail from "./Prods/Booklet/Booklet_detail";
 
 const OptionDetail = ({
   prod,
@@ -59,6 +60,16 @@ const OptionDetail = ({
       )}
       {prod === "리플릿" && (
         <Leaflet_detail
+          SelectOptions={SelectOptions}
+          setSelectOptions={setSelectOptions}
+          optionList={optionList}
+          setOptionList={setOptionList}
+        />
+      )}
+      {["단행본", "브로슈어", "스프링노트", "제안서", "노트"].includes(
+        prod
+      ) && (
+        <Booklet_detail
           SelectOptions={SelectOptions}
           setSelectOptions={setSelectOptions}
           optionList={optionList}

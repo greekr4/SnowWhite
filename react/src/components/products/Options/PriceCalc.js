@@ -886,6 +886,211 @@ export const PriceCalc = (
   }
   // ===리플릿 끝===
 
+  // ===단행본===
+  if (
+    prodNm === "단행본" ||
+    prodNm === "브로슈어" ||
+    prodNm === "스프링노트" ||
+    prodNm === "제안서" ||
+    prodNm === "노트"
+  ) {
+    prodNm = "책자";
+    // 표지 계산
+    const paperTable_global = priceTable_global.filter(
+      (item) =>
+        item.PRICE_OPTION_CATE === "용지" &&
+        item.PRICE_OPTION_NM === SelectOptions[prodNm]?.표지
+    );
+
+    const cover_paper_unit_price = filterByQty(
+      paperTable_global,
+      SelectOptions[prodNm]?.수량
+    )?.PRICE_PRICE;
+
+    // A4의 가로 * 세로 = 62370
+    // 62370을 기준으로 가격을 계산
+    const standardValue =
+      Math.round(
+        ((SelectOptions[prodNm]?.가로 * SelectOptions[prodNm]?.세로) / 62370) *
+          1000
+      ) / 1000;
+    console.log("standardValue", standardValue);
+
+    let cover_paper_price = cover_paper_unit_price / 4000;
+    let multiple_1 = 1; //용지 규격별 배수
+    let multiple_2 = 1; //매수 별 배수
+    let add_price = 0; //양면 단면 인쇄비용
+
+    if (standardValue > 2) {
+      multiple_1 *= 4;
+    } else if (standardValue > 1) {
+      multiple_1 *= 2;
+    } else if (standardValue === 1) {
+      multiple_1 *= 1;
+    } else if (standardValue >= 0.498) {
+      multiple_1 *= 0.6;
+    } else if (standardValue >= 0.249) {
+      multiple_1 *= 0.36;
+    } else {
+      multiple_1 *= 0.252;
+    }
+
+    //부수 별 배수
+    if (SelectOptions[prodNm]?.수량 >= 200) {
+      multiple_2 *= 1.25;
+    } else if (SelectOptions[prodNm]?.수량 >= 150) {
+      multiple_2 *= 1.3;
+    } else if (SelectOptions[prodNm]?.수량 >= 100) {
+      multiple_2 *= 1.5;
+    } else if (SelectOptions[prodNm]?.수량 >= 50) {
+      multiple_2 *= 1.7;
+    } else if (SelectOptions[prodNm]?.수량 >= 20) {
+      multiple_2 *= 1.8;
+    } else {
+      multiple_2 *= 2;
+    }
+
+    if (SelectOptions[prodNm]?.표지인쇄 === "양면") {
+      cover_paper_price += 100;
+    } else if (SelectOptions[prodNm]?.표지인쇄 === "단면") {
+      cover_paper_price += 50;
+    }
+
+    const coverAmt =
+      cover_paper_price *
+      multiple_1 *
+      multiple_2 *
+      4 *
+      SelectOptions[prodNm]?.수량;
+
+    //내지 계산
+    const paperTable_global_inner = priceTable_global.filter(
+      (item) =>
+        item.PRICE_OPTION_CATE === "용지" &&
+        item.PRICE_OPTION_NM === SelectOptions[prodNm]?.내지
+    );
+
+    const inner_paper_unit_price = filterByQty(
+      paperTable_global_inner,
+      SelectOptions[prodNm]?.수량
+    )?.PRICE_PRICE;
+
+    let inner_paper_price = inner_paper_unit_price / 4000;
+
+    if (SelectOptions[prodNm]?.내지인쇄 === "양면") {
+      inner_paper_price += 100;
+    } else if (SelectOptions[prodNm]?.내지인쇄 === "단면") {
+      inner_paper_price += 50;
+    }
+
+    let inner_paper_qty =
+      SelectOptions[prodNm]?.내지인쇄 === "양면"
+        ? SelectOptions[prodNm]?.페이지 / 2
+        : SelectOptions[prodNm]?.페이지;
+
+    console.log("??>", inner_paper_qty);
+    const innerAmt =
+      inner_paper_price *
+      inner_paper_qty *
+      multiple_1 *
+      multiple_2 *
+      SelectOptions[prodNm]?.수량;
+
+    console.log("내지 가격 >> ", innerAmt);
+    console.log("표지 가격 >> ", coverAmt);
+
+    print_price = innerAmt + coverAmt;
+
+    //제본 계산
+    if (SelectOptions[prodNm]?.제본 !== undefined) {
+      const bindingTable = priceTable_global.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "제본" &&
+          item.PRICE_OPTION_NM === SelectOptions[prodNm]?.제본
+      );
+
+      const binding_unit_price = filterByQty(
+        bindingTable,
+        SelectOptions[prodNm]?.수량
+      )?.PRICE_PRICE;
+
+      option_price += binding_unit_price * SelectOptions[prodNm]?.수량;
+    }
+
+    // 코팅 계산
+    if (optionList[prodNm]?.표지코팅) {
+      const coatingTable = priceTable_global.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "표지코팅" &&
+          item.PRICE_OPTION_NM === "표지코팅"
+      );
+
+      const coating_unit_price = filterByQty(
+        coatingTable,
+        SelectOptions[prodNm]?.수량
+      )?.PRICE_PRICE;
+
+      if (coating_unit_price !== undefined) {
+        option_price += coating_unit_price * SelectOptions[prodNm]?.수량;
+      }
+    }
+
+    // 박
+    if (SelectOptions[prodNm].박) {
+      option_price += 150000;
+    }
+    if (SelectOptions[prodNm].형압) {
+      option_price += 150000;
+    }
+    if (SelectOptions[prodNm].부분코팅) {
+      option_price += 200000;
+    }
+  }
+  // ===단행본 끝===
+
+  // ===X배너===
+  if (prodNm === "X배너") {
+    let Xbanner_Material =
+      SelectOptions[prodNm]?.규격 === "600x1800"
+        ? "일반"
+        : SelectOptions[prodNm]?.규격 === "500x720"
+        ? "미니"
+        : "비규격";
+
+    //일반일 경우 소재까지 선택
+    if (Xbanner_Material === "일반") {
+      Xbanner_Material += SelectOptions[prodNm]?.소재;
+    }
+
+    const Standard_Price_Table = priceTable.filter(
+      (item) =>
+        item.PRICE_OPTION_CATE === "소재" &&
+        item.PRICE_OPTION_NM === Xbanner_Material
+    );
+
+    // 일반이나 미니일 경우 1개당 가격
+    // 비규격일 경우 1회배당 가격
+    const Standard_Price = filterByQty(
+      Standard_Price_Table,
+      SelectOptions[prodNm]?.수량
+    )?.PRICE_PRICE;
+
+    if (Xbanner_Material === "비규격") {
+      let Imposition =
+        (SelectOptions[prodNm]?.가로 * SelectOptions[prodNm]?.세로) / 1000000;
+
+      print_price += Standard_Price * Imposition * SelectOptions[prodNm]?.수량;
+    } else {
+      print_price += Standard_Price * SelectOptions[prodNm]?.수량;
+    }
+
+    //후가공
+
+    //열재단
+  }
+
+  // ===X배너 끝===
+
   //최종 단가
   const final_price = {
     print: print_price,

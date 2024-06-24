@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 
 const papers = {
-  백상지: [100, 120, 150, 180, 220],
+  백상지: [100, 120, 150, 180, 220, 260],
   아트지: [100, 120, 150, 180, 200, 250, 300],
   스노우화이트: [100, 120, 150, 180, 200, 250, 300],
   아르떼: [105, 130, 160, 190, 210, 230],
@@ -38,7 +38,7 @@ const Leaflet = ({ SelectOptions, setSelectOptions }) => {
 
   useEffect(() => {
     const copyOptions = { ...SelectOptions };
-
+    copyOptions.리플릿.규격 = PaperSize;
     copyOptions.리플릿.가로 = parseInt(PaperWidth);
     copyOptions.리플릿.세로 = parseInt(PaperHeight);
     copyOptions.리플릿.용지 = DefaultPaper + DefaultGram;

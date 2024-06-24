@@ -28,12 +28,12 @@ const InnerPapers = {
   몽블랑: [105, 130, 160, 190, 210, 240],
 };
 
-const Booklet = ({ SelectOptions, setSelectOptions }) => {
+const NoteBook = ({ SelectOptions, setSelectOptions }) => {
   const [PaperSize, setPaperSize] = useState("210x297");
   const [PaperWidth, setPaperWidth] = useState(210);
   const [PaperHeight, setPaperHeight] = useState(297);
-  const [CoverPaper, setCoverPaper] = useState("백상지");
-  const [CoverGram, setCoverGram] = useState("180g");
+  const [CoverPaper, setCoverPaper] = useState("아트지");
+  const [CoverGram, setCoverGram] = useState("250g");
   const [CoverPrintMethod, setCoverPrintMethod] = useState("양면");
   const [CoverSeneka, setCoverSeneka] = useState("0mm");
   const [InnerPaper, setInnerPaper] = useState("백상지");
@@ -50,6 +50,11 @@ const Booklet = ({ SelectOptions, setSelectOptions }) => {
   useEffect(() => {
     setInnerGram(InnerPapers[InnerPaper][0] + "g");
   }, [InnerPaper]);
+
+  //기본 세팅
+  useEffect(() => {
+    setCoverGram("250g");
+  }, []);
 
   useEffect(() => {
     if (PaperSize === "직접입력") return;
@@ -527,4 +532,4 @@ const Booklet = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default Booklet;
+export default NoteBook;

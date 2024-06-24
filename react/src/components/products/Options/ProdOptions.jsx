@@ -4,21 +4,21 @@ import { Box } from "@mui/material";
 import Poster from "./Poster";
 import DieCutSticker from "./DieCutSticker";
 import ThomsonSticker from "./ThomsonSticker";
-import Brochure from "./Brochure";
-import Proposal from "./Proposal";
-import NoteBook from "./NoteBook";
-import SpringNoteBook from "./SpringNoteBook";
 import PackageBox from "./PackageBox";
 import PackageCorBox from "./PackageCorBox";
 import PackageShopBag from "./PackageShopBag";
 import Banner from "./Banner";
-import Xbanner from "./Xbanner";
 import NameCard from "./Prods/NameCard/NameCard";
 import NameCard_Premium from "./Prods/NameCard/NameCard_Premium";
 import Flyer from "./Prods/Flyer/Flyer";
 import PostCard from "./Prods/PostCard/PostCard";
 import Leaflet from "./Prods/Leaflet/Leaflet";
 import Booklet from "./Prods/Booklet/Booklet";
+import Brochure from "./Prods/Booklet/Brochure";
+import SpringNoteBook from "./Prods/Booklet/SpringNoteBook";
+import Proposal from "./Prods/Booklet/Proposal";
+import NoteBook from "./Prods/Booklet/Notebook";
+import Xbanner from "./Prods/XBanner/Xbanner";
 
 const ProdOptions = ({
   prod,
