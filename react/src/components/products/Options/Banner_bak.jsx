@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import * as S from "../../../styles/new_styles";
 import { Verified } from "@mui/icons-material";
 
-const Banner = ({ SelectOptions, setSelectOptions }) => {
+const Banner_bak = ({ SelectOptions, setSelectOptions }) => {
   const [PaperSize, setPaperSize] = useState("600x1800");
   const [DefaultPaper, setDefaultPaper] = useState("일반현수막");
   const [DefaultGram, setDefaultGram] = useState("80g");
@@ -209,4 +209,4 @@ const Banner = ({ SelectOptions, setSelectOptions }) => {
   );
 };
 
-export default Banner;
+export default Banner_bak;

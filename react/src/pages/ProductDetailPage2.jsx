@@ -250,20 +250,20 @@ const ProductDetailPage = ({ openPopup }) => {
       return false;
     }
 
+    const item_qty = [
+      "단행본",
+      "브로슈어",
+      "스프링노트",
+      "제안서",
+      "노트",
+    ].includes(prodDetail?.PROD_NM)
+      ? SelectOptions["책자"]?.수량
+      : SelectOptions[prodDetail.PROD_NM]?.수량;
+
     const PROD_SID = prodDetail.PROD_SID;
     const ITEM_OPTION = createOptionNm().join(" | ");
-    const ITEM_QUANTITY =
-      prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1
-        ? qty
-        : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1
-        ? bookQty
-        : globalQty;
-    const ITEM_AMOUNT =
-      prodDetail?.PROD_OPTIONS?.indexOf("명함") != -1
-        ? parseInt(defaultAmt) + parseInt(optionAmt) + parseInt(taxAmt)
-        : prodDetail?.PROD_OPTIONS?.indexOf("책자") != -1
-        ? parseInt(totalAmt) + parseInt(taxAmt)
-        : parseInt(globalAmt) + parseInt(globalOptionAmt) + parseInt(globalTax);
+    const ITEM_QUANTITY = item_qty;
+    const ITEM_AMOUNT = printPrice + optionPrice + taxPrice;
     const ITEM_DESIGN = JSON.stringify([]);
 
     const res = await axios.post(
@@ -431,148 +431,124 @@ const ProductDetailPage = ({ openPopup }) => {
    */
 
   const createOptionNm = () => {
-    console.log(selOption);
-    let optionNm = [];
+    let OptionNm = [];
 
-    if (selectedPaper) {
-      optionNm.push(selectedPaper + "g");
+    const prodNm = prodDetail?.PROD_NM;
+    console.log(SelectOptions[prodNm]);
+
+    //명함
+    if (["일반지", "고급지"].includes(prodNm)) {
+      OptionNm.push(SelectOptions[prodNm]?.용지);
+
+      if (SelectOptions[prodNm]?.코팅) {
+        OptionNm.push(optionList[prodNm]?.코팅);
+      }
+
+      if (SelectOptions[prodNm]?.귀도리) {
+        OptionNm.push(`귀도리 : ${optionList[prodNm]?.귀도리}`);
+      }
+
+      if (SelectOptions[prodNm]?.오시) {
+        OptionNm.push(`오시 : ${optionList[prodNm]?.오시}`);
+      }
+
+      if (SelectOptions[prodNm]?.미싱) {
+        OptionNm.push(`미싱 : ${optionList[prodNm]?.미싱}`);
+      }
+
+      if (SelectOptions[prodNm]?.타공) {
+        OptionNm.push(`타공 : ${optionList[prodNm]?.타공}`);
+      }
     }
 
-    if (selOption.earDori === true)
-      optionNm.push(`귀도리 ${selOption.earDoriOption}`);
+    //홍보물
+    if (["전단지", "엽서", "포스터", "리플릿"].includes(prodNm)) {
+      OptionNm.push(SelectOptions[prodNm]?.용지);
 
-    if (selOption.punching === true) {
-      let qty = "";
-      switch (selOption.punchingQty) {
-        case "cnt1":
-          qty = "1개";
-          break;
-        case "cnt2":
-          qty = "2개";
-          break;
-        case "cnt3":
-          qty = "3개";
-          break;
-        case "cnt4":
-          qty = "4개";
-          break;
-      }
-      optionNm.push(`타공 ${qty} ${selOption.punchingSize}`);
-    }
+      OptionNm.push(
+        `규격 : ${SelectOptions[prodNm]?.가로}x${SelectOptions[prodNm]?.세로}`
+      );
 
-    if (selOption.osi === true) {
-      let line = "";
-      switch (selOption.osiQty) {
-        case "line1":
-          line = "1줄";
-          break;
-        case "line2":
-          line = "2줄";
-          break;
-        case "line3":
-          line = "3줄";
-          break;
-      }
-      optionNm.push(`오시 ${line} ${selOption.osiDirect}`);
-    }
+      OptionNm.push(`${SelectOptions[prodNm]?.인쇄}`);
 
-    if (selOption.missing === true) {
-      let line = "";
-      switch (selOption.missingQty) {
-        case "line1":
-          line = "1줄";
-          break;
-        case "line2":
-          line = "2줄";
-          break;
-        case "line3":
-          line = "3줄";
-          break;
+      if (SelectOptions[prodNm]?.코팅) {
+        OptionNm.push(optionList[prodNm]?.코팅);
       }
-      optionNm.push(`미싱 ${line} ${selOption.missingDirect}`);
-    }
 
-    if (selOption.coating === true) {
-      let coatingNm;
-      switch (selOption.coatingOption) {
-        case "dan_yes":
-          coatingNm = "단면유광코팅";
-          break;
-        case "dan_no":
-          coatingNm = "단면무광코팅";
-          break;
-        case "yang_yes":
-          coatingNm = "양면유광코팅";
-          break;
-        case "yang_no":
-          coatingNm = "양면무광코팅";
-          break;
+      if (SelectOptions[prodNm]?.귀도리) {
+        OptionNm.push(`귀도리 : ${optionList[prodNm]?.귀도리}`);
       }
-      optionNm.push(`${coatingNm}`);
+
+      if (SelectOptions[prodNm]?.오시) {
+        OptionNm.push(`오시 : ${optionList[prodNm]?.오시}`);
+      }
+
+      if (SelectOptions[prodNm]?.미싱) {
+        OptionNm.push(`미싱 : ${optionList[prodNm]?.미싱}`);
+      }
+
+      if (SelectOptions[prodNm]?.타공) {
+        OptionNm.push(`타공 : ${optionList[prodNm]?.타공}`);
+      }
     }
 
     //책자
-    if (prodDetail?.PROD_OPTIONS?.indexOf("책자") !== -1) {
-      // 제본
-      const makeBinding =
-        selOption.bindingType === "ironBinding" ? "중철제본" : "무선제본";
-      //후가공 금박 여부
-      const makeGoldFoil =
-        selOption.bookletGoldFoil === "none"
-          ? ""
-          : selOption.bookletGoldFoilDetail;
-      const makeEmbossing = selOption.bookletEmbossing === "none" ? "" : "형압";
-      const makeSpotCoatting =
-        selOption.bookletSpotCoatting === "none" ? "" : "부분코팅";
-
-      // 커버 양면/단면
-      const makeCoverPage = selOption.coverSide === "double" ? "양면" : "단면";
-      // 커버 코팅
-      const makeCoverCoating =
-        selOption.coverCoating === "선택안함"
-          ? "코팅없음"
-          : selOption.coverCoating;
-      // 내지 양면/단면
-      const mackInnerPage = selOption.innerSide === "double" ? "양면" : "단면";
-
-      // 사이즈
-      optionNm.push(`${selOption.paperSize}`);
-      // 제본
-      optionNm.push(`${makeBinding}`);
-      // 후가공
-      makeGoldFoil !== "" && optionNm.push(`${makeGoldFoil}`);
-      makeEmbossing !== "" && optionNm.push(`${makeEmbossing}`);
-      makeSpotCoatting !== "" && optionNm.push(`${makeSpotCoatting}`);
-      // 커버옵션
-      optionNm.push(
-        `커버-${selOption.coverPaperDetail} ${selOption.coverPaperWeight}g,${makeCoverPage},${makeCoverCoating}`
+    if (
+      ["단행본", "브로슈어", "스프링노트", "제안서", "노트"].includes(prodNm)
+    ) {
+      OptionNm.push(
+        `규격 : ${SelectOptions["책자"]?.가로}x${SelectOptions["책자"]?.세로}`
       );
-      // 내지옵션
-      optionNm.push(
-        `내지-${selOption.innerPaperDetail} ${selOption.innerPaperWeight}g,${mackInnerPage},${selOption.innerPage}P`
-      );
-    }
 
-    //X배너
-    if (prodDetail?.PROD_OPTIONS?.indexOf("X배너") != -1) {
-      if (selOption.xbanner) {
-        optionNm.push(`${selOption.xbanner.가로} x ${selOption.xbanner.세로}`);
-        optionNm.push(`${selOption.xbanner.소재}`);
-        optionNm.push(`후가공 : ${selOption.xbanner.후가공}`);
-        optionNm.push(`거치대 : ${selOption.xbanner.거치대}`);
+      OptionNm.push(
+        `표지 : ${SelectOptions["책자"]?.표지} ${SelectOptions["책자"]?.표지인쇄}`
+      );
+
+      if (SelectOptions["책자"]?.표지코팅) {
+        OptionNm.push(`표지코팅 : ${optionList["책자"]?.표지코팅}`);
+      }
+
+      OptionNm.push(`(세네카 ${SelectOptions["책자"]?.세네카})`);
+
+      OptionNm.push(
+        `내지 : ${SelectOptions["책자"]?.내지} ${SelectOptions["책자"]?.내지인쇄} ${SelectOptions["책자"]?.페이지}`
+      );
+
+      OptionNm.push(`제본 : ${SelectOptions["책자"]?.제본}`);
+
+      if (SelectOptions["책자"]?.박) {
+        OptionNm.push(`박`);
+      }
+
+      if (SelectOptions["책자"]?.형압) {
+        OptionNm.push(`형압`);
+      }
+
+      if (SelectOptions["책자"]?.부분코팅) {
+        OptionNm.push(`부분코팅`);
       }
     }
 
-    //현수막
-    if (prodDetail?.PROD_OPTIONS?.indexOf("현수막") != -1) {
-      if (selOption.banner) {
-        optionNm.push(`${selOption.banner.가로} x ${selOption.banner.세로}`);
-        optionNm.push(`${selOption.banner.소재}`);
-        optionNm.push(`후가공 : ${selOption.banner.후가공}`);
+    //실사출력
+    if (["현수막", "X배너"].includes(prodNm)) {
+      OptionNm.push(
+        `규격 : ${SelectOptions[prodNm]?.가로}x${SelectOptions[prodNm]?.세로}`
+      );
+
+      OptionNm.push(`소재 : ${SelectOptions[prodNm]?.소재}`);
+
+      OptionNm.push(`후가공 : ${SelectOptions[prodNm]?.후가공}`);
+
+      OptionNm.push(`열재단 : ${SelectOptions[prodNm]?.열재단}`);
+
+      if (["X배너"].includes(prodNm) && SelectOptions[prodNm]?.거치대수량 > 0) {
+        OptionNm.push(
+          `거치대 : ${SelectOptions[prodNm]?.거치대} ${SelectOptions[prodNm]?.거치대수량}개`
+        );
       }
     }
 
-    return optionNm;
+    return OptionNm;
   };
 
   /**
@@ -1253,6 +1229,7 @@ const ProductDetailPage = ({ openPopup }) => {
     합지박스: {},
     쇼핑백: {},
     현수막: {},
+    배너: {},
     X배너: {},
   });
 
@@ -1276,6 +1253,7 @@ const ProductDetailPage = ({ openPopup }) => {
     합지박스: {},
     쇼핑백: {},
     현수막: {},
+    배너: {},
     X배너: {},
   });
 

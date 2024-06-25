@@ -59,3 +59,31 @@ export const hyphenFormatter = (value) => {
 export const formatNumber = (value) => {
   return parseInt(value).toLocaleString("ko-KR");
 };
+
+export const formatPhoneNumber = (value) => {
+  const input = value.replace(/-/g, ""); // 기존의 하이픈 제거
+  let formattedInput;
+
+  if (input.length <= 3) {
+    formattedInput = input;
+  } else if (input.length <= 7) {
+    formattedInput = `${input.slice(0, 3)}-${input.slice(3)}`;
+  } else if (input.length < 11) {
+    formattedInput = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(
+      6,
+      11
+    )}`;
+  } else if (input.length === 11) {
+    formattedInput = `${input.slice(0, 3)}-${input.slice(3, 7)}-${input.slice(
+      7,
+      12
+    )}`;
+  } else {
+    formattedInput = `${input.slice(0, 3)}-${input.slice(3, 7)}-${input.slice(
+      7,
+      11
+    )}`;
+  }
+
+  return formattedInput;
+};

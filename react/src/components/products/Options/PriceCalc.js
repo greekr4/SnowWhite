@@ -1085,11 +1085,139 @@ export const PriceCalc = (
     }
 
     //후가공
+    if (SelectOptions[prodNm]?.후가공) {
+      const Finishing_Price_Table = priceTable.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "후가공" &&
+          item.PRICE_OPTION_NM === SelectOptions[prodNm]?.후가공
+      );
+
+      const Finishing_Price = filterByQty(
+        Finishing_Price_Table,
+        SelectOptions[prodNm]?.수량
+      )?.PRICE_PRICE;
+
+      if (typeof Finishing_Price === "number") {
+        option_price += Finishing_Price * SelectOptions[prodNm]?.수량;
+      }
+    }
 
     //열재단
-  }
+    if (SelectOptions[prodNm]?.열재단) {
+      const Fire_Price_Table = priceTable.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "열재단" &&
+          item.PRICE_OPTION_NM === SelectOptions[prodNm]?.열재단
+      );
 
+      const Fire_Price = filterByQty(
+        Fire_Price_Table,
+        SelectOptions[prodNm]?.수량
+      )?.PRICE_PRICE;
+
+      if (typeof Fire_Price === "number") {
+        option_price += Fire_Price * SelectOptions[prodNm]?.수량;
+      }
+    }
+
+    //거치대
+    if (SelectOptions[prodNm]?.거치대) {
+      const Holder_Price_Table = priceTable.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "거치대" &&
+          item.PRICE_OPTION_NM === SelectOptions[prodNm]?.거치대
+      );
+
+      const Holder_Price = filterByQty(
+        Holder_Price_Table,
+        SelectOptions[prodNm]?.거치대수량
+      )?.PRICE_PRICE;
+
+      if (typeof Holder_Price === "number") {
+        option_price += Holder_Price * SelectOptions[prodNm]?.거치대수량;
+      }
+    }
+  }
   // ===X배너 끝===
+
+  // ===배너===
+  if (prodNm === "현수막") {
+    let Imposition =
+      (SelectOptions[prodNm]?.가로 * SelectOptions[prodNm]?.세로) / 1000000;
+
+    let Banner_Material = SelectOptions[prodNm]?.소재;
+
+    if (Imposition >= 4 && Banner_Material === "일반현수막") {
+      Banner_Material = "일반현수막4회배";
+    }
+
+    const Standard_Price_Table = priceTable.filter(
+      (item) =>
+        item.PRICE_OPTION_CATE === "소재" &&
+        item.PRICE_OPTION_NM === Banner_Material
+    );
+
+    const Base_Price = filterByQty(
+      Standard_Price_Table,
+      SelectOptions[prodNm]?.수량
+    )?.PRICE_PRICE;
+
+    const Standard_Price = filterByQty(
+      Standard_Price_Table,
+      SelectOptions[prodNm]?.수량
+    )?.PRICE_PRICE;
+
+    if (Imposition < 1) {
+      if (
+        ["일반현수막", "켈", "켈그레이"].includes(SelectOptions[prodNm]?.소재)
+      ) {
+        print_price +=
+          (Base_Price + 2000) * Imposition * SelectOptions[prodNm]?.수량;
+      } else {
+        print_price +=
+          (Base_Price + 3000) * Imposition * SelectOptions[prodNm]?.수량;
+      }
+    } else {
+      print_price += Standard_Price * Imposition * SelectOptions[prodNm]?.수량;
+    }
+
+    //후가공
+    if (SelectOptions[prodNm]?.후가공) {
+      const Finishing_Price_Table = priceTable.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "후가공" &&
+          item.PRICE_OPTION_NM === SelectOptions[prodNm]?.후가공
+      );
+
+      const Finishing_Price = filterByQty(
+        Finishing_Price_Table,
+        SelectOptions[prodNm]?.수량
+      )?.PRICE_PRICE;
+
+      if (typeof Finishing_Price === "number") {
+        option_price += Finishing_Price * SelectOptions[prodNm]?.수량;
+      }
+    }
+
+    //열재단
+    if (SelectOptions[prodNm]?.열재단) {
+      const Fire_Price_Table = priceTable.filter(
+        (item) =>
+          item.PRICE_OPTION_CATE === "열재단" &&
+          item.PRICE_OPTION_NM === SelectOptions[prodNm]?.열재단
+      );
+
+      const Fire_Price = filterByQty(
+        Fire_Price_Table,
+        SelectOptions[prodNm]?.수량
+      )?.PRICE_PRICE;
+
+      if (typeof Fire_Price === "number") {
+        option_price += Fire_Price * SelectOptions[prodNm]?.수량;
+      }
+    }
+  }
+  // ===배너 끝===
 
   //최종 단가
   const final_price = {

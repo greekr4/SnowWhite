@@ -366,7 +366,7 @@ const MyPage = ({ queryClient }) => {
             </S.MyPageStateCellList>
           </S.MyPageStateCellBox>
           <S.MyPageStateCellBox>
-            <S.MyPageStateCardList>
+            <S.MyPageStateCardList style={{ display: "none" }}>
               <S.MyPageStateCardItem
                 onClick={() => {
                   window.location.href = "/cart";

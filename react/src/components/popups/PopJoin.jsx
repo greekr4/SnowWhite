@@ -22,6 +22,7 @@ import {
 import { AccountCircle, Visibility, VisibilityOff } from "@mui/icons-material";
 import SendIcon from "@mui/icons-material/Send";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { formatPhoneNumber } from "../../hooks/Utill";
 
 const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
   const [userid, setUserid] = useState();
@@ -168,6 +169,9 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [authInputShow, setAuthInputShow] = useState(false);
   const [emailSendCk, setEamilSendCk] = useState(false);
+
+  const [userTel, setUserTel] = useState("");
+  const [userTelError, setUserTelError] = useState("");
 
   const handleAuthEmail = async () => {
     if (emailError !== null) {
@@ -378,6 +382,19 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
                 onChange={handleNmChange}
                 helperText={nmError}
                 error={nmError ? true : false}
+                style={{ marginBottom: "0.6em" }}
+              />
+              <TextField
+                fullWidth={true}
+                label="전화번호"
+                type="text"
+                defaultValue=""
+                value={userTel}
+                onChange={(e) => {
+                  setUserTel(formatPhoneNumber(e.target.value));
+                }}
+                helperText={userTelError}
+                error={userTelError ? true : false}
                 style={{ marginBottom: "0.6em" }}
               />
 

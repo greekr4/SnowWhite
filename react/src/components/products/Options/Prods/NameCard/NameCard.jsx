@@ -9,10 +9,19 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
+const papers = {
+  아트지: [250, 300],
+  스노우화이트: [250, 300],
+};
+
 const NameCard = ({ SelectOptions, setSelectOptions }) => {
   const [DefaultPaper, setDefaultPaper] = useState("스노우화이트");
   const [DefaultGram, setDefaultGram] = useState("250g");
   const [DefaultQuantity, setDefaultQuantity] = useState(100);
+
+  useEffect(() => {
+    setDefaultGram(papers[DefaultPaper][0] + "g");
+  }, [DefaultPaper]);
 
   useEffect(() => {
     const copyOptions = { ...SelectOptions };
@@ -74,12 +83,11 @@ const NameCard = ({ SelectOptions, setSelectOptions }) => {
               setDefaultGram(e.target.value);
             }}
           >
-            <MenuItem sx={{ fontSize: "14px" }} value={"250g"}>
-              250g
-            </MenuItem>
-            <MenuItem sx={{ fontSize: "14px" }} value={"300g"}>
-              300g
-            </MenuItem>
+            {papers[DefaultPaper].map((gram) => (
+              <MenuItem sx={{ fontSize: "14px" }} value={gram + "g"}>
+                {gram + "g"}
+              </MenuItem>
+            ))}
           </Select>
         </Box>
       </Box>

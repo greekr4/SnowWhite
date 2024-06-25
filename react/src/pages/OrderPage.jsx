@@ -18,6 +18,8 @@ import {
   DialogTitle,
   Snackbar,
 } from "@mui/material";
+import { CheckoutPage_real } from "../tossPay/Checkout_real";
+import { formatPhoneNumber } from "../hooks/Utill";
 
 const OrderPage = ({ openPopup }) => {
   const { data } = useQuery("userinfo", { enabled: false });
@@ -391,7 +393,9 @@ const OrderPage = ({ openPopup }) => {
                           <input
                             className="text"
                             value={orderTel}
-                            onChange={(e) => setOrderTel(e.target.value)}
+                            onChange={(e) => {
+                              setOrderTel(formatPhoneNumber(e.target.value));
+                            }}
                           />
                         </td>
                       </tr>
@@ -655,12 +659,21 @@ const OrderPage = ({ openPopup }) => {
                     </S.OBFinalPymentBoxAdd>
                   </S.OBFinalPymentBoxAddWrapper>
                   {radioValue === "pm1" ? (
-                    <CheckoutPage
-                      totalPrice={parseInt(totalPrice + deliPrice)}
-                      orderName={getorderNm()}
-                      ckInput={ckInput}
-                      insertPgOrder={insertPgOrder}
-                    />
+                    process.env.REACT_APP_MODE === "PROD" ? (
+                      <CheckoutPage_real
+                        totalPrice={parseInt(totalPrice + deliPrice)}
+                        orderName={getorderNm()}
+                        ckInput={ckInput}
+                        insertPgOrder={insertPgOrder}
+                      />
+                    ) : (
+                      <CheckoutPage
+                        totalPrice={parseInt(totalPrice + deliPrice)}
+                        orderName={getorderNm()}
+                        ckInput={ckInput}
+                        insertPgOrder={insertPgOrder}
+                      />
+                    )
                   ) : radioValue === "pm2" ? (
                     <S.OBFinalPymentBoxAddWrapper>
                       <S.OBFinalPymentBoxAdd>
@@ -672,6 +685,32 @@ const OrderPage = ({ openPopup }) => {
                       <p className="nopm">결제 방법을 선택해주세요.</p>
                     </S.OBCheckoutBox>
                   )}
+
+                  {/* {radioValue === "pm1" ? (
+
+                    {(process.env.REACT_APP_MODE === "PROD") ? <CheckoutPage_real
+                    totalPrice={parseInt(totalPrice + deliPrice)}
+                    orderName={getorderNm()}
+                    ckInput={ckInput}
+                    insertPgOrder={insertPgOrder}
+                  /> : <CheckoutPage
+                  totalPrice={parseInt(totalPrice + deliPrice)}
+                  orderName={getorderNm()}
+                  ckInput={ckInput}
+                  insertPgOrder={insertPgOrder}
+                />}
+                    
+                  ) : radioValue === "pm2" ? (
+                    <S.OBFinalPymentBoxAddWrapper>
+                      <S.OBFinalPymentBoxAdd>
+                        <S.Btn onClick={handleOrderBtn}>무통장 결제하기</S.Btn>
+                      </S.OBFinalPymentBoxAdd>
+                    </S.OBFinalPymentBoxAddWrapper>
+                  ) : (
+                    <S.OBCheckoutBox>
+                      <p className="nopm">결제 방법을 선택해주세요.</p>
+                    </S.OBCheckoutBox>
+                  )} */}
                 </S.OBFinalPaymentBox>
               </S.OBRightBox>
             </S.OrderBotWrapper>

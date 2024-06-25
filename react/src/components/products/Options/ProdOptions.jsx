@@ -7,7 +7,7 @@ import ThomsonSticker from "./ThomsonSticker";
 import PackageBox from "./PackageBox";
 import PackageCorBox from "./PackageCorBox";
 import PackageShopBag from "./PackageShopBag";
-import Banner from "./Banner";
+
 import NameCard from "./Prods/NameCard/NameCard";
 import NameCard_Premium from "./Prods/NameCard/NameCard_Premium";
 import Flyer from "./Prods/Flyer/Flyer";
@@ -19,6 +19,7 @@ import SpringNoteBook from "./Prods/Booklet/SpringNoteBook";
 import Proposal from "./Prods/Booklet/Proposal";
 import NoteBook from "./Prods/Booklet/Notebook";
 import Xbanner from "./Prods/XBanner/Xbanner";
+import Banner from "./Prods/Banner/Banner";
 
 const ProdOptions = ({
   prod,
