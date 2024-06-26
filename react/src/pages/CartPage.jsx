@@ -7,6 +7,7 @@ import PrintEstimate from "../components/products/PrintEstimate";
 import arrow_left from "../assets/icons/arrow_left.png";
 import arrow_right from "../assets/icons/arrow_right.png";
 import Pagination from "react-js-pagination";
+import { Alert, Box, Snackbar } from "@mui/material";
 
 const CartPage = () => {
   const { data } = useQuery("userinfo", { enabled: false });
@@ -21,6 +22,8 @@ const CartPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [countPerPage, setCountPerPage] = useState(10);
+
+  const [snackbar, setSnackbar] = useState(false);
 
   const handlePrintVisible = () => {
     SetPrintVisible(!printVisible);
@@ -99,9 +102,15 @@ const CartPage = () => {
     const hasTrue = selectedItems.some((item) => item === true);
 
     if (hasTrue) {
-      alert("삭제합니다.");
+      setSnackbar({
+        severity: "success",
+        children: "삭제되었습니다.",
+      });
     } else {
-      alert("선택해주세요.");
+      setSnackbar({
+        severity: "error",
+        children: "상품을 선택해주세요..",
+      });
       return false;
     }
 
@@ -140,7 +149,10 @@ const CartPage = () => {
     const hasTrue = selectedItems.some((item) => item === true);
 
     if (!hasTrue) {
-      alert("선택해주세요.");
+      setSnackbar({
+        severity: "error",
+        children: "상품을 선택해주세요..",
+      });
       return false;
     }
 
@@ -203,7 +215,10 @@ const CartPage = () => {
           }
         );
 
-        alert("디자인이 등록되었습니다.");
+        setSnackbar({
+          severity: "success",
+          children: "디자인이 수정되었습니다.",
+        });
       } catch (error) {
         console.log("실패");
       }
@@ -211,238 +226,266 @@ const CartPage = () => {
   };
 
   return (
-    <S.MainLayout>
-      <S.MainSection>
-        <S.CartTopWrapper>
-          <S.CartTopTitleBox>
-            <h1>장바구니</h1>
-            <p>내가 담은 상품을 확인 및 주문이 가능해요.</p>
-          </S.CartTopTitleBox>
-          <S.CartTopAddtionBox>
-            <p>상품 {initCartData ? initCartData.length : "0"}개</p>
-          </S.CartTopAddtionBox>
-        </S.CartTopWrapper>
-      </S.MainSection>
-      <S.MainSection>
-        <S.CartMidWrapper>
-          <S.CartMidBtnBox>
-            <div>
-              <S.Btn onClick={handelSelectedDel}>선택 삭제</S.Btn>
-              <S.Btn onClick={handlePrintVisible}>선택 견적서</S.Btn>
-              <PrintEstimate
-                printVisible={printVisible}
-                handlePrintVisible={handlePrintVisible}
-                estimateData={estimateData}
-              />
-            </div>
-            <div>
-              <S.CartMidText>
-                선택 상품 {totalQty.toLocaleString("ko-KR")}개
-              </S.CartMidText>
-              <S.CartMidText color="red">
-                결제 예정 금액 {totalPrice.toLocaleString("ko-KR")}원
-              </S.CartMidText>
+    <>
+      <S.MainLayout>
+        <S.MainSection>
+          <S.CartTopWrapper>
+            <S.CartTopTitleBox>
+              <h1>장바구니</h1>
+              <p>내가 담은 상품을 확인 및 주문이 가능해요.</p>
+            </S.CartTopTitleBox>
+            <S.CartTopAddtionBox>
+              <p>상품 {initCartData ? initCartData.length : "0"}개</p>
+            </S.CartTopAddtionBox>
+          </S.CartTopWrapper>
+        </S.MainSection>
+        <S.MainSection>
+          <S.CartMidWrapper>
+            <S.CartMidBtnBox>
+              <div>
+                <S.Btn onClick={handelSelectedDel}>선택 삭제</S.Btn>
+                <S.Btn onClick={handlePrintVisible}>선택 견적서</S.Btn>
+                <PrintEstimate
+                  printVisible={printVisible}
+                  handlePrintVisible={handlePrintVisible}
+                  estimateData={estimateData}
+                />
+              </div>
+              <div>
+                <S.CartMidText>
+                  선택 상품 {totalQty.toLocaleString("ko-KR")}개
+                </S.CartMidText>
+                <S.CartMidText color="red">
+                  결제 예정 금액 {totalPrice.toLocaleString("ko-KR")}원
+                </S.CartMidText>
 
-              <S.Btn
-                onClick={handleSeletedOrder}
-                btnBgc="#469cff"
-                fontColor="#fff"
-                btnBgcHover="#7cb9ff"
-                borderCHover="none"
-              >
-                선택 주문하기
-              </S.Btn>
-            </div>
-          </S.CartMidBtnBox>
-          <S.CartMidProdBox>
-            <table>
-              <thead>
-                <tr>
-                  <th style={{ width: "5%" }}>
-                    <input type="checkbox" onClick={handleAllSeleted} />
-                  </th>
-                  <th style={{ width: "10%" }}></th>
-                  <th style={{ width: "25%" }}>상품 정보</th>
-                  <th style={{ width: "10%" }}>수량</th>
-                  <th style={{ width: "15%" }}>가격</th>
-                  <th style={{ width: "10%" }}>최종 편집일</th>
-                  <th style={{ width: "10%" }}>디자인</th>
-                  <th style={{ width: "10%" }}>비고</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartData?.length ? (
-                  cartData.map((el, index) => (
-                    <tr>
-                      <td>
-                        <input
-                          type="checkbox"
-                          onChange={() => {
-                            handleSeleted(index);
-                          }}
-                          checked={selectedItems[index]}
-                        />
-                      </td>
-                      <td>
-                        <Link to={`/products/detail/${el.PROD_SID}`}>
-                          <S.CartMidThumbnail img={el.IMAGE_LOCATION} />
-                        </Link>
-                      </td>
-                      <td>
-                        <S.CartMidProdInfoBox>
-                          <h1>{el.PROD_NM}</h1>
-                          <p>
-                            {/* {el.ITEM_OPTION
+                <S.Btn
+                  onClick={handleSeletedOrder}
+                  btnBgc="#469cff"
+                  fontColor="#fff"
+                  btnBgcHover="#7cb9ff"
+                  borderCHover="none"
+                >
+                  선택 주문하기
+                </S.Btn>
+              </div>
+            </S.CartMidBtnBox>
+            <S.CartMidProdBox>
+              <table>
+                <thead>
+                  <tr>
+                    <th style={{ width: "5%" }}>
+                      <input type="checkbox" onClick={handleAllSeleted} />
+                    </th>
+                    <th style={{ width: "10%" }}></th>
+                    <th style={{ width: "25%" }}>상품 정보</th>
+                    <th style={{ width: "10%" }}>수량</th>
+                    <th style={{ width: "15%" }}>가격</th>
+                    <th style={{ width: "10%" }}>최종 편집일</th>
+                    <th style={{ width: "10%" }}>디자인</th>
+                    <th style={{ width: "10%" }}>비고</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartData?.length ? (
+                    cartData.map((el, index) => (
+                      <tr>
+                        <td>
+                          <input
+                            type="checkbox"
+                            onChange={() => {
+                              handleSeleted(index);
+                            }}
+                            checked={selectedItems[index]}
+                          />
+                        </td>
+                        <td>
+                          <Link to={`/products/detail/${el.PROD_SID}`}>
+                            <S.CartMidThumbnail img={el.IMAGE_LOCATION} />
+                          </Link>
+                        </td>
+                        <td>
+                          <S.CartMidProdInfoBox>
+                            <h1>{el.PROD_NM}</h1>
+                            <p>
+                              {/* {el.ITEM_OPTION
                               ? el.ITEM_OPTION.map((option, index) =>
                                   index === el.ITEM_OPTION.length - 1
                                     ? `${option.OPTION_CATE}-${option.OPTION_NM}`
                                     : `${option.OPTION_CATE}-${option.OPTION_NM} / `
                                 )
                               : "기본 옵션"} */}
-                            {el.ITEM_OPTION}
-                          </p>
-                          <p>{formatDate(el.CART_REGDATE)}</p>
-                        </S.CartMidProdInfoBox>
-                      </td>
-                      <td>{el.ITEM_QUANTITY.toLocaleString("ko-KR")}</td>
-                      <td>{el.ITEM_AMOUNT.toLocaleString("ko-KR")}</td>
-                      <td>{formatDate(el.ITEM_MODIDATE)}</td>
-                      <td>
-                        <S.Btn
-                          onClick={() => {
-                            window.open(el.ITEM_FILE_LOCATION);
-                          }}
-                        >
-                          시안 확인
-                        </S.Btn>
-                      </td>
-                      <td>
-                        <Link to={`/order/${el.ITEM_SID}`}>
+                              {el.ITEM_OPTION}
+                            </p>
+                            <p>{formatDate(el.CART_REGDATE)}</p>
+                          </S.CartMidProdInfoBox>
+                        </td>
+                        <td>{el.ITEM_QUANTITY.toLocaleString("ko-KR")}</td>
+                        <td>{el.ITEM_AMOUNT.toLocaleString("ko-KR")}</td>
+                        <td>{formatDate(el.ITEM_MODIDATE)}</td>
+                        <td>
                           <S.Btn
-                            btnBgc="#469cff"
-                            fontColor="#fff"
-                            btnBgcHover="#7cb9ff"
-                            borderCHover="none"
+                            onClick={() => {
+                              window.open(el.ITEM_FILE_LOCATION);
+                            }}
                           >
-                            주문하기
+                            시안 확인
                           </S.Btn>
-                        </Link>
-                        <S.Btn
-                          onClick={() => {
-                            handleEditDesign(el.ITEM_SID);
-                          }}
-                        >
-                          편집하기
-                        </S.Btn>
+                        </td>
+                        <td>
+                          <Link to={`/order/${el.ITEM_SID}`}>
+                            <S.Btn
+                              btnBgc="#469cff"
+                              fontColor="#fff"
+                              btnBgcHover="#7cb9ff"
+                              borderCHover="none"
+                            >
+                              주문하기
+                            </S.Btn>
+                          </Link>
+                          <S.Btn
+                            onClick={() => {
+                              handleEditDesign(el.ITEM_SID);
+                            }}
+                          >
+                            편집하기
+                          </S.Btn>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={"100%"} style={{ height: "6rem" }}>
+                        장바구니가 비었습니다.
                       </td>
                     </tr>
-                  ))
-                ) : (
+                  )}
+                </tbody>
+              </table>
+            </S.CartMidProdBox>
+            <S.PaginationBox>
+              <Pagination
+                // 현제 보고있는 페이지
+                activePage={currentPage}
+                // 한페이지에 출력할 아이템수
+                itemsCountPerPage={countPerPage}
+                // 총 아이템수
+                totalItemsCount={initCartData?.length}
+                // 표시할 페이지수
+                pageRangeDisplayed={10}
+                // 마지막 버튼 숨기기
+                hideFirstLastPages={true}
+                // 버튼 커스텀
+                prevPageText={
+                  <S.Glob_Icon
+                    icon={arrow_left}
+                    width="16px"
+                    height="16px"
+                    margin="3px 0 0 0"
+                  />
+                }
+                nextPageText={
+                  <S.Glob_Icon
+                    icon={arrow_right}
+                    width="16px"
+                    height="16px"
+                    margin="3px 0 0 0"
+                  />
+                }
+                // 함수
+                onChange={handlePageChange}
+              />
+            </S.PaginationBox>
+            <S.CartMidPriceBox>
+              <table>
+                <thead>
                   <tr>
-                    <td colSpan={"100%"} style={{ height: "6rem" }}>
-                      장바구니가 비었습니다.
-                    </td>
+                    <th>상품 금액</th>
+                    <th></th>
+                    <th>상품 할인</th>
+                    <th></th>
+                    <th>배송비</th>
+                    <th></th>
+                    <th>결제 예정 금액</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </S.CartMidProdBox>
-          <S.PaginationBox>
-            <Pagination
-              // 현제 보고있는 페이지
-              activePage={currentPage}
-              // 한페이지에 출력할 아이템수
-              itemsCountPerPage={countPerPage}
-              // 총 아이템수
-              totalItemsCount={initCartData?.length}
-              // 표시할 페이지수
-              pageRangeDisplayed={10}
-              // 마지막 버튼 숨기기
-              hideFirstLastPages={true}
-              // 버튼 커스텀
-              prevPageText={
-                <S.Glob_Icon
-                  icon={arrow_left}
-                  width="16px"
-                  height="16px"
-                  margin="3px 0 0 0"
-                />
-              }
-              nextPageText={
-                <S.Glob_Icon
-                  icon={arrow_right}
-                  width="16px"
-                  height="16px"
-                  margin="3px 0 0 0"
-                />
-              }
-              // 함수
-              onChange={handlePageChange}
-            />
-          </S.PaginationBox>
-          <S.CartMidPriceBox>
-            <table>
-              <thead>
-                <tr>
-                  <th>상품 금액</th>
-                  <th></th>
-                  <th>상품 할인</th>
-                  <th></th>
-                  <th>배송비</th>
-                  <th></th>
-                  <th>결제 예정 금액</th>
-                </tr>
-              </thead>
-              <tbody>
-                <td>{totalPrice.toLocaleString("ko-KR")}</td>
-                <td>
-                  <span>-</span>
-                </td>
-                <td>0</td>
-                <td>
-                  <span>+</span>
-                </td>
-                <td>3,000</td>
-                <td>
-                  <span>=</span>
-                </td>
-                <td>{(totalPrice + 3000).toLocaleString("ko-KR")}</td>
-              </tbody>
-            </table>
-          </S.CartMidPriceBox>
-        </S.CartMidWrapper>
-        <S.CartBotWrapper>
-          <S.CartBotNotiBox>
-            <h1>이용안내</h1>
-            <p>
-              저장한 디자인과 상품은 영구적으로 보관할 수 있습니다. (휴면계정은
-              별도 정책에 따름)
-            </p>
-            <p>
-              효과나 칼선 옵션을 변경하면 편집화면을 확인 후 저장해야 주문
-              가능합니다.
-            </p>
-            <p>
-              [편집하기]를 클릭하여 언제든 디자인을 수정하고 재편집 할 수
-              있습니다.
-            </p>
-            <p>
-              상품의 옵션이나 디자인을 약간만 수정해서 유사한 상품을 주문하려면
-              [복사하기]를 사용해보세요.
-            </p>
-            <p>
-              삭제한 디자인은 복구할 수 없습니다. (단, 주문내역이 있는 경우
-              재주문 가능)
-            </p>
-            <p>
-              견적서는 선택한 상품의 결제 예정 금액으로 발급되며, 쿠폰/머니 등을
-              사용하실 경우 주문 후 주문/배송 내역에서 할인 적용된 금액으로 발급
-              받으실 수 있습니다.
-            </p>
-          </S.CartBotNotiBox>
-        </S.CartBotWrapper>
-      </S.MainSection>
-    </S.MainLayout>
+                </thead>
+                <tbody>
+                  <td>{totalPrice.toLocaleString("ko-KR")}</td>
+                  <td>
+                    <span>-</span>
+                  </td>
+                  <td>0</td>
+                  <td>
+                    <span>+</span>
+                  </td>
+                  <td>3,000</td>
+                  <td>
+                    <span>=</span>
+                  </td>
+                  <td>{(totalPrice + 3000).toLocaleString("ko-KR")}</td>
+                </tbody>
+              </table>
+            </S.CartMidPriceBox>
+          </S.CartMidWrapper>
+          <Box
+            sx={{
+              textAlign: "center",
+              margin: "24px 0",
+            }}
+          >
+            <S.Btn
+              onClick={handleSeletedOrder}
+              btnBgc="#469cff"
+              fontColor="#fff"
+              btnBgcHover="#7cb9ff"
+              borderCHover="none"
+            >
+              주문하기
+            </S.Btn>
+          </Box>
+          <S.CartBotWrapper>
+            <S.CartBotNotiBox>
+              <h1>이용안내</h1>
+              <p>
+                저장한 디자인과 상품은 영구적으로 보관할 수 있습니다.
+                (휴면계정은 별도 정책에 따름)
+              </p>
+              <p>
+                효과나 칼선 옵션을 변경하면 편집화면을 확인 후 저장해야 주문
+                가능합니다.
+              </p>
+              <p>
+                [편집하기]를 클릭하여 언제든 디자인을 수정하고 재편집 할 수
+                있습니다.
+              </p>
+              <p>
+                상품의 옵션이나 디자인을 약간만 수정해서 유사한 상품을
+                주문하려면 [복사하기]를 사용해보세요.
+              </p>
+              <p>
+                삭제한 디자인은 복구할 수 없습니다. (단, 주문내역이 있는 경우
+                재주문 가능)
+              </p>
+              <p>
+                견적서는 선택한 상품의 결제 예정 금액으로 발급되며, 쿠폰/머니
+                등을 사용하실 경우 주문 후 주문/배송 내역에서 할인 적용된
+                금액으로 발급 받으실 수 있습니다.
+              </p>
+            </S.CartBotNotiBox>
+          </S.CartBotWrapper>
+        </S.MainSection>
+      </S.MainLayout>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          onClose={() => setSnackbar(false)}
+          autoHideDuration={3000}
+        >
+          <Alert {...snackbar} onClose={() => setSnackbar(false)} />
+        </Snackbar>
+      )}
+    </>
   );
 };
 

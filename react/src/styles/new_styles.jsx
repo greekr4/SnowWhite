@@ -2275,6 +2275,7 @@ export const MyPageStateEditDeliveryBox = styled.div`
 export const MyPageStateEditBtns = styled.div`
   padding-top: 1rem;
   padding-bottom: 1rem;
+  width: 100%;
 
   & .edit {
     float: left;
@@ -3248,7 +3249,7 @@ export const EHBtnBox = styled.div`
 export const ESWrapper = styled.div`
   width: 70px;
   min-width: 70px;
-  height: 100%;
+  height: 90vh;
   background-color: #fff;
   border-top: 1px solid #ddd;
   border-right: 1px solid #ddd;
@@ -3282,7 +3283,7 @@ export const ESideBtnItem = styled.div`
 export const ESideAddWrapper = styled.div`
   width: 260px;
   min-width: 260px;
-  height: 100%;
+  height: 90vh;
   background-color: #fbfbfb;
   border-right: 1px solid #ddd;
   z-index: 1000;

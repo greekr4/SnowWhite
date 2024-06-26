@@ -59,7 +59,8 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
       emailError != null ||
       pwError !== null ||
       pwckError !== null ||
-      nmError !== null
+      nmError !== null ||
+      usertelError !== null
     ) {
       setSnackbar({
         children: "필수 항목을 모두 입력해주세요.",
@@ -101,6 +102,7 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
         userid: userid,
         userpw: userpw,
         usernm: usernm,
+        usertel: usertel,
       })
       .then((res) => {
         if (res.status === 200) {
@@ -170,8 +172,8 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
   const [authInputShow, setAuthInputShow] = useState(false);
   const [emailSendCk, setEamilSendCk] = useState(false);
 
-  const [userTel, setUserTel] = useState("");
-  const [userTelError, setUserTelError] = useState("");
+  const [usertel, setUserTel] = useState("");
+  const [usertelError, setUserTelError] = useState("");
 
   const handleAuthEmail = async () => {
     if (emailError !== null) {
@@ -386,15 +388,23 @@ const PopJoin = ({ openPopup, closePopup, openPopup2 }) => {
               />
               <TextField
                 fullWidth={true}
-                label="전화번호"
+                label="휴대전화번호"
                 type="text"
                 defaultValue=""
-                value={userTel}
+                value={usertel}
                 onChange={(e) => {
+                  const pattern = /^01[016789]-?\d{3,4}-?\d{4}$/;
+
+                  if (!pattern.test(formatPhoneNumber(e.target.value))) {
+                    setUserTelError("휴대전화번호를 정확히 입력해주세요.");
+                  } else {
+                    setUserTelError(null);
+                  }
+
                   setUserTel(formatPhoneNumber(e.target.value));
                 }}
-                helperText={userTelError}
-                error={userTelError ? true : false}
+                helperText={usertelError}
+                error={usertelError ? true : false}
                 style={{ marginBottom: "0.6em" }}
               />
 

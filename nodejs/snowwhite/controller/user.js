@@ -182,7 +182,7 @@ where
  *
  */
 exports.join = async (req, res) => {
-  const { userid, userpw, usernm } = req.body;
+  const { userid, userpw, usernm, usertel } = req.body;
 
   const incode_pw = crypto.createHash("sha512").update(userpw).digest("base64");
   const selectUser = `SELECT (1) FROM TB_USER WHERE USER_ID = '${userid}'`;
@@ -190,11 +190,12 @@ exports.join = async (req, res) => {
 
   if (res_id.row.length != 0) return res.status(401).send("ID 중복");
 
-  const insertUser = `INSERT INTO tb_user (user_id, user_pw, user_nm) VALUES (?, ?, ?)`;
+  const insertUser = `INSERT INTO tb_user (user_id, user_pw, user_nm, user_tel0) VALUES (?, ?, ?, ?)`;
   const res_insert = await getConnection(insertUser, [
     userid,
     incode_pw,
     usernm,
+    usertel,
   ]);
 
   if (res_insert.state === false) return res.status(401).send("DB Error.");
@@ -340,6 +341,8 @@ where
 
 exports.auth_pw = async (req, res) => {
   const { userid, authpw } = req.body;
+  const incode_pw = crypto.createHash("sha512").update(authpw).digest("base64");
+
   const qry = `
 select
   USER_PW
@@ -350,14 +353,17 @@ where
   `;
   const res_row = await getConnection(qry, [userid]);
   if (res_row.state === false) return res.status(401).send("DB Error.");
-  if (res_row.row[0].USER_PW != authpw)
+  if (res_row.row[0].USER_PW != incode_pw)
     return res.status(401).send("PW Error.");
   console.log(res_row);
-  if (res_row.row[0].USER_PW === authpw) return res.status(200).send("OK");
+  if (res_row.row[0].USER_PW === incode_pw) return res.status(200).send("OK");
 };
 
 exports.update_user = async (req, res) => {
   const { userid, userpw, usertel0, usertel1 } = req.body;
+
+  const incode_pw = crypto.createHash("sha512").update(userpw).digest("base64");
+
   const qry = `
   update
 	TB_USER
@@ -370,7 +376,7 @@ where
   `;
 
   const res_update = await getConnection(qry, [
-    userpw,
+    incode_pw,
     usertel0,
     usertel1,
     userid,

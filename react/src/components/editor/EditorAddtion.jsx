@@ -102,8 +102,8 @@ export const EditorAddtion = ({
         console.log("이미지임");
         setType("이미지");
         console.log(obj.scaleX);
-        setRealWidth(Math.round(obj.width * obj.scaleX) / 10);
-        setRealHeight(Math.round(obj.height * obj.scaleY) / 10);
+        setRealWidth(Math.round(objSelection.transformer.getWidth()) / 10);
+        setRealHeight(Math.round(objSelection.transformer.getHeight()) / 10);
         setThisOpacity(obj.opacity);
       },
       activeSelection: () => {

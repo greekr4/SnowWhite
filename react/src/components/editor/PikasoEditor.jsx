@@ -41,36 +41,43 @@ const PikasoEditor = forwardRef(
 
       // 배경 설정
 
-      const imageUrl = "/asserts/editor/900_500.png";
+      const imageUrl = "/asserts/editor/940_540.png";
       editor?.board.background.setImageFromUrl(imageUrl);
+
       editor?.loadFromUrl(imageUrl);
 
-      functions.createBackgorund("#fff");
+      // functions.createBackgorund("#fff");
 
       // 가이드 라인 도우미
+
+      //재단영역
       const guideLine0 = editor?.shapes.line.insert({
-        points: [200, 200, 1100, 200], //x_start , y_start, x_end, y_end
+        points: [20, 20, 20 + 900, 20], //x_start , y_start, x_end, y_end
         name: "guide",
-        stroke: "#fa0000",
-        strokeWidth: 0,
+        stroke: "#777",
+        strokeWidth: 1,
+        dash: [4, 4],
       });
       const guideLine1 = editor?.shapes.line.insert({
-        points: [200, 700, 1100, 700], //x_start , y_start, x_end, y_end
+        points: [20, 540 - 20, 20 + 900, 540 - 20], //x_start , y_start, x_end, y_end
         name: "guide",
-        stroke: "#15ff00",
-        strokeWidth: 0,
+        stroke: "#777",
+        strokeWidth: 1,
+        dash: [4, 4],
       });
       const guideLine2 = editor?.shapes.line.insert({
-        points: [224, 225, 1074, 225], //x_start , y_start, x_end, y_end
+        points: [20, 20, 20, 540 - 20], //x_start , y_start, x_end, y_end
         name: "guide",
-        stroke: "#123",
-        strokeWidth: 0,
+        stroke: "#777",
+        strokeWidth: 1,
+        dash: [4, 4],
       });
       const guideLine3 = editor?.shapes.line.insert({
-        points: [224, 675, 1074, 675], //x_start , y_start, x_end, y_end
+        points: [20 + 900, 20, 20 + 900, 540 - 20], //x_start , y_start, x_end, y_end
         name: "guide",
-        stroke: "#4c00ff",
-        strokeWidth: 0,
+        stroke: "#777",
+        strokeWidth: 1,
+        dash: [4, 4],
       });
 
       editor?.on(
@@ -198,30 +205,35 @@ const PikasoEditor = forwardRef(
       },
       createImage: (image) => {
         editor?.shapes.image.insert(image, {
-          x: editor?.board.stage.attrs.width / 2 - 50,
-          y: editor?.board.stage.attrs.height / 2 - 50,
+          x: editor?.board.stage.attrs.width / 2 - 250 / 2,
+          y: editor?.board.stage.attrs.height / 2 - 250 / 2,
           width: 250,
           height: 250,
         });
       },
       createBackgorund: (color) => {
-        editor?.board.shapes.forEach((obj) => {
-          if (obj.node.attrs.name === "bgc") {
-            console.log(obj);
-            obj.destroy();
-          }
-        });
-        const bgc = editor?.shapes.rect.insert({
-          x: 200,
-          y: 200,
-          width: 900,
-          height: 500,
-          fill: color,
-          name: "bgc",
-        });
-        bgc?.node.setZIndex(0);
-        bgc?.node.setDraggable(false);
-        bgc?.node.hitStrokeWidth(0);
+        // alert(color);
+        editor?.board.background.fill(color);
+
+        // editor?.board.shapes.forEach((obj) => {
+        //   if (obj.node.attrs.name === "bgc") {
+        //     console.log(obj);
+        //     obj.destroy();
+        //   }
+        // });
+        // const bgc = editor?.shapes.rect.insert({
+        //   x: 500,
+        //   y: 200,
+        //   width: 900,
+        //   height: 500,
+        //   fill: color,
+        //   name: "bgc",
+        // });
+        // bgc?.node.setZIndex(0);
+        // bgc?.node.setDraggable(false);
+        // bgc?.node.setStrokeHitEnabled(false);
+        // bgc?.node.setPointerCapture(false);
+        // bgc?.node.hitStrokeWidth(-1);
       },
       undo: () => {
         if (historyStep < editor?.history.step) editor?.undo();

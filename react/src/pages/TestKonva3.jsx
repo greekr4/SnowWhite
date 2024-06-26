@@ -4,6 +4,7 @@ import * as S from "../styles/new_styles";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { EditorAddtion } from "../components/editor/EditorAddtion";
 import PikasoEditor from "../components/editor/PikasoEditor";
+import { Box, Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 const TestKonva3 = () => {
   const [isAddVisible, setIsAddVisible] = useState(false);
@@ -27,31 +28,43 @@ const TestKonva3 = () => {
     myRef[selectedEditor].functions.handleBehind();
   };
 
+  const [selectedEditorNumber, setSelectedEditorNumber] = useState(0);
+
+  useEffect(() => {
+    setSelectedEditor(selectedEditorNumber);
+  }, [selectedEditorNumber]);
+
   return (
     <>
-      <S.Btn
-        onClick={() => {
-          console.log(myRef);
-          console.log(myRef[selectedEditor]);
-          myRef[selectedEditor].functions.createCircle();
+      <Box
+        sx={{
+          position: "fixed",
+          width: "100%",
+          padding: "30px",
+          bottom: 0,
+          left: 0,
+          zIndex: 1000,
+          backgroundColor: "white",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        테스트
-      </S.Btn>
-      <S.Btn
-        onClick={() => {
-          setSelectedEditor(0);
-        }}
-      >
-        1번으로
-      </S.Btn>
-      <S.Btn
-        onClick={() => {
-          setSelectedEditor(1);
-        }}
-      >
-        2번으로
-      </S.Btn>
+        <Box padding={"0 10px"}>
+          <ToggleButtonGroup
+            color="primary"
+            value={selectedEditorNumber}
+            exclusive
+            onChange={(e, newAlignment) => {
+              if (newAlignment !== null) {
+                setSelectedEditorNumber(newAlignment);
+              }
+            }}
+          >
+            <ToggleButton value={0}>앞면</ToggleButton>
+            <ToggleButton value={1}>뒷면</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </Box>
       <EditorHeader
         functions={{ z: "z" }}
         isAddVisible={isAddVisible}

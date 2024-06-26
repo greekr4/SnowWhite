@@ -337,7 +337,13 @@ const OrderPage = ({ openPopup }) => {
                       <tr>
                         <th>연락처</th>
                         <td>
-                          <input className="text" value={userTel}></input>
+                          <input
+                            className="text"
+                            value={userTel}
+                            onChange={(e) => {
+                              setUserTel(formatPhoneNumber(e.target.value));
+                            }}
+                          ></input>
                         </td>
                       </tr>
                       <tr>

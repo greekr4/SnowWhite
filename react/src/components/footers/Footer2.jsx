@@ -117,8 +117,8 @@ const Footer2 = ({ openPopup2 }) => {
         </S.FooterBtnWrapper>
         <S.FooterAboutWrapper>
           <S.FooterAboutText>
-            ㈜ 스노우화이트 대표이사 이규민 | 사업자등록번호 636-81-02878 | 유선
-            010-8718-4333
+            ㈜ 스노우화이트 대표이사 이규민 | 사업자등록번호 636-81-02878 |
+            070-4109-1331
             {/* 통신판매신고 2024-경기고양-0000 */}
           </S.FooterAboutText>
           <S.FooterAboutText>
